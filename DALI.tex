@@ -1,13 +1,19 @@
 \documentclass[11pt,letter]{ivoa}
 \input tthdefs
 
-\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\lstloadlanguages{XML}
+\lstset{flexiblecolumns=true,basicstyle=\small,tagstyle=\ttfamily}
+
 
 \title{Data Access Layer Interface}
 
 \ivoagroup{Data Access Layer Working Group}
 
-\author{Patrick Dowler, Markus Demleitner, Mark Taylor, Doug Tody}
+\author{Patrick Dowler}
+\author{Markus Demleitner}
+\author{Mark Taylor}
+\author{Doug Tody}
 
 \editor{Patrick Dowler}
 
@@ -166,7 +172,7 @@ Location: http://example.com/base/async-jobs/123
 The job description (an XML document defined by the UWS schema) can always be 
 retrieved by accessing the job URL with the HTTP GET method:
 
-\begin{verbatim}
+\begin{lstlisting}[language=XML]
 GET http://example.com/base/async-jobs/123
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -187,7 +193,7 @@ GET http://example.com/base/async-jobs/123
   </uws:parameters>
   <uws:results/>
 </uws:job>
-\end{verbatim}
+\end{lstlisting}
 
 In addition to the UWS job metadata, DAL jobs are defined by a set of 
 parameter-value pairs. The client may include parameters in the initial POST 
@@ -280,11 +286,11 @@ The elements containing examples must be descendants of an element that has a
 vocab attribute with the value equal to the DALI-examples capability identifier 
 (above), for example:
 
-\begin{verbatim}
-<div vocab=”ivo://ivoa.net/std/DALI#examples”>
+\begin{lstlisting}[language=XML]
+<div vocab="ivo://ivoa.net/std/DALI#examples">
 ...
 </div>
-\end{verbatim}
+\end{lstlisting}
 
 No other vocab attributes are allowed in the document. Each example resides in 
 an element that has a typeof attribute with the value example. All such elements 
@@ -292,9 +298,9 @@ must have an id attribute to allow external referencing via fragments and a
 resource attribute with a reference pointing to the element itself. As an 
 example,
 
-\begin{verbatim}
+\begin{lstlisting}[language=XML]
 <div id="x" resource="#x" typeof="example"> ... </div>
-\end{verbatim}
+\end{lstlisting}
 
 located inside the vocab element (the one with the vocab attribute) would 
 contain an example referrable via the x fragment identifier. The div element is 
@@ -327,9 +333,9 @@ space-limited label in user interface and still give some idea about the meaning
 of the example.  In XHTML, a head element (h2, say) would usually be a good 
 choice for the example name, for example:
 
-\begin{verbatim}
-<h2 property=”name”>Synchronous TAP query</h2>
-\end{verbatim}
+\begin{lstlisting}[language=XML]
+<h2 property="name">Synchronous TAP query</h2>
+\end{lstlisting}
 
 \subsubsection{capability property}
 
@@ -337,9 +343,9 @@ The capability property for an example specifies which service capability the
 example is to be used with. For example, if the text is describing how to use an 
 SSA-1.1 service, the example could contain:
 
-\begin{verbatim}
-<span property=”capability”>ivo://ivoa.net/std/SSA/v1.1</span>
-\end{verbatim}
+\begin{lstlisting}[language=XML]
+<span property="capability">ivo://ivoa.net/std/SSA/v1.1</span>
+\end{lstlisting}
 
 IVOA standard service capabilities are defined as URIs,  so example documents 
 may want to show the URI or show more user-friendly text depending on the 
@@ -356,20 +362,20 @@ elements with a property named key and value, where the plain-text content are
 the parameter name and value respectively. Multiple generic-parameter(s) are 
 permitted, for example:
 
-\begin{verbatim}
-<span property=”generic-parameter” typeof=”keyval”>
-   <span property=”key”>REQUEST</span>
-   <span property=”value”>doQuery</span>
+\begin{lstlisting}[language=XML]
+<span property="generic-parameter" typeof="keyval">
+   <span property="key">REQUEST</span>
+   <span property="value">doQuery</span>
 </span>
-<span property=”generic-parameter” typeof=”keyval”>
-   <span property=”key”>LANG</span>
-   <span property=”value”>ADQL</span>
+<span property="generic-parameter" typeof="keyval">
+   <span property="key">LANG</span>
+   <span property="value">ADQL</span>
 </span>
-<span property=”generic-parameter” typeof=”keyval”>
-   <span property=”key”>QUERY</span>
-   <span property=”value”>SELECT * from tap_schema.tables</span>
+<span property="generic-parameter" typeof="keyval">
+   <span property="key">QUERY</span>
+   <span property="value">SELECT * from tap_schema.tables</span>
 </span>
-\end{verbatim}
+\end{lstlisting}
 
 \subsubsection{continuation property}
 
@@ -382,13 +388,13 @@ attribute with the URL of another document formatted as above (i.e. another
 collection of examples that clients should read to collect the full set of 
 examples).
 
-\begin{verbatim}
+\begin{lstlisting}[language=XML]
 <div vocab="ivo://ivoa.net/std/DALI#examples">
   <div id="x" resource="#x" typeof="example">
    <h2 property="name">Synchronous TAP query</h2>
      <p property="capability">ivo://ivoa.net/std/TAP/v1.0</p>
      <p property="generic-parameter" typeof="keyval">
-        <span property=”key”>REQUEST</span>=<span
+        <span property="key">REQUEST</span>=<span
             property="value">doQuery</span>
      </p>
      <p property="generic-parameter" typeof="keyval">
@@ -405,7 +411,7 @@ examples).
   <a property="continuation"
      href="fancy_examples.html">Fancy examples</a>
 </div>
-\end{verbatim}
+\end{lstlisting}
 
 In the above example, the two linked documents would also contain some element 
 with a vocab and examples as described above. 
@@ -421,14 +427,14 @@ All DAL services must implement the /availability resource, which responds with
 a dynamically generated document describing the current state of the service 
 operation, e.g.:
 
-\begin{verbatim}
+\begin{lstlisting}[language=XML]
 <?xml version="1.0" encoding="UTF-8"?>
 <vosi:availability  
   xmlns:vosi="http://www.ivoa.net/xml/VOSIAvailability/v1.0">
   <vosi:available>true</vosi:available>
   <vosi:note>service is accepting queries</vosi:note>
 </vosi:availability>
-\end{verbatim}
+\end{lstlisting}
 
 \subsection{Capabilities: VOSI-capabilities}
 \label{sec:vosi-capabilities}
@@ -441,7 +447,7 @@ including which standards each resource implements.
 All DAL services must implement the /capabilities resource. The following 
 capabilities document shows the three VOSI resources and a TAP base resource: 
 
-\begin{verbatim}
+\begin{lstlisting}[language=XML]
 <?xml version="1.0" encoding="UTF-8"?>
 <vosi:capabilities
    xmlns:vosi="http://www.ivoa.net/xml/VOSICapabilities/v1.0"
@@ -482,10 +488,10 @@ capabilities document shows the three VOSI resources and a TAP base resource:
     <!-- service details from TAPRegExt go here -->
   </capability>
 </vosi:capabilities>
-\end{verbatim}
+\end{lstlisting}
 
 Note that while this example shows the use of a registry extension schema (the 
-inline xmlns:tr=”http://www.ivoa.net/xml/TAPRegExt/v1.0” in the last capability 
+inline xmlns:tr="http://www.ivoa.net/xml/TAPRegExt/v1.0" in the last capability 
 element) this is not required; services may be registered and described without 
 such an extension. The use of standardID -- which should contain the IVORN of 
 the standard a capability adheres to -- does not imply a particular (or any) 
@@ -745,9 +751,9 @@ more generic example of a URI that requires more service-side functionality;
 support for the vos scheme is optional.
 
 To upload a resource inline, the caller specifies the UPLOAD parameter (as 
-above) using a special URI scheme “param”. This scheme indicates that the value 
+above) using a special URI scheme “param". This scheme indicates that the value 
 after the colon will be the name of the inline content. The content type used is 
-multipart/form-data, using a “file” type input element. The “name” attribute 
+multipart/form-data, using a “file" type input element. The “name" attribute 
 must match that used in the UPLOAD parameter.
 
 For example, in the POST data we would have this parameter:
@@ -931,7 +937,7 @@ The VOTable must contain one  RESOURCE element identified with the attribute
 type="results"; this resource contains the primary result (e.g. the only result 
 for simple DAL services). Concrete DAL service specifications define what goes 
 into the primary result. The primary RESOURCE element must contain, before the 
-TABLE element, an INFO element with attribute name = "QUERY_STATUS"2. The value 
+TABLE element, an INFO element with attribute \texttt{name = "QUERY\_STATUS"}2. The value 
 attribute must contain one of the following values:
 
 \begin{tabular}{l l l l l}
@@ -946,19 +952,19 @@ resource, and the result was truncated at MAXREC rows \\
 The content of the INFO element conveying the status should be a message 
 suitable for display to the user describing the status.
 
-\begin{verbatim}
+\begin{lstlisting}[language=XML]
 <INFO name="QUERY_STATUS" value="OK"/>
-\end{verbatim}
+\end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[language=XML]
 <INFO name="QUERY_STATUS" value="OK">Successful query</INFO>
-\end{verbatim}
+\end{lstlisting}
 
-\begin{verbatim}
-<INFO name=”QUERY_STATUS" value="ERROR">
+\begin{lstlisting}[language=XML]
+<INFO name="QUERY_STATUS" value="ERROR">
 value out of range in POS=45,91
 </INFO>
-\end{verbatim}
+\end{lstlisting}
 
 Additional RESOURCE elements may be present, but the usage of any such elements 
 is not defined here. Concrete DAL service specifications may define additional 
@@ -967,58 +973,59 @@ also free to add their own.
 
 \subsubsection{Overflow}
 If an overflow occurs (result exceeds MAXREC), the service must include an INFO 
-element in the RESOURCE with name=”QUERY_STATUS” and the value=”OVERFLOW”. If 
+element in the RESOURCE with \texttt{name="QUERY\_STATUS"} and the 
+\texttt{value="OVERFLOW"}. If 
 the initial info element (above) specified the overflow, no further elements are 
 needed, e.g.:
 
-\begin{verbatim}
-<RESOURCE type=”results”>
-<INFO name=”QUERY_STATUS” value=”OVERFLOW”/>
+\begin{lstlisting}[language=XML]
+<RESOURCE type="results">
+<INFO name="QUERY_STATUS" value="OVERFLOW"/>
 ...
 <TABLE>...</TABLE>
 </RESOURCE>
-\end{verbatim}
+\end{lstlisting}
 
 If the initial info element specified a status of OK then the service must 
 append an INFO element for the overflow after the table, e.g.:
 
-\begin{verbatim}
-<RESOURCE type=”results”>
-<INFO name=”QUERY_STATUS” value=”OK”/>
+\begin{lstlisting}[language=XML]
+<RESOURCE type="results">
+<INFO name="QUERY_STATUS" value="OK"/>
 ...
 <TABLE>...</TABLE>
-<INFO name=”QUERY_STATUS” value=”OVERFLOW”/>
+<INFO name="QUERY_STATUS" value="OVERFLOW"/>
 </RESOURCE>
-\end{verbatim}
+\end{lstlisting}
 
 In the above examples, the TABLE should have exactly MAXREC rows.
 
 \subsubsection{Errors}
 If an error occurs, the service must include an INFO element with 
-name=”QUERY_STATUS” and the value=”ERROR”. If the initial info element (above) 
+name="QUERY\_STATUS" and the value="ERROR". If the initial info element (above) 
 specified the error, no further elements are needed, e.g.:
 
-\begin{verbatim}
-<RESOURCE type=”results”>
-<INFO name=”QUERY_STATUS” value=”ERROR”/>
+\begin{lstlisting}[language=XML]
+<RESOURCE type="results">
+<INFO name="QUERY_STATUS" value="ERROR"/>
 ...
 <TABLE>...</TABLE>
 </RESOURCE>
-\end{verbatim}
+\end{lstlisting}
 
 If the initial info element specified a status of OK then the service must 
 append an INFO element for the error after the table, e.g.:
 
-\begin{verbatim}
-<RESOURCE type=”results”>
-<INFO name=”QUERY_STATUS” value=”OK”/>
+\begin{lstlisting}[language=XML]
+<RESOURCE type="results">
+<INFO name="QUERY_STATUS" value="OK"/>
 ...
 <TABLE>...</TABLE>
-<INFO name=”QUERY_STATUS” value=”ERROR”>
+<INFO name="QUERY_STATUS" value="ERROR">
 unexpected IO error while converting something
 </INFO>
 </RESOURCE>
-\end{verbatim}
+\end{lstlisting}
 
 The use of trailing INFO element allows a service to stream output and still 
 report overflows or errors to the client. The content of these trailing INFO 
@@ -1031,14 +1038,14 @@ back to the client in the query response (a useful feature for debugging or to
 self-document the query response), but clients should not depend on these. For 
 example:
 
-\begin{verbatim}
-<RESOURCE type=”results”>
+\begin{lstlisting}[language=XML]
+<RESOURCE type="results">
 ...
-<INFO name=”standardID” value=”ivo://ivoa.net/TAP”/>
-<INFO name=”standardVersion” value=”1.0”/>
+<INFO name="standardID" value="ivo://ivoa.net/TAP"/>
+<INFO name="standardVersion" value="1.0"/>
 ...
 </RESOURCE>
-\end{verbatim}
+\end{lstlisting}
 
 The following names for INFO elements should be used if applicable, but this 
 list is not definitive.
@@ -1073,7 +1080,7 @@ the client did not specify them.
 Relaxed the VERSION parameter so services should default to latest (instead of 
 must) and to not differentiate between REC and pre-REC status.
 
-Clarified the requirement for a VOTable RESOURCE with type=”results” attribute 
+Clarified the requirement for a VOTable RESOURCE with type="results" attribute 
 so it is clear that this is the primary result and other RESOURCES may be 
 present.
 
