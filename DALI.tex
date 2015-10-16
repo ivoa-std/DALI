@@ -54,7 +54,8 @@ need not repeat these common elements.
 
 \subsection{Role within the VO Architecture}
 DALI defines how DAL service specifications use other IVOA standards as well as 
-standard internet designs and protocols.
+standard internet designs and protocols. Fig.~\ref{fig:archdiag} shows the role 
+this document plays within the IVOA architecture \citep{note:VOARCH}.
 
 \begin{figure}
 \centering
@@ -72,15 +73,18 @@ standard internet designs and protocols.
 \end{figure}
 
 Astronomical coordinate values accepted and returned by DAL services use a 
-string representation of the Space-Time Coordinates (STC) data model. The 
+string representation of the Space-Time Coordinates \citep{note:STC} data 
+model. The 
 concrete DAL service specification defines whether the returned resources are 
 serializations of a particular standard data model. For preserving backwards 
 compatibility or to enable service-specific use cases, the concrete DAL service 
 specification may explicitly specify the use of ad-hoc Utypes.
 
-A registry extension schema, usually extending VODataService, is needed to 
+A registry extension schema, usually extending \citep{std:VODS11}, is needed 
+to 
 describe the capabilities of a DAL service. This schema is used within the 
-VOSI-capabilities resource and in registry records for the service.
+VOSI-capabilities \citep{std:VOSI} resource and in registry records for the 
+service.
 
 \subsection{Example Usage of the DALI Specification}
 The DALI specification defines common elements that make up Data Access Layer 
@@ -109,7 +113,8 @@ document.
 
 \section{Resources}
 \label{sec:resources}
-DAL services are normally implemented as HTTP REST [16] web services, although 
+DAL services are normally implemented as HTTP REST \citep{fielding00} 
+web services, although 
 other transport protocols could be used in the future1. The primary resource in 
 a DAL service is a job. A DAL job is defined by parameters (Section   3 ) and 
 can be executed either synchronously or asynchronously. A concrete service 
@@ -117,11 +122,12 @@ specification defines the job parameters and the manner of execution is defined
 by separate resources below.
 
 In addition to job list resources, DAL services also implement several Virtual 
-Observatory Support Interface (VOSI) resources to describe service availability, 
-capabilities, and content.
+Observatory Support Interface \citep{std:VOSI} resources to describe 
+service availability, capabilities, and content.
 
 A concrete DAL service must define at least one DALI-async or DALI-sync 
-resource. It may define both with the same job semantics (e.g. TAP-1.0 [13]) or 
+resource. It may define both with the same job semantics (e.g. TAP-1.0 
+\citep{std:TAP}) or 
 it may define one with one kind of job and the other with a separate kind of job 
 (a service that does some things synchronously and others asynchronously).
 
@@ -149,7 +155,8 @@ the result of the query.
 \subsection{Asynchronous Execution: DALI-async}
 \label{sec:dali-async}
 Asynchronous resources are resources that represent a list of asynchronous jobs 
-as defined by the Universal Worker Service (UWS) pattern [10]. Requests can 
+as defined by the Universal Worker Service (UWS) pattern \citep{std:UWS}. 
+Requests can 
 create, modify, and delete jobs in the job list. UWS also specifies special 
 requests to modify the phase of the job (cause the job to execute or abort).
 
@@ -257,7 +264,8 @@ material to the user. In DAL services, this resource is always accessed as a
 resource named examples that is a child of the base URL for the service. The 
 following specification is intended to make sure the content is usable for both 
 machines and humans. As such, the DALI-examples resource contains additional 
-markup conforming to the RDFa 1.1 Lite [17] specification, which defines the 
+markup conforming to the RDFa 1.1 Lite \citep{std:RDFaLite11} specification, 
+which defines the 
 following attributes: vocab, typeof, property, resource, and prefix (although we 
 do not include any use of the prefix attribute).
 
@@ -418,7 +426,8 @@ with a vocab and examples as described above.
 
 \subsection{Availability: VOSI-availability}
 \label{sec:vosi-availability}
-VOSI-availability [9] defines a simple web resource that reports on the current 
+VOSI-availability \citep{std:VOSI} defines a simple web resource that 
+reports on the current 
 ability of the service to perform. In DAL services, this resource is always 
 accessed as a resource named availability that is a child of the base URL for 
 the service.
@@ -438,7 +447,8 @@ operation, e.g.:
 
 \subsection{Capabilities: VOSI-capabilities}
 \label{sec:vosi-capabilities}
-VOSI-capabilities [9] defines a simple web resource that returns an XML document 
+VOSI-capabilities \citep{std:VOSI} defines a simple web resource that 
+returns an XML document 
 describing the service. In  DAL services, this resource is always accessed as a 
 resource named capabilities that is a child of the base URL for the service. The 
 VOSI-capabilities should describe all the resources exposed by the service, 
@@ -499,11 +509,13 @@ xsi:type be included.
 
 \subsection{Tables: VOSI-tables}
 \label{sec:vosi-tables}
-VOSI-tables [9] defines a simple web resource that returns an XML document 
+VOSI-tables \citep{std:VOSI} defines a simple web resource that returns an 
+XML document 
 describing the content of the service. In  DAL services which include it, this 
 resource is always accessed as a resource named tables that is a child of the 
 base URL for the service. The document format is defined by the 
-VODataService-1.1 [12] standard and allows the service to describe their content 
+VODataService-1.1 \citep{std:VODS11} standard and allows the service to 
+describe their content 
 as a tableset: schemas, tables, and columns. If the VOSI-tables resource is not 
 implemented by a service, the service must respond to a GET request with an HTTP 
 404 (Not Found) status.
@@ -547,14 +559,16 @@ typographical clarity, not as a requirement.
 
 \subsubsection{Literal Values: Numbers, Boolean, Date, and Time}
 Integer numbers must be represented in a manner consistent with the 
-specification for integers in XML Schema Datatypes [4].
+specification for integers in XML Schema Datatypes \citep{std:XSD2}.
 
 Real numbers must be represented in a manner consistent with the specification 
-for double-precision numbers in XML Schema Datatypes [4]. This representation 
+for double-precision numbers in XML Schema Datatypes \citep{std:XSD2}. This 
+representation 
 allows for integer, decimal and exponential notations.
 
 Boolean values must be represented in a manner consistent with the specification 
-for Boolean in XML Schema Datatypes [10]. The values 0 and false are equivalent. 
+for Boolean in XML Schema Datatypes \citep{std:XSD2}. The values 0 and false 
+are equivalent. 
 The values 1 and true are equivalent.  
 
 \begin{verbatim}
@@ -568,7 +582,7 @@ BAR=false
 \end{verbatim}
 
 Date and time values must be represented  using the convention established for 
-FITS [18] and STC [15]:
+FITS \citep{std:FITS} and STC \citep{note:STC}:
 
 \begin{verbatim}
 YYYY-MM-DD['T']hh:mm:ss[.SSS]
@@ -588,13 +602,16 @@ are all legal date or date plus time values. Values never include a time zone
 indicator and are always interpreted as follows. In cases where values may be 
 expressed using Julian Date (JD) or Modified Julian Date (MJD), these follow the 
 rules for double precision numbers above and may have additional metadata as 
-described in [11]. All date-time values (formatted sting, JD, and MJD) shall be 
+described in \citep{std:VOTABLE}. All date-time values (formatted sting, JD, 
+and MJD) shall be 
 interpreted as referring to time scale UTC and time reference position UNKNOWN, 
-unless either or both of these are explicitly specified to be different [15].
+unless either or both of these are explicitly specified to be different 
+\citep{note:STC}.
 
 Note that the format used here is very close to the standard ISO8601 timestamp 
 format except with respect to timezone handling. ISO8601 requires a Z character 
-at the end of the string when the timezone is UTC; here, we follow the FITS [18] 
+at the end of the string when the timezone is UTC; here, we follow the FITS 
+\citep{std:FITS} 
 convention by omitting the Z but still defaulting to UTC.
 
 \subsubsection{Multiple Values}
@@ -638,7 +655,8 @@ requires features or behaviour of a specific version, an explicit VERSION
 parameter should be used.
 
 The value of the version advertised by the service and requested by the client 
-follows the IVOA version number scheme [14]. Standards at the Working Draft (WD) 
+follows the IVOA version number scheme \citep{std:DocSTDProc}. Standards at 
+the Working Draft (WD) 
 or Proposed Recommendation (PR) stage include the publication date with the 
 version number. For the purposes of this specification, these date tags are not 
 supported, i.e. services only accept VERSION without dates. Clients can thus not 
@@ -659,7 +677,8 @@ resource; if a DALI-async job creates multiple results, the RESPONSEFORMAT
 should control the primary result type, but details can be specific to 
 individual service specifications. While the list of supported values are 
 specific to a concrete service specification, the general usage is to support 
-values that are content-types (mimetypes [5]) for known formats as well as 
+values that are content-types \citep{std:MIME} for known 
+formats as well as 
 shortcut symbolic values. 
 
 \begin{tabular}{l l l l l}
@@ -877,7 +896,8 @@ were to be extended for use via other transport protocols, the normal mechanisms
 of those protocols should be used.
 
 An error document describing errors in use of the DAL service protocol may be a 
-VOTable document as described in [11] or a plain text document. The content of 
+VOTable document as described in \citep{std:VOTABLE} or a plain text document. 
+The content of 
 VOtable error documents is described in Section 4.4.2 below. Service 
 specifications will enumerate specific text to be included. For plain text error 
 documents the required text would be included at the start of the document; for 
@@ -920,11 +940,12 @@ be accessed by the client via the HTTP GET method. For example, the UWS pattern
 used for DALI-async (Section 2.1 ) requires this behaviour. Even when not 
 required, concrete DAL service specifications must allow implementers to use 
 redirects and clients must be prepared to follow these redirects using normal 
-HTTP semantics [5].
+HTTP semantics \citep{std:HTTP}.
 
 \subsection{Use of VOTable}
 VOTable is a general format. In DAL services we require that it be used in a 
-particular way. The result VOTable document must comply with VOTable v1.2 [11] 
+particular way. The result VOTable document must comply with VOTable v1.2 
+\citep{std:VOTABLE}
 or later versions.
 
 The VOTable format permits table creators to add additional metadata to describe 
