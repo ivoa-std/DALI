@@ -73,7 +73,7 @@ this document plays within the IVOA architecture \citep{note:VOARCH}.
 \end{figure}
 
 Astronomical coordinate values accepted and returned by DAL services use a 
-string representation of the Space-Time Coordinates \citep{note:STC} data 
+string representation of the Space-Time Coordinates \citep{std:STC} data 
 model. The 
 concrete DAL service specification defines whether the returned resources are 
 serializations of a particular standard data model. For preserving backwards 
@@ -582,7 +582,7 @@ BAR=false
 \end{verbatim}
 
 Date and time values must be represented  using the convention established for 
-FITS \citep{std:FITS} and STC \citep{note:STC}:
+FITS \citep{std:FITS} and STC \citep{std:STC}:
 
 \begin{verbatim}
 YYYY-MM-DD['T']hh:mm:ss[.SSS]
@@ -606,7 +606,7 @@ described in \citep{std:VOTABLE}. All date-time values (formatted sting, JD,
 and MJD) shall be 
 interpreted as referring to time scale UTC and time reference position UNKNOWN, 
 unless either or both of these are explicitly specified to be different 
-\citep{note:STC}.
+\citep{std:STC}.
 
 Note that the format used here is very close to the standard ISO8601 timestamp 
 format except with respect to timezone handling. ISO8601 requires a Z character 
