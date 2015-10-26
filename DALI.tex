@@ -93,14 +93,14 @@ document by name rather than include all the explanatory text. For example,
 suppose a document defines a service that stacks FITS images asynchronously. The 
 specification could say that the service has the following resources:
 
-a DALI-async resource that accepts one or more UPLOAD parameters (Section 
-3.2.5 ) where the resources are FITS images; the resource could also define a 
-fixed set of error messages for anticipated failure modes 
+a DALI-async resource that accepts one or more UPLOAD parameters 
+(section~\ref{sec:UPLOAD}) where the resources are FITS images; the resource 
+could also define a fixed set of error messages for anticipated failure modes 
 
-a VOSI-availability resource (Section 2.4) 
+a VOSI-availability resource (section~\ref{sec:vosi-availability}) 
 
-a VOSI-capabilities resource (Section 2.5) conforming to a specified 
-registry extension schema 
+a VOSI-capabilities resource (section~\ref{sec:vosi-capabilities}) conforming 
+to a specified registry extension schema 
 
 and would have to define the registry extension schema to be used to register 
 services and to implement the VOSI-capabilities resource. Most of the service 
@@ -116,7 +116,8 @@ document.
 DAL services are normally implemented as HTTP REST \citep{fielding00} 
 web services, although 
 other transport protocols could be used in the future1. The primary resource in 
-a DAL service is a job. A DAL job is defined by parameters (Section   3 ) and 
+a DAL service is a job. A DAL job is defined by parameters 
+(section~\ref{sec:parameters}) and 
 can be executed either synchronously or asynchronously. A concrete service 
 specification defines the job parameters and the manner of execution is defined 
 by separate resources below.
@@ -127,9 +128,9 @@ service availability, capabilities, and content.
 
 A concrete DAL service must define at least one DALI-async or DALI-sync 
 resource. It may define both with the same job semantics (e.g. TAP-1.0 
-\citep{std:TAP}) or 
-it may define one with one kind of job and the other with a separate kind of job 
-(a service that does some things synchronously and others asynchronously).
+\citep{std:TAP}) or it may define one with one kind of job and the other with a 
+separate kind of job (a service that does some things synchronously and others 
+asynchronously). 
 
 The following table summarises the resources that are required in all concrete 
 DAL service specifications (and thus in all DAL services) and which kinds of 
@@ -147,6 +148,12 @@ VOSI-availability & /availability & yes & \\
 VOSI-capabilities & /capabilities & yes & \\
 VOSI-tables & /tables & service specific & \\
 \end{tabular}
+
+The resource name is the path (relative to the base URL of the service). All 
+resources must be siblings of the VOSI-capabilities resource; this 
+limitation enables a client with just the URL for a single resource to 
+find the VOSI-capabilities resource and then discover all the capabilities 
+provided by the service.
 
 A simple query-only DAL service like ConeSearch can be easily described as 
 having a single DALI-sync resource where the job is a query and the response is 
@@ -533,7 +540,7 @@ A DAL job is defined by a set of parameter-value pairs. Some of these parameters
 have a standard meaning and are defined here, but most are defined by the 
 service specification or another related standard. 
 
-\subsection{General Rules}
+\subsection{Case Sensitivity}
 Parameter names are not case sensitive; a DAL service must treat upper-, lower-, 
 and mixed-case parameter names as equal. Parameter values are case sensitive 
 unless a concrete DAL service specification explicitly states that the values of 
@@ -557,19 +564,43 @@ FOO=BAR
 In this document, parameter names are typically shown in upper-case for 
 typographical clarity, not as a requirement.
 
-\subsubsection{Literal Values: Numbers, Boolean, Date, and Time}
+\subsection{Multiple Values}
+Parameters may be assigned multiple values with multiple parameter=value pairs 
+using the same parameter name. Whether or not multiple values are permitted and 
+the meaning of multiple values is specified for each parameter by the 
+specification that defines the parameter. For example, the UPLOAD parameter 
+(section~\ref{sec:UPLOAD}) permits multiple occurrences of the specified 
+pair (table,uri), e.g.:
+
+\begin{verbatim}
+UPLOAD=foo,http://example.com/foo
+UPLOAD=bar,http://example.com/bar
+\end{verbatim}
+
+Services must respond with an error if the request includes multiple values for 
+parameters defined to be single-valued.
+
+\subsection{Literal Values}
+In this section we specify how values are to be expressed. These literal values 
+are used as input or output from DAL services: as parameter values when 
+invoking simple services, as data values in response documents (e.g. VOTable), 
+etc. We define some general purpose values for the xtype attribute of 
+the VOTable FIELD and PARAM elements  for simple structured values: interval, 
+point, circle, and polygon (see below).
+
+\subsubsection{Numbers}
 Integer numbers must be represented in a manner consistent with the 
 specification for integers in XML Schema Datatypes \citep{std:XSD2}.
 
 Real numbers must be represented in a manner consistent with the specification 
 for double-precision numbers in XML Schema Datatypes \citep{std:XSD2}. This 
-representation 
-allows for integer, decimal and exponential notations.
+representation allows for integer, decimal and exponential notations.
 
-Boolean values must be represented in a manner consistent with the specification 
+\subsubsection{Boolean}
+Boolean values must be represented in a manner consistent with the 
+specification 
 for Boolean in XML Schema Datatypes \citep{std:XSD2}. The values 0 and false 
-are equivalent. 
-The values 1 and true are equivalent.  
+are equivalent. The values 1 and true are equivalent.  
 
 \begin{verbatim}
 FOO=1
@@ -581,6 +612,7 @@ BAR=0
 BAR=false
 \end{verbatim}
 
+\subsubsection{Timestamp}
 Date and time values must be represented  using the convention established for 
 FITS \citep{std:FITS} and STC \citep{std:STC}:
 
@@ -602,73 +634,105 @@ are all legal date or date plus time values. Values never include a time zone
 indicator and are always interpreted as follows. In cases where values may be 
 expressed using Julian Date (JD) or Modified Julian Date (MJD), these follow the 
 rules for double precision numbers above and may have additional metadata as 
-described in \citep{std:VOTABLE}. All date-time values (formatted sting, JD, 
-and MJD) shall be 
-interpreted as referring to time scale UTC and time reference position UNKNOWN, 
-unless either or both of these are explicitly specified to be different 
-\citep{std:STC}.
+described in \citep{std:VOTABLE}. All date-time values (formatted string, JD, 
+and MJD) shall be interpreted as referring to time scale UTC and time reference 
+position UNKNOWN, unless either or both of these are explicitly specified to be 
+different \citep{std:STC}. 
 
 Note that the format used here is very close to the standard ISO8601 timestamp 
 format except with respect to timezone handling. ISO8601 requires a Z character 
 at the end of the string when the timezone is UTC; here, we follow the FITS 
-\citep{std:FITS} 
-convention by omitting the Z but still defaulting to UTC.
+\citep{std:FITS} convention by omitting the Z but still defaulting to UTC.
 
-\subsubsection{Multiple Values}
-Parameters may be assigned multiple values with multiple parameter=value pairs 
-using the same parameter name. Whether or not multiple values are permitted and 
-the meaning of multiple values is specified for each parameter by the 
-specification that defines the parameter. For example, the UPLOAD parameter 
-(Section 3.2.5 ) permits multiple occurrences of the specified pair (table,uri), 
-e.g.:
+Timestamp values serialised on VOTable must have the following metadata in 
+the FIELD element: datatype="char" arraysize="*" xtype="timestamp".
+ 
+\subsubsection{Intervals}
+Numeric intervals are pairs of floating-point values (float or double). The 
+bounding values are always included in the interval. Open-ended intervals have 
+one or both bounding values that are infinite. For example:
 
 \begin{verbatim}
-UPLOAD=foo,http://example.com/foo
-UPLOAD=bar,http://example.com/bar
+0.5 1.0
+-Inf 0.0
+0.0 Inf
+-Inf Inf
 \end{verbatim}
 
-Services must respond with an error if the request includes multiple values for 
-parameters defined to be single-valued.
+Are all legal numeric interval values. 
+
+Interval values serialised in VOTable must have the following metadata in the 
+FIELD element: datatype="double" arraysize="2" xtype="interval".
+
+\subsubsection{Point}
+Geometry values are two-dimensional; although they are usually longitude and 
+latitude values in spherical coordinates this is specified in the coordinate 
+metadata and not in the values. 
+
+Point values serialised in VOTable must have the following metadata in the 
+FIELD element: datatype="double" arraysize="2" xtype="point". For points in a 
+spherical coordinate system, the values are ordered as: longitude latitude. For 
+example:
+
+\begin{verbatim}
+12.3 45.6
+\end{verbatim}
+
+\subsubsection{Circle}
+Circle values serialised in VOTable must have the following metadata in the 
+FIELD element: datatype="double" arraysize="3" xtype="circle". For circles 
+in a spherical coordinate system, the values are ordered as: longitude latitude 
+radius. For example:
+
+\begin{verbatim}
+12.3 45.6 0.5
+\end{verbatim}
+
+\subsubsection{Polygon}
+Polygon values serialised in VOTable must have the following metadata in the 
+FIELD element: datatype="double" arraysize="*" xtype="polygon". The 
+array holds a sequence of vertices (points) (e.g. longitude latitude longitude 
+latitude ...) with an even number of values and at least three (3) points (six 
+(6) numeric values). For example:
+
+\begin{verbatim}
+10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
+\end{verbatim}
+
+In spherical coordinates, all longitude values must fall within [0,360] and all 
+latitude values within [-90,90].
+
+Option 1: The vertices of a polygon must be specified in counter-clockwise 
+order.
+
+Option 2: The vertices of a polygon may be specified in clockwise or 
+counter-clockwise order. The inside is the region with the smallest area;  
+polygons in spherical coordinates are limited to less than half the sphere.
+
+\subsubsection{More geometry?}
+Ellipse? Coord-range? STC Box?
 
 \subsection{Standard Parameters}
 
 \subsubsection{REQUEST}
-The REQUEST parameter specifies the type of the DAL job at the highest level. In 
-many cases, a service will have only one possible value. This parameter is still 
-used in such cases so that future versions or non-standard (site-specific) 
-features may support additional values.
+\label{sec:REQUEST}
+The REQUEST parameter is intended for service capabilities that have 
+multiple modes or operations, including non-standard (site-specific) optional 
+features. Most standard service capabilities will not define values for this 
+parameter.
 
-A service must respond with an error if the REQUEST parameter is missing or the 
-value is not recognised.
-
-The REQUEST parameter is always single-valued.
+If defined for a specific service capability, the REQUEST parameter is always 
+single-valued.
 
 \subsubsection{VERSION}
-The VERSION parameter is used so the client can specify which version of the 
-service standard they are using to make the request. This allows implementers to 
-support multiple versions of a standard in a single web service and with a 
-single resource for the DAL job list. If the client does not specify a value for 
-the VERSION, the service should interpret the request using the rules and 
-semantics of the latest version supported by the service. However, service 
-implementers may decide to make an older version the default. If the client 
-requires features or behaviour of a specific version, an explicit VERSION 
-parameter should be used.
-
-The value of the version advertised by the service and requested by the client 
-follows the IVOA version number scheme \citep{std:DocSTDProc}. Standards at 
-the Working Draft (WD) 
-or Proposed Recommendation (PR) stage include the publication date with the 
-version number. For the purposes of this specification, these date tags are not 
-supported, i.e. services only accept VERSION without dates. Clients can thus not 
-request the behaviour of a specific WD or PR. This is intentional since 
-implementation against unstable standards are not supposed to be stable.
-
-A service must respond with an error if the caller requests an unsupported 
-version using the VERSION parameter.
-
-The VERSION parameter is always single-valued.
+\label{sec:VERSION}
+The VERSION parameter has been removed because the different 
+meaning of request 
+parameters it is intended to disambiguate are not allowed within minor 
+revisions of a standard; there are no useful scenarios where VERSION would work.
 
 \subsubsection{RESPONSEFORMAT}
+\label{sec:RESPONSEFORMAT}
 The RESPONSEFORMAT parameter is used so the client can specify the format of the 
 response (e.g. the output of the job). For DALI-sync requests, this is the 
 content-type of the response. For DALI-async requests, this is the content-type 
@@ -682,7 +746,7 @@ formats as well as
 shortcut symbolic values. 
 
 \begin{tabular}{l l l l l}
-\label{tab:resources}
+\label{tab:mimetypes}
 table type & MIME type(s) & short form \\
 VOTable & application/x-votable+xml text/xml & votable & \\
 comma-separated values & text/csv & csv & \\
@@ -731,6 +795,7 @@ sense in TAP-1.0, but this is not generally the case.
 The RESPONSEFORMAT parameter is always single-valued.
 
 \subsubsection{MAXREC}
+\label{sec:MAXREC}
 For resources performing discovery (querying for an arbitrary number of 
 records), the resource must accept a MAXREC parameter specifying the maximum 
 number of records to be returned. If MAXREC is not specified in a request, the 
@@ -751,6 +816,7 @@ a MAXREC=0 request can fail.
 The MAXREC parameter is always single-valued.
 
 \subsubsection{UPLOAD}
+\label{sec:UPLOAD}
 The UPLOAD parameter is used to reference read-only external resources 
 (typically files) via their URI, to be uploaded for use as input resources to 
 the query. The value of the UPLOAD parameter is a resource name-URI pair. For 
@@ -815,6 +881,7 @@ referenced in other request parameters (for example, in a query), and
 interpreted.
 
 \subsubsection{RUNID}
+\label{sec:RUNID}
 The service should implement the RUNID parameter, used to tag service requests 
 with the identifier of a larger job of which the request may be part. The RUNID 
 value is a string with a maximum length of 64 characters.
@@ -829,6 +896,7 @@ other services made while processing the request.
 The RUNID parameter is always single-valued.
 
 \section{Responses}
+\label{sec:responses}
 All DAL service requests eventually result in one of three kinds of responses: 
 successful HTTP status code (200) and a service- and resource-specific 
 representation of the results, an HTTP status code and a standard error document 
@@ -836,6 +904,7 @@ representation of the results, an HTTP status code and a standard error document
 HTTP status code (302 or 303) with a URL in the HTTP Location header.
 
 \subsection{Successful Requests}
+\label{sec:response-ok}
 Successfully executed requests must eventually (after zero or more redirects) 
 result in a response with HTTP status code 200 (OK) and a response in the format 
 requested by the client (Section 3.2.3 ) or in the default format for the 
@@ -843,7 +912,7 @@ service. The service should set the following HTTP headers to the correct values
 where possible.
 
 \begin{tabular}{l l l l l}
-\label{tab:resources}
+\label{tab:headers}
 Content-Type & mimetype of the response \\
 Content-Encoding & encoding/compression of the response \\
 Content-Length & size of the response in bytes (generally not known for 
@@ -868,6 +937,7 @@ produced, the specification may dictate the names or it may leave it up to
 implementations to choose suitable names.
 
 \subsection{Errors}
+\label{sec:response-error}
 If the service detects an exceptional condition, it must return an error 
 document with an appropriate HTTP-status code. DAL services distinguish three 
 classes of errors:
@@ -934,6 +1004,7 @@ protocols other than HTTP, the normal error reporting mechanisms of those
 protocols should be used.
 
 \subsection{Redirection}
+\label{sec:redirects}
 A concrete DAL service specification may require that HTTP redirects (302 or 
 303) be used to communicate the location of an alternate resource which should 
 be accessed by the client via the HTTP GET method. For example, the UWS pattern 
@@ -943,6 +1014,7 @@ redirects and clients must be prepared to follow these redirects using normal
 HTTP semantics \citep{std:HTTP}.
 
 \subsection{Use of VOTable}
+\label{sec:use-votable}
 VOTable is a general format. In DAL services we require that it be used in a 
 particular way. The result VOTable document must comply with VOTable v1.2 
 \citep{std:VOTABLE}
@@ -962,7 +1034,7 @@ TABLE element, an INFO element with attribute \texttt{name = "QUERY\_STATUS"}2. 
 attribute must contain one of the following values:
 
 \begin{tabular}{l l l l l}
-\label{tab:resources}
+\label{tab:query-status}
 OK & the job executed successfully and the result is included in the resource \\
 ERROR & an error was detected at the level of the protocol, the job failed to 
 execute, or an error occurred while writing the table data \\
@@ -993,6 +1065,7 @@ resources (and the type attribute to describe them) and service implementers are
 also free to add their own. 
 
 \subsubsection{Overflow}
+\label{sec:response-overflow}
 If an overflow occurs (result exceeds MAXREC), the service must include an INFO 
 element in the RESOURCE with \texttt{name="QUERY\_STATUS"} and the 
 \texttt{value="OVERFLOW"}. If 
@@ -1072,7 +1145,6 @@ The following names for INFO elements should be used if applicable, but this
 list is not definitive.
 
 \begin{tabular}{l l l l l}
-\label{tab:resources}
 standardID & IVOA standardID for the service specification \\
 standardVersion & Version number used to interpret the request (Section 3.2.2 ) 
 \\
@@ -1088,6 +1160,22 @@ future, they may also be used to describe the value.
 \appendix
 
 \section{Changes}
+
+\subsection{WD-DALI-1.1-20151027}
+
+Removed the requirement that the REQUEST must be a standard parameter. It is 
+now recommended if a service capability supports more than one mode or 
+operation. Removed VERSION parameter following experiences with TAP-1.1 
+prototypes.
+
+Re-organised the section on literal values and clarified that these rules 
+are intended to make input (parameters and other input docs) and output 
+(response documnets like VOTable) of services consistent. Added specification 
+of interval, point, circle, and polygon literal values and specified VOTable 
+xtype values for serialising such values in VOTable. Added VOTable serialisation 
+and xtype for timestamp values. (Needed by SIA-2.0 and TAP-1.1)
+
+Added bibtex cross-references.
 
 \subsection{PR-DALI-1.0-20130919}
 The following changes are in response to additional RFC commands and during the 
