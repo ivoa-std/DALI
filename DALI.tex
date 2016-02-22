@@ -345,16 +345,7 @@ DALI-examples, we define the following values for the \xmlel{property} attribute
 \end{itemize}
 
 Each example must include one 
-name. An example should contain one capability and must include it if the 
-service supports multiple capabilities and examples would be ambiguous. Examples 
-for services that support a single capability (e.g. Simple Cone Search) do not 
-need to include the capability property, although doing so makes the examples 
-more easily machine-readable. The value of the property is the content of the 
-element. For the generic-parameter, we also define a value for the
-\xmlel{typeof} 
-attribute (see below) as the content of the element has a defined structure; the 
-generic-parameter property is used to describe parameters for invoking RESTful 
-web service capabilities. DAL service specifications may define additional 
+name.  DAL service specifications may define additional 
 properties so they can mark up additional information in their examples.
 
 In principle, any element permitted by the document type can include the RDFa 
@@ -1212,6 +1203,13 @@ future, they may also be used to describe the value.
 \appendix
 
 \section{Changes}
+
+\subsection{WC-DALI-1.1.-???}
+
+\begin{itemize}
+\item Removed introductory language on including capability-propertied elements in
+examples.
+\end{itemize}
 
 \subsection{WD-DALI-1.1-20151027}
 
