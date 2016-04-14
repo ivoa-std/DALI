@@ -149,18 +149,25 @@ specification.
 DALI-sync & service specific & service specific & \\
 DALI-async & service specific & service specific & \\
 DALI-examples & /examples & no & \\
-VOSI-availability & /availability & yes & \\
+VOSI-availability & service specific & yes & \\
 VOSI-capabilities & /capabilities & yes & \\
-VOSI-tables & /tables & service specific & \\
+VOSI-tables & service specific & service specific & \\
 \sptablerule
 \label{tab:resources}
 \end{tabular}
 
 The resource name is the path (relative to the base URL of the service). All 
-resources must be siblings of the VOSI-capabilities resource; this 
-limitation enables a client with just the URL for a single resource to 
+DALI and VOSI-tables resources must be siblings of the VOSI-capabilities resource, but 
+concreete service specifications should not constrain the names of these resources further.
+The relative path limitation enables a client with just the URL for a single resource to 
 find the VOSI-capabilities resource and then discover all the capabilities 
-provided by the service.
+provided by the service. The naming freedom allows implementers to provide alternate paths to 
+resources; this is needed in order to provide both anonymous and authenticated access to a 
+caability. 
+
+The URL for the VOSI-availability is not constrained; it may be a sibling (e.g. /availability) 
+or it may be URLs hosted on a different server (e.g. VOSI-availability may be implemented as a 
+completely external resource that tests the service from the user perspective).
 
 A simple query-only DAL service like ConeSearch can be easily described as 
 having a single DALI-sync resource where the job is a query and the response is 
@@ -450,13 +457,11 @@ with a vocab and examples as described above.
 \subsection{Availability: VOSI-availability}
 \label{sec:vosi-availability}
 VOSI-availability \citep{std:VOSI} defines a simple web resource that 
-reports on the current 
-ability of the service to perform. In DAL services, this resource is always 
-accessed as a resource named availability that is a child of the base URL for 
-the service.
+reports on the current ability of the service to perform. 
 
-All DAL services must implement the /availability resource, which responds with 
-a dynamically generated document describing the current state of the service 
+All DAL services must implement the VOSI-availability resource and provide a description
+of this capability in the VOSI-capabilities document. The VOSI-availability resource is
+intended to respond with a dynamically generated document describing the current state of the service 
 operation, e.g.:
 
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
@@ -535,17 +540,14 @@ the standard a capability adheres to -- does not imply a particular (or any)
 \label{sec:vosi-tables}
 VOSI-tables \citep{std:VOSI} defines a simple web resource that returns an 
 XML document 
-describing the content of the service. In  DAL services which include it, this 
-resource is always accessed as a resource named tables that is a child of the 
-base URL for the service. The document format is defined by the 
-VODataService-1.1 \citep{std:VODS11} standard and allows the service to 
+describing the content of the service. The document format is defined by the 
+VOSI \citep{std:VOSI} standard and allows the service to 
 describe their content 
-as a tableset: schemas, tables, and columns. If the VOSI-tables resource is not 
-implemented by a service, the service must respond to a GET request with an HTTP 
-404 (Not Found) status.
+as a tableset: schemas, tables, and columns.
 
-A concrete DAL service specification will specify if the /tables resource is 
-permitted or required. The current VOSI-tables specification has some scalablity 
+A concrete DAL service specification will specify if the VOSI-tables resource is 
+permitted or required and may restrict the resource name or location. 
+The current VOSI-tables specification has some scalablity 
 issues for services with many or large tables, so that specification is subject 
 to change in future. Since DAL services with a VOSI-tables resource will specify 
 in the capabilities which version they are using, DAL services can make use of 
@@ -636,7 +638,7 @@ Date and time values must be represented  using the convention established for
 FITS \citep{std:FITS} and STC \citep{std:STC}:
 
 \begin{verbatim}
-YYYY-MM-DD['T']hh:mm:ss[.SSS]
+YYYY-MM-DD['T'hh:mm:ss[.SSS]]
 \end{verbatim}
 
 where the  T is a character separating the date and time components. The time 
@@ -663,35 +665,54 @@ format except with respect to timezone handling. ISO8601 requires a Z character
 at the end of the string when the timezone is UTC; here, we follow the FITS 
 \citep{std:FITS} convention by omitting the Z but still defaulting to UTC.
 
-Timestamp values serialised on VOTable must have the following metadata in 
+Timestamp values serialised on VOTable or in service parameters must have the following metadata in 
 the \xmlel{FIELD} element: \verb|datatype="char"|,  \verb|arraysize="*"|,
-\verb|xtype="timestamp"|.
+\verb|xtype="timestamp"|; the arraysize may be set to a more specific value if it is known (e.g. 
+\verb|arraysize="10"| for dates only).
  
 \subsubsection{Intervals}
-Numeric intervals are pairs of floating-point values (float or double). The 
-bounding values are always included in the interval. Open-ended intervals have 
-one or both bounding values that are infinite. For example:
+Numeric intervals are pairs of numeric values (integer and floating-pont). For floating point 
+intervals, special values for positive and negative infinity may be used to specify open-ended intervals. 
+Finite bounding values are included in the interval. Open-ended floating-point 
+intervals have one or both bounding values that are infinite. Intervals with two identical values
+are equivalent to a scalar value but must still be serialised as a pair of values.
+
+The representation of an interval follows the array serialisation from VOTable. For example:
 
 \begin{verbatim}
 0.5 1.0
 -Inf 0.0
 0.0 Inf
 -Inf Inf
+1.0 1.0
 \end{verbatim}
 
-\noindent are all legal numeric interval values. 
 
-Interval values serialised in VOTable must have the following metadata in the 
-\xmlel{FIELD} element: \verb|datatype="double"|, \verb|arraysize="2"|,
-\verb|xtype="interval"|.
+\noindent are all legal floating-point interval values and:
+
+\begin{verbatim}
+0 2
+-5 5
+0 0
+\end{verbatim}
+
+\noindent are all legal integer interval values. 
+
+Floating point interval values serialised in VOTable or service parameters must have the following metadata in the 
+\xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|, 
+\verb|arraysize="2"|, \verb|xtype="interval"|.
+
+Integer interval values serialised in VOTable or service parameters must have the following metadata in the 
+\xmlel{FIELD} element: \verb|datatype="short"| or \verb|datatype="int"| or 
+\verb|datatype="long"|, \verb|arraysize="2"|, \verb|xtype="interval"|.
 
 \subsubsection{Point}
 Geometry values are two-dimensional; although they are usually longitude and 
 latitude values in spherical coordinates this is specified in the coordinate 
 metadata and not in the values. 
 
-Point values serialised in VOTable must have the following metadata in the 
-\xmlel{FIELD} element: \verb|datatype="double"|, \verb|arraysize="2"|,
+Point values serialised in VOTable or service parameters must have the following metadata in the 
+\xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="2"|,
 \verb|xtype="point"|. For points in a 
 spherical coordinate system, the values are ordered as: longitude latitude. For 
 example:
@@ -701,19 +722,19 @@ example:
 \end{verbatim}
 
 \subsubsection{Circle}
-Circle values serialised in VOTable must have the following metadata in the 
-\xmlel{FIELD} element: \verb|datatype="double"|, \verb|arraysize="3"|,
+Circle values serialised in VOTable or service parameters must have the following metadata in the 
+\xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="3"|,
 \verb|xtype="circle"|. For circles 
 in a spherical coordinate system, the values are ordered as: longitude latitude 
-radius. For example:
+radius; longitude values must fall within [0,360], latitude values within [-90,90], and radius values in (0, 90]. For example:
 
 \begin{verbatim}
 12.3 45.6 0.5
 \end{verbatim}
 
 \subsubsection{Polygon}
-Polygon values serialised in VOTable must have the following metadata in the 
-\xmlel{FIELD} element: \verb|datatype="double"|, \verb|arraysize="*"|,
+Polygon values serialised in VOTable or service parameters must have the following metadata in the 
+\xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="*"|,
 \verb|xtype="polygon"|. The 
 array holds a sequence of vertices (points) (e.g. longitude latitude longitude 
 latitude ...) with an even number of values and at least three (3) points (six 
@@ -939,25 +960,22 @@ HTTP status code (302 or 303) with a URL in the HTTP Location header.
 Successfully executed requests must eventually (after zero or more redirects) 
 result in a response with HTTP status code 200 (OK) and a response in the format 
 requested by the client (Section \ref{sec:RESPONSEFORMAT}) or in the default format for the 
-service. The service should set the following HTTP headers to the correct values 
-where possible.
+service. The service should set HTTP headers (\citep{std:HTTP}) that are useful to the correct values 
+where possible. Recommended headers to set when possible:
 
 \begin{tabular}{l l l l l}
 \label{tab:headers}
-Content-Type & media type of the response \\
-Content-Encoding & encoding/compression of the response \\
-Content-Length & size of the response in bytes (generally not known for 
-dynamically generated and streamed response) \\
-Last-Modified & size of the response in bytes (generally not known for 
-dynamically generated and streamed response) \\
+Content-Type \\
+Content-Encoding \\
+Content-Length \\
+Last-Modified \\
 \end{tabular}
 
 For jobs executed using a DALI-async resource, the result(s) must be made 
 available as child resources of the result list and directly accessible there. 
 For jobs that inherently create a fixed result, service specifications may 
 specify the name of the result explicitly. For example, TAP-1.0 has a single 
-result and it must be named result in the result list and be directly accessible 
-by that name, e.g.:
+result and it must be named result, e.g.:
 
 \begin{verbatim}
 GET http://example.com/base/joblist/123/results/result
@@ -1204,11 +1222,17 @@ future, they may also be used to describe the value.
 
 \section{Changes}
 
-\subsection{WC-DALI-1.1.-???}
+\subsection{WC-DALI-1.1-20160415}
 
 \begin{itemize}
 \item Removed introductory language on including capability-propertied elements in
 examples.
+\item Expanded section on intervals to allow use of all integer and floating point datatypes 
+supported by VOTable; only floating point intervals support open-ended intervals.
+\item Expanded section on geomery to allow use of datatype="float" in addition to double.
+\item Removed restrictions on the resource name for VOSI-availability resource.
+\item Fixed the timestamp format specification to correctly specify optional parts.
+\item Added reference to RFC2616 and minimised discussion of HTTP headers.
 \end{itemize}
 
 \subsection{WD-DALI-1.1-20151027}
