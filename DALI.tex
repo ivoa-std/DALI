@@ -158,7 +158,7 @@ VOSI-tables & service specific & service specific & \\
 
 The resource name is the path (relative to the base URL of the service). All 
 DALI and VOSI-tables resources must be siblings of the VOSI-capabilities resource, but 
-concreete service specifications should not constrain the names of these resources further.
+concrete service specifications should not constrain the names of these resources further.
 The relative path limitation enables a client with just the URL for a single resource to 
 find the VOSI-capabilities resource and then discover all the capabilities 
 provided by the service. The naming freedom allows implementers to provide alternate paths to 
@@ -227,7 +227,7 @@ GET http://example.com/base/async-jobs/123
 
 In addition to the UWS job metadata, DAL jobs are defined by a set of 
 parameter-value pairs. The client may include parameters in the initial POST 
-that creates a job or it may add additional paramaters by a POST to the current 
+that creates a job or it may add additional parameters by a POST to the current 
 list of parameters, for example:
 
 \begin{verbatim}
@@ -1224,14 +1224,14 @@ future, they may also be used to describe the value.
 
 \section{Changes}
 
-\subsection{WC-DALI-1.1-20160415}
+\subsection{WD-DALI-1.1-20160415}
 
 \begin{itemize}
 \item Removed introductory language on including capability-propertied elements in
 examples.
 \item Expanded section on intervals to allow use of all integer and floating point datatypes 
 supported by VOTable; only floating point intervals support open-ended intervals.
-\item Expanded section on geomery to allow use of datatype="float" in addition to double.
+\item Expanded section on geometry to allow use of datatype="float" in addition to double.
 \item Removed restrictions on the resource name and location for VOSI-availability resource.
 \item Removed restrictions on resource name for VOSI-tables resources.
 \item Fixed the timestamp format specification to correctly specify optional parts.
@@ -1247,7 +1247,7 @@ prototypes.
 
 Re-organised the section on literal values and clarified that these rules 
 are intended to make input (parameters and other input docs) and output 
-(response documnets like VOTable) of services consistent. Added specification 
+(response documents like VOTable) of services consistent. Added specification 
 of interval, point, circle, and polygon literal values and specified VOTable 
 xtype values for serialising such values in VOTable. Added VOTable serialisation 
 and xtype for timestamp values. (Needed by SIA-2.0 and TAP-1.1)
