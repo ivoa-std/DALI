@@ -361,6 +361,46 @@ Alternatively, the \xmlel{span} element is a good choice when the example values
 included in surrounding text and the author does not want any special rendering 
 to be applied by the machine-readable additions.
 
+To maintain compatibility with mainstream RDFa tools, extra care is
+necessary with elements that have \xmlel{src} or \xmlel{href}
+attributes.  According to RDFa rules, in such cases the object of the
+relationship is the linked entity rather than the element content.
+While this is intended in some cases -- see the continuation property
+below -- this will lead to erroneous interpretations in the typcial
+case.
+
+For instance,
+
+\begin{lstlisting}[language=XML]
+<!-- Wrong! -->
+<div id="x" resource="#x" typeof="example">
+<p>The case of <a property="name" 
+  href="http://object-resolver.edu/M42">Messier 42</a> is special.</p>
+</div>
+\end{lstlisting}
+
+would imply that the name of the example \texttt{x} is
+\nolinkurl{http://object-resolver.edu/M42} rather than just ``Messier
+42''.  Full RDFa offers the \xmlel{content} attribute to allow correct
+markup even in the presence of \xmlel{href} attributes, but since DALI
+examples are restricted to RDFa lite, this cannot be used.
+
+The rule of thumb is to only use elements with links when the
+relationship's object actually is a linked document or entity (for the
+terms given here, this is only true for continuation).  If document
+authors wants to express a link with the relationship's object anyway,
+they will have to restructure their texts (which typically will also
+yield better link semantics).  For instance, the example above could be
+written as:
+
+\begin{lstlisting}[language=XML]
+<div id="x" resource="#x" typeof="example">
+<p>The case of <span property="name">Messier 42</span> (<a
+  href="http://object-resolver.edu/M42">M42 at object resolver</a>)
+  is special.</p>
+</div>
+\end{lstlisting}
+
 \subsubsection{name property}
 
 The content of this element must be plain text (i.e., no child
@@ -377,7 +417,9 @@ choice for the example name, for example:
 \subsubsection{capability property}
 
 The capability property for an example specifies which service capability the 
-example is to be used with. For example, if the text is describing how to use a
+example is to be used with by giving, in plain text, the standards URI
+as given in the respective capability's \xmlel{standardID} attribute. 
+For example, if the text is describing how to use a
 SODA-1.0 service, the example could contain:
 
 \begin{lstlisting}[language=XML]
