@@ -789,19 +789,10 @@ latitude ...) with an even number of values and at least three (3) points (six
 \end{verbatim}
 
 In spherical coordinates, all longitude values must fall within [0,360] and all 
-latitude values within [-90,90].
+latitude values within [-90,90]. Vertices must be ordered such that the polygon 
+winding direction is counter-clockwise (when viewed from the origin toward the 
+sky).
 
-\todo{Choose one of these options}
-Option 1: The vertices of a polygon must be specified in counter-clockwise 
-order.
-
-Option 2: The vertices of a polygon may be specified in clockwise or 
-counter-clockwise order. The inside is the region with the smallest area;  
-polygons in spherical coordinates are limited to less than half the sphere.
-
-\subsubsection{More geometry?}
-\todo{Do we want any of this?}
-Ellipse? Coord-range? STC Box?
 
 \subsection{Standard Parameters}
 
