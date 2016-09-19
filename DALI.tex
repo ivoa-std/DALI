@@ -166,7 +166,8 @@ resources; this is needed in order to provide both anonymous and authenticated a
 capability. 
 
 The URL for the VOSI-availability is not constrained; it may be a sibling (e.g. /availability) 
-or it may be URLs hosted on a different server (e.g. VOSI-availability may be implemented as a 
+or it may be a resource hosted on a different server (e.g. VOSI-availability 
+may be implemented as a 
 completely external resource that tests the service from the user perspective).
 
 A simple query-only DAL service like ConeSearch can be easily described as 
@@ -590,7 +591,7 @@ describe their content
 as a tableset: schemas, tables, and columns.
 
 A concrete DAL service specification will specify if the VOSI-tables resource is 
-permitted or required and may restrict the resource name or location. 
+permitted or required and may restrict the resource name or location.
 The current VOSI-tables specification has some scalablity 
 issues for services with many or large tables, so that specification is subject 
 to change in future. Since DAL services with a VOSI-tables resource will specify 
@@ -679,7 +680,7 @@ BAR=false
 
 \subsubsection{Timestamp}
 Date and time values must be represented  using the convention established for 
-FITS \citep{std:FITS} and STC \citep{std:STC}:
+FITS \citep{std:FITS} and STC \citep{std:STC} for astronomical times:
 
 \begin{verbatim}
 YYYY-MM-DD['T'hh:mm:ss[.SSS]]
@@ -695,8 +696,24 @@ second are permitted but not required. For example:
 2002-03-04
 \end{verbatim}
 
-are all legal date or date plus time values. Values never include a time zone 
-indicator and are always interpreted as follows. In cases where values may be 
+are all legal date or date plus time values. Astronomical values never 
+include a time zone indicator. However, values that 
+are civil in nature (e.g. when some processing was completed, when some record 
+was last modified) may include the time zone indicator Z to explicitly specify 
+the UTC time zone. Civil times conform to:
+
+\begin{verbatim}
+YYYY-MM-DD['T'hh:mm:ss[.SSS]['Z']]
+\end{verbatim}
+
+where the optional Z character indicicates the value is UTC. For example:
+
+\begin{verbatim}
+2000-01-02T15:20:30.456Z
+2000-01-02T15:20:30Z
+\end{verbatim}
+
+are valid civil time values. In cases where time values may be 
 expressed using Julian Date (JD) or Modified Julian Date (MJD), these follow the 
 rules for double precision numbers above and may have additional metadata as 
 described in the VOTable standard \citep{std:VOTABLE}. All date-time values (formatted string, JD, 
@@ -707,7 +724,8 @@ different \citep{std:STC}.
 Note that the format used here is very close to the standard ISO8601 timestamp 
 format except with respect to timezone handling. ISO8601 requires a Z character 
 at the end of the string when the timezone is UTC; here, we follow the FITS 
-\citep{std:FITS} convention by omitting the Z but still defaulting to UTC.
+\citep{std:FITS} convention for astronomical values by omitting the Z but still 
+defaulting to UTC.
 
 Timestamp values serialised on VOTable or in service parameters must have the following metadata in 
 the \xmlel{FIELD} element: \verb|datatype="char"|,  \verb|arraysize="*"|,
@@ -1305,6 +1323,14 @@ future, they may also be used to describe the value.
 \appendix
 
 \section{Changes}
+
+\subsection{WD-DALI-1.1-20160920}
+
+\begin{itemize}
+\item modified timestamp serialisationto allow the Z timezone indicator for 
+civil timevalues
+\item specified counter-clockwise winding direction for polygons
+\end{itemize}
 
 \subsection{WD-DALI-1.1-20160415}
 
