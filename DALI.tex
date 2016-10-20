@@ -817,47 +817,6 @@ latitude values within [-90,90]. Vertices must be ordered such that the polygon
 winding direction is counter-clockwise (when viewed from the origin toward the 
 sky) as described in \citep{std:STC}.
 
-\subsubsection{Region}
-Region values are polymorphic and incldue a shape keyword and coordinate 
-values. When serialised in VOTable or service parameters must have the 
-following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, 
-\verb|arraysize="*"|, \verb|xtype="region"|. 
-
-The format of a region is simple a keyword followed by the apropriate number of 
-floating point values. The allowed shape keywords and floating point values are:
-
-\begin{tabular}{l l}
-\sptablerule
-\textbf{shape keyword} & \textbf{floating point values} \cr
-\sptablerule
-point & <longitude> <latitude> \cr
-circle & <longitude> <latitude> <radius> \cr
-range & <longitude1> <longitude2> <latitude1> <latitude2> \cr
-polygon & <longitude> <latitude> <longitude> <latitude> \cr
-& <longitude> <latitude> ... \cr
-\sptablerule
-\label{tab:resources}
-\end{tabular}
-
-In each case, region values are simply the region keyword follows by the same 
-serialised value for the equivalent non-polymorphic xtype. For example, a 
-circle expressed as a region is:
-
-\begin{verbatim}
-circle 12.3 45.6 0.5
-\end{verbatim}
-
-and a polygon is:
-
-\begin{verbatim}
-polygon 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
-\end{verbatim}
-
-The region xtype provided additional flexibility (through polymorphism) at 
-the expense of more explicit metadata description (datatype, arraysize, and unit 
-attributes in VOTable). In addition, the informal STC-S serialisation used in 
-TAP-1.0 (when all non-essential metadata is omitted from the value) and the POS 
-parameter defined in SIA-2.0 are consistent with the region xtype. 
 
 \subsection{Standard Parameters}
 
