@@ -652,7 +652,12 @@ invoking simple services, as data values in response documents (e.g. VOTable),
 etc. We define some general purpose values for the \xmlel{xtype} attribute of 
 the VOTable \xmlel{FIELD} and \xmlel{PARAM} elements  for simple
 structured values: \emph{interval}, 
-\emph{point}, \emph{circle}, and \emph{polygon} (see below).
+\emph{point}, \emph{circle}, and \emph{polygon} (see below). Services may 
+use non-standard \xmlel{xtype} values for non-standard datatypes, but if they 
+do so they should include a simple prefix (a string followed by a colon 
+followed by the non-standard xtype) so client software can easily determine 
+if a value is standard or not. For example, an \xmlel{xtype} for a 
+non-standard 3D-vector might be \emph{geom:vector3d}.
 
 \subsubsection{Numbers}
 Integer numbers must be represented in a manner consistent with the 
@@ -1282,6 +1287,13 @@ future, they may also be used to describe the value.
 \appendix
 
 \section{Changes}
+
+\subsection{PR-DALI-1.1-20161101}
+
+\begin{itemize}
+\item added explicit allowance for the use of non-standard xtypes with an 
+arbitrary prefix
+\end{itemize}
 
 \subsection{WD-DALI-1.1-20160920}
 
