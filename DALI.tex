@@ -1188,8 +1188,8 @@ also free to add their own.
 \label{sec:response-overflow}
 If an overflow occurs (result exceeds MAXREC), the service must include an 
 \xmlel{INFO}
-element in the \xmlel{RESOURCE} with \texttt{name="QUERY\_STATUS"} and the 
-\texttt{value="OVERFLOW"}. If 
+element in the \xmlel{RESOURCE} with \verb|name="QUERY\_STATUS"| and the 
+\verb|value="OVERFLOW"|. If 
 the initial \xmlel{INFO} element (above) specified the overflow, no further elements are 
 needed, e.g.:
 
@@ -1310,7 +1310,7 @@ civil timevalues
 examples.
 \item Expanded section on intervals to allow use of all integer and floating point datatypes 
 supported by VOTable; only floating point intervals support open-ended intervals.
-\item Expanded section on geometry to allow use of datatype="float" in addition to double.
+\item Expanded section on geometry to allow use of \verb|datatype="float"| in addition to double.
 \item Removed restrictions on the resource name and location for VOSI-availability resource.
 \item Removed restrictions on resource name for VOSI-tables resources.
 \item Fixed the timestamp format specification to correctly specify optional parts.
@@ -1345,7 +1345,7 @@ the client did not specify them.
 Relaxed the VERSION parameter so services should default to latest (instead of 
 must) and to not differentiate between REC and pre-REC status.
 
-Clarified the requirement for a VOTable RESOURCE with type="results" attribute 
+Clarified the requirement for a VOTable RESOURCE with \verb|type="results"| attribute 
 so it is clear that this is the primary result and other RESOURCES may be 
 present.
 
