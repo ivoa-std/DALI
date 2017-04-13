@@ -1234,7 +1234,7 @@ elements is optional and intended for users; client software should not depend
 on it.
 
 \subsubsection{Additional Information}
-Additional \xmlel{INFO} elements may be provided, e.g., to echo the input parameters 
+Additional \xmlel{INFO} elements should be provided, e.g., to echo the input parameters 
 back to the client in the query response (a useful feature for debugging or to 
 self-document the query response), but clients should not depend on these. For 
 example:
@@ -1242,7 +1242,7 @@ example:
 \begin{lstlisting}[language=XML]
 <RESOURCE type="results">
 ...
-<INFO name="standardID" value="ivo://ivoa.net/"/>
+<INFO name="standardID" value="ivo://ivoa.net/std/SIA#sync-2.0"/>
 ...
 </RESOURCE>
 \end{lstlisting}
