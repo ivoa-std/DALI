@@ -647,12 +647,8 @@ if a value is standard or not. For example, an \xmlel{xtype} for a
 non-standard 3D-vector might be \emph{geom:vector3d}.
 
 \subsubsection{Numbers}
-Integer numbers must be represented in a manner consistent with the 
-specification for integers in XML Schema Datatypes \citep{std:XSD2}.
-
-Real numbers must be represented in a manner consistent with the specification 
-for double-precision numbers in XML Schema Datatypes \citep{std:XSD2}. This 
-representation allows for integer, decimal and exponential notations.
+Integer and real numbers must be represented in a manner consistent with the 
+specification for numbers in VOTable \citep{std:VOTABLE}.
 
 \subsubsection{Boolean}
 Boolean values must be represented in a manner consistent with the 
@@ -725,13 +721,14 @@ the \xmlel{FIELD} element: \verb|datatype="char"|,  \verb|arraysize="*"|,
 \verb|arraysize="10"| for dates only).
  
 \subsubsection{Intervals}
-Numeric intervals are pairs of numeric values (integer and floating-pont). For floating point 
+Numeric intervals are pairs of numeric values (integer and floating-point). For floating point 
 intervals, special values for positive and negative infinity may be used to specify open-ended intervals. 
 Finite bounding values are included in the interval. Open-ended floating-point 
 intervals have one or both bounding values that are infinite. Intervals with two identical values
 are equivalent to a scalar value but must still be serialised as a pair of values.
 
-The representation of an interval follows the array serialisation from VOTable. For example:
+The representation of an interval uses the numeric array serialisation from 
+VOTable. For example:
 
 \begin{verbatim}
 0.5 1.0
@@ -740,7 +737,6 @@ The representation of an interval follows the array serialisation from VOTable. 
 -Inf Inf
 1.0 1.0
 \end{verbatim}
-
 
 \noindent are all legal floating-point interval values and:
 
@@ -1215,7 +1211,6 @@ specified the error, no further elements are needed, e.g.:
 <RESOURCE type="results">
 <INFO name="QUERY_STATUS" value="ERROR"/>
 ...
-<TABLE>...</TABLE>
 </RESOURCE>
 \end{lstlisting}
 
@@ -1247,8 +1242,7 @@ example:
 \begin{lstlisting}[language=XML]
 <RESOURCE type="results">
 ...
-<INFO name="standardID" value="ivo://ivoa.net/TAP"/>
-<INFO name="standardVersion" value="1.0"/>
+<INFO name="standardID" value="ivo://ivoa.net/"/>
 ...
 </RESOURCE>
 \end{lstlisting}
