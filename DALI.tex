@@ -1227,7 +1227,7 @@ example:
 \begin{lstlisting}[language=XML]
 <RESOURCE type="results">
 ...
-<INFO name="standardID" value="ivo://ivoa.net/std/SIA#sync-2.0"/>
+<INFO name="standardID" value="ivo://ivoa.net/std/SIA"/>
 ...
 </RESOURCE>
 \end{lstlisting}
@@ -1244,6 +1244,12 @@ citation & Reference to a publication that can/should be referenced if the
 result is used \\
 \sptablerule
 \end{tabular}
+
+The standardID of a service specification is the IVOA resource identifier for 
+the StandardsRegExt record not including capability-specific fragments. For example, 
+a VOTable produced by the \verb|ivo://ivoa.net/std/SIA#query-2.0| capability 
+would use the base \verb|ivo://ivoa.net/SIA| (as in the above example) to say that 
+the VOTable was produced by a SIA service.
 
 For citations, the \xmlel{INFO} element should also include a
 \xmlel{ucd} attribute with the 
