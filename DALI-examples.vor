@@ -1,0 +1,100 @@
+<ri:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vstd="http://www.ivoa.net/xml/StandardsRegExt/v1.0" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" status="active" xsi:type="vstd:Standard" updated="2015-02-05T09:27:00Z" created="2015-02-05T09:27:00Z">
+  <title>DALI-examples: A format for Examples within the Data 
+  	Access Layer Interface</title>
+  <identifier>ivo://ivoa.net/std/DALI-examples</identifier>
+  <curation>
+    <publisher>IVOA</publisher>
+    <creator>
+      <name>Patrick Dowler</name>
+    </creator>
+    <creator>
+      <name>Markus Demleitner</name>
+    </creator>
+    <creator>
+      <name>Mark Taylor</name>
+    </creator>
+    <creator>
+      <name>Doug Tody</name>
+    </creator>
+
+    <contact>
+      <name>IVOA DAL Working Group</name>
+      <email>dal@ivoa.net</email>
+    </contact>
+  </curation>
+  <content>
+    <subject>Virtual observatory</subject>
+    <subject>Standards</subject>
+    <description>
+    	DALI defines the base web service interface common to all Data Access
+    	Layer (DAL) services.  A part of this standard defines a common
+			RDFa-based way to give usage examples readable both by machines
+			and humans.  For this, a set of terms are pre-defined.  This
+			record, to be updated independently from the DALI standard,
+			contains such pre-agreed terms.
+    </description>
+    <referenceURL>http://ivoa.net/documents/DALI</referenceURL>
+  </content>
+  <endorsedVersion status="n/a" use="preferred">1.0</endorsedVersion>
+  <key>
+  	<name>example</name>
+  	<description>
+  		An example block.  This needs an identity (HTML id attribute)
+  		and a name.  Also, typically the resource attribute will point
+  		to the own identity.
+  	</description>
+  </key>
+  <key>
+  	<name>name</name>
+  	<description>
+  		A title-like text for an example.  This should be suitable for display
+  		within a space-limited label in user interface and still give some idea
+  		about the meaning of the example.
+  	</description>
+  </key>
+  <key>
+  	<name>capability</name>
+  	<description>
+  		In situations where an example could refer to multiple capabilities,
+  		this annotates the standard id of the capability the example
+  		refers to.
+  	</description>
+  </key>
+  <key>
+  	<name>generic-parameter</name>
+  	<description>
+  		Where no specialised term exists to give the value of an input 
+  		parameter, this annotates a keyval-typed element.  Clients are
+  		expected to include the key/value pair in a query generated from
+  		the example.  In UIs, the value should be used to pre-fill a suitable
+  		input element.
+  	</description>
+  </key>
+  <key>
+  	<name>keyval</name>
+  	<description>
+  		A type containing a pair of key and value.  These are taken from
+  		elements annotated respectively.
+  	</description>
+  </key>
+  <key>
+  	<name>key</name>
+  	<description>
+  		A key within a key-value pair.
+  	</description>
+  </key>
+  <key>
+  	<name>value</name>
+  	<description>
+  		A value within a key-value pair.
+  	</description>
+  </key>
+  <key>
+  	<name>continuation</name>
+  	<description>
+  		A link to further examples.  Clients are expected to retrieve
+  		the target document and ideally present further examples retrieved
+  		from there in some grouped/fold-out way.
+  	</description>
+  </key>
+</ri:Resource>
