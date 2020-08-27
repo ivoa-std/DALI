@@ -777,9 +777,9 @@ latitude values within [-90,90].
 
 \subsubsection{Polygon}
 Polygon values serialised in VOTable or service parameters must have the following metadata in the 
-\xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="*"|,
-\verb|xtype="polygon"|. The 
-array holds a sequence of vertices (points) (e.g. longitude latitude longitude 
+\xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|,  \verb|arraysize="*"|, \verb|xtype="polygon"|
+(where arraysize may also be fixed length or variable length with limit).
+The array holds a sequence of vertices (points) (e.g. longitude latitude longitude 
 latitude ...) with an even number of values and at least three (3) points (six 
 (6) numeric values). For example:
 
@@ -792,26 +792,15 @@ latitude values within [-90,90]. Vertices must be ordered such that the polygon
 winding direction is counter-clockwise (when viewed from the origin toward the 
 sky) as described in \citep{std:STC}.
 
-\subsubsection{Shape}
-Shape values serialised in VOTable or sevice parameters must have the following metadata in the 
-\xmlel{FIELD} element: \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="shape"|. The value
-is a polymorphic shape made up of a type label (equivalent to an existing xtype: \verb|circle| 
-or \verb|polygon|) and the string serialisation of the value as described above. For example:
-
-\begin{verbatim}
-circle 12.3 45.6 0.5
-\end{verbatim}
-
-\begin{verbatim}
-polygon 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
-\end{verbatim}
-
-The interpretation and constraints on the coordinate values are as specified for the individual xtypes above.
+\subsubsection{MOC}
+MOC (Multi Order Coverage) values serialised in VOTable or service parameters must have the following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="moc"|
+(where arraysize may also be fixed length or variable length with limit).
+The value is the string serialisation specified in \citep{std:MOC}.
 
 \subsubsection{Multi-Polygon}
-MOC (Multi Order Coverage) values serialised in VOTable or service parameters must have the following metadata in the \xmlel{FIELD} element:  \verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="*"|,
-\verb|xtype="multipolygon"|. The array holds a sequence of non-overlapping polygon(s) separated by a \verb|NaN|
-value. For example:
+Multi-polygon values serialised in VOTable or service parameters must have the following metadata in the \xmlel{FIELD} element:  \verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="*"|, \verb|xtype="multipolygon"|
+(where arraysize may also be fixed length or variable length with limit).
+The array holds a sequence of non-overlapping polygon(s) separated by a \verb|NaN| value. For example:
 
 \begin{verbatim}
 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2 NaN 11.0 11.0 11.2 11.0 11.2 11.2 11.0 11.2
@@ -824,9 +813,22 @@ A multi-polygon without a separator is allowed, so all (simple) polygons are als
 component polygons in a multipolygon may touch (vertex of one on an edge of another, including sharing vertices)
 but may not have any common area.
 
-\subsubsection{MOC}
-MOC (Multi Order Coverage) values serialised in VOTable or service parameters must have the following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="moc"|. 
-The value is the string serialisation specified in \citep{std:MOC}.
+\subsubsection{Shape}
+Shape values serialised in VOTable or sevice parameters must have the following metadata in the 
+\xmlel{FIELD} element: \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="shape"|
+(where arraysize may also be fixed length or variable length with limit).
+The value is a polymorphic shape made up of a type label (equivalent to an existing xtype: \verb|circle|,
+\verb|polygon|, \verb|moc|, or \verb|multipolygon|) and the string serialisation of the value as described above. For example:
+
+\begin{verbatim}
+circle 12.3 45.6 0.5
+\end{verbatim}
+
+\begin{verbatim}
+polygon 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
+\end{verbatim}
+
+The interpretation and constraints on the coordinate values are as specified for the individual xtypes above.
 
 \subsection{Standard Parameters}
 
