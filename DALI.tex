@@ -623,8 +623,8 @@ invoking simple services, as data values in response documents (e.g. VOTable),
 etc. We define some general purpose values for the \xmlel{xtype} attribute of 
 the VOTable \xmlel{FIELD} and \xmlel{PARAM} elements  for simple
 structured values: \emph{timestamp}, \emph{interval}, 
-\emph{point}, \emph{circle}, \emph{polygon}, \emph{shape}, \emph{multipolygon}, 
-and \emph{moc} (see below). 
+\emph{point}, \emph{circle}, \emph{polygon}, \emph{moc}, \emph{multipolygon}, 
+and \emph{shape} (see below). 
 Services may 
 use non-standard \xmlel{xtype} values for non-standard datatypes, but if they 
 do so they should include a simple prefix (a string followed by a colon 
@@ -822,7 +822,7 @@ Shape values serialised in VOTable or sevice parameters must have the following 
 \xmlel{FIELD} element: \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="shape"|
 (where arraysize may also be fixed length or variable length with limit).
 The value is a polymorphic shape made up of a type label (equivalent to an existing xtype: \verb|circle|,
-\verb|polygon|, \verb|moc|, or \verb|multipolygon|) and the string serialisation of the value 
+\verb|polygon|, or \verb|multipolygon|) and the string serialisation of the value 
 as described above. For example:
 
 \begin{verbatim}
