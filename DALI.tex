@@ -793,12 +793,16 @@ winding direction is counter-clockwise (when viewed from the origin toward the
 sky) as described in \citep{std:STC}.
 
 \subsubsection{MOC}
-MOC (Multi Order Coverage) values serialised in VOTable or service parameters must have the following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="moc"|
+MOC (Multi Order Coverage) values serialised in VOTable or service parameters must 
+have the following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, 
+\verb|arraysize="*"|, \verb|xtype="moc"|
 (where arraysize may also be fixed length or variable length with limit).
 The value is the string serialisation specified in \citep{std:MOC}.
 
 \subsubsection{Multi-Polygon}
-Multi-polygon values serialised in VOTable or service parameters must have the following metadata in the \xmlel{FIELD} element:  \verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="*"|, \verb|xtype="multipolygon"|
+Multi-polygon values serialised in VOTable or service parameters must have the 
+following metadata in the \xmlel{FIELD} element:  \verb|datatype="double"| or \verb|datatype="float"|, 
+\verb|arraysize="*"|, \verb|xtype="multipolygon"|
 (where arraysize may also be fixed length or variable length with limit).
 The array holds a sequence of non-overlapping polygon(s) separated by a \verb|NaN| value. For example:
 
@@ -818,7 +822,8 @@ Shape values serialised in VOTable or sevice parameters must have the following 
 \xmlel{FIELD} element: \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="shape"|
 (where arraysize may also be fixed length or variable length with limit).
 The value is a polymorphic shape made up of a type label (equivalent to an existing xtype: \verb|circle|,
-\verb|polygon|, \verb|moc|, or \verb|multipolygon|) and the string serialisation of the value as described above. For example:
+\verb|polygon|, \verb|moc|, or \verb|multipolygon|) and the string serialisation of the value 
+as described above. For example:
 
 \begin{verbatim}
 circle 12.3 45.6 0.5
