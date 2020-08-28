@@ -35,7 +35,9 @@ with missing dependencies.
 	<rec name="VOTable" x="270" y="325"/>
     <!--
 	<rec name="SAMP" x="170" y="110"/>
+    -->
 	<rec name="MOC" x="430" y="400"/>
+    <!--
 	<rec name="HiPS" x="430" y="425"/>
     -->
     

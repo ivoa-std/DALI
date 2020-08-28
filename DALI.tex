@@ -622,8 +622,10 @@ are used as input or output from DAL services: as parameter values when
 invoking simple services, as data values in response documents (e.g. VOTable), 
 etc. We define some general purpose values for the \xmlel{xtype} attribute of 
 the VOTable \xmlel{FIELD} and \xmlel{PARAM} elements  for simple
-structured values: \emph{interval}, 
-\emph{point}, \emph{circle}, and \emph{polygon} (see below). Services may 
+structured values: \emph{timestamp}, \emph{interval}, 
+\emph{point}, \emph{circle}, \emph{polygon}, \emph{moc}, \emph{multipolygon}, 
+and \emph{shape} (see below). 
+Services may 
 use non-standard \xmlel{xtype} values for non-standard datatypes, but if they 
 do so they should include a simple prefix (a string followed by a colon 
 followed by the non-standard xtype) so client software can easily determine 
@@ -775,9 +777,9 @@ latitude values within [-90,90].
 
 \subsubsection{Polygon}
 Polygon values serialised in VOTable or service parameters must have the following metadata in the 
-\xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="*"|,
-\verb|xtype="polygon"|. The 
-array holds a sequence of vertices (points) (e.g. longitude latitude longitude 
+\xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|,  \verb|arraysize="*"|, \verb|xtype="polygon"|
+(where arraysize may also be fixed length or variable length with limit).
+The array holds a sequence of vertices (points) (e.g. longitude latitude longitude 
 latitude ...) with an even number of values and at least three (3) points (six 
 (6) numeric values). For example:
 
@@ -790,6 +792,48 @@ latitude values within [-90,90]. Vertices must be ordered such that the polygon
 winding direction is counter-clockwise (when viewed from the origin toward the 
 sky) as described in \citep{std:STC}.
 
+\subsubsection{MOC}
+MOC (Multi Order Coverage) values serialised in VOTable or service parameters must 
+have the following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, 
+\verb|arraysize="*"|, \verb|xtype="moc"|
+(where arraysize may also be fixed length or variable length with limit).
+The value is the string serialisation specified in \citep{std:MOC}.
+
+\subsubsection{Multi-Polygon}
+Multi-polygon values serialised in VOTable or service parameters must have the 
+following metadata in the \xmlel{FIELD} element:  \verb|datatype="double"| or \verb|datatype="float"|, 
+\verb|arraysize="*"|, \verb|xtype="multipolygon"|
+(where arraysize may also be fixed length or variable length with limit).
+The array holds a sequence of non-overlapping polygon(s) separated by a \verb|NaN| value. For example:
+
+\begin{verbatim}
+10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2 NaN 11.0 11.0 11.2 11.0 11.2 11.2 11.0 11.2
+\end{verbatim}
+
+NOTE: Prototypes will determine if a single NaN value (as above) or two adjacent NaN values (a NaN point) 
+is easier to serialise, parse, and validate.
+
+A multi-polygon without a separator is allowed, so all (simple) polygons are also valid multi-polygons. The
+component polygons in a multipolygon may touch (vertex of one on an edge of another, including sharing vertices)
+but may not have any common area.
+
+\subsubsection{Shape}
+Shape values serialised in VOTable or sevice parameters must have the following metadata in the 
+\xmlel{FIELD} element: \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="shape"|
+(where arraysize may also be fixed length or variable length with limit).
+The value is a polymorphic shape made up of a type label (equivalent to an existing xtype: \verb|circle|,
+\verb|polygon|, or \verb|multipolygon|) and the string serialisation of the value 
+as described above. For example:
+
+\begin{verbatim}
+circle 12.3 45.6 0.5
+\end{verbatim}
+
+\begin{verbatim}
+polygon 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
+\end{verbatim}
+
+The interpretation and constraints on the coordinate values are as specified for the individual xtypes above.
 
 \subsection{Standard Parameters}
 
