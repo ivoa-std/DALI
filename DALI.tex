@@ -18,6 +18,7 @@
 
 \editor{Patrick Dowler}
 
+\previousversion[http://www.ivoa.net/Documents/DALI/1.1]{DALI-1.1}
 \previousversion[http://www.ivoa.net/Documents/DALI/1.0]{DALI-1.0}
 
 \begin{document}
@@ -1170,7 +1171,7 @@ OK & the job executed successfully and the result is included in the resource \\
 ERROR & an error was detected at the level of the protocol, the job failed to 
 execute, or an error occurred while writing the table data \\
 OVERFLOW & the job executed successfully, the result is included in the 
-resource, and the result was truncated at MAXREC rows \\
+resource, and the result was truncated \\
 \sptablerule
 \label{tab:query-status}
 \end{tabular}
@@ -1199,7 +1200,7 @@ also free to add their own.
 
 \subsubsection{Overflow}
 \label{sec:response-overflow}
-If an overflow occurs (result exceeds MAXREC), the service must include an 
+If an overflow occurs (for example, result exceeds MAXREC), the service must include an 
 \xmlel{INFO}
 element in the \xmlel{RESOURCE} with \verb|name="QUERY\_STATUS"| and the 
 \verb|value="OVERFLOW"|. If 
@@ -1226,7 +1227,11 @@ append an \xmlel{INFO} element for the overflow after the table, e.g.:
 </RESOURCE>
 \end{lstlisting}
 
-In the above examples, the TABLE should have exactly MAXREC rows.
+In general, services may truncate the output results when reaching a limit. A default or
+user-specified value of the MAXREC parameter is a common mechanism that causes truncation
+of results, but service providers may also impose limits in services that do not use 
+MAXREC and indicate that the limit was reached with the overflow indicator.
+
 
 \subsubsection{Errors}
 \label{sect:errors}

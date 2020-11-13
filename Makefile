@@ -7,7 +7,7 @@ DOCNAME = DALI
 DOCVERSION = 1.2
 
 # Publication date, ISO format; update manually for "releases"
-DOCDATE = 2020-08-05
+DOCDATE = 2020-11-02
 
 # What is it you're writing: NOTE, WD, PR, or REC
 DOCTYPE = WD
