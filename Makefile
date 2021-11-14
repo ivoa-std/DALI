@@ -7,17 +7,17 @@ DOCNAME = DALI
 DOCVERSION = 1.2
 
 # Publication date, ISO format; update manually for "releases"
-DOCDATE = 2020-11-02
+DOCDATE = 2021-11-14
 
 # What is it you're writing: NOTE, WD, PR, or REC
 DOCTYPE = WD
 
 # Source files for the TeX document (but the main file must always
 # be called $(DOCNAME).tex
-SOURCES = $(DOCNAME).tex
+SOURCES = $(DOCNAME).tex role_diagram.xml
 
 # List of pixel image files to be included in submitted package 
-FIGURES = archdiag.png
+FIGURES = role_diagram.svg
 
 # List of PDF figures (for vector graphics)
 VECTORFIGURES = 
@@ -25,4 +25,4 @@ VECTORFIGURES =
 # Additional files to distribute (e.g., CSS, schema files, examples...)
 AUX_FILES = 
 
-include ivoatex/Makefile
+-include ivoatex/Makefile
