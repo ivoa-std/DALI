@@ -54,7 +54,7 @@ this document plays within the IVOA architecture \citep{note:VOARCH}.
 % Oh -- Notes don't need this; you'd have to remove archdiag.png
 % from FIGURES in the Makefile, too.
 
-\includegraphics[width=0.9\textwidth]{archdiag.png}
+\includegraphics[width=0.9\textwidth]{role_diagram.pdf}
 \caption{Architecture diagram for this document}
 \label{fig:archdiag}
 \end{figure}
@@ -135,25 +135,26 @@ specification.
 DALI-sync & service specific & service specific & \\
 DALI-async & service specific & service specific & \\
 DALI-examples & /examples & no & \\
-VOSI-availability & service specific & yes & \\
-VOSI-capabilities & /capabilities & yes & \\
+VOSI-availability & service specific & no & \\
+VOSI-capabilities & /capabilities & registered & \\
 VOSI-tables & service specific & service specific & \\
 \sptablerule
 \label{tab:resources}
 \end{tabular}
 
-The resource name is the path (relative to the base URL of the service). All 
-DALI and VOSI-tables resources must be siblings of the VOSI-capabilities resource, but 
-concrete service specifications should not constrain the names of these resources further.
-The relative path limitation enables a client with just the URL for a single resource to 
-find the VOSI-capabilities resource and then discover all the capabilities 
-provided by the service. The naming freedom allows implementers to provide alternate paths to 
-resources; this is needed in order to provide both anonymous and authenticated access to a 
-capability. 
+The resource name is the path (relative to the base URL of the service). All implemented
+DALI and VOSI endpoints must be siblings, except for VOSI-availability (see below); 
+concrete service specifications may constrain the names of these endpoints further.
+The relative path limitation enables a client with just the URL for a single endpoint to 
+find the VOSI-capabilities endpoint and then discover all the capabilities 
+provided by the service. 
+
+A VOSI-capabilities endpoint is required for services registered in the IVOA registry system;
+the VOSI-capabilities endpoint is optional for services that are not registered
+or only included as auxiliary capabilities (e.g. of a data collection resource).
 
 The URL for the VOSI-availability is not constrained; it may be a sibling (e.g. /availability) 
-or it may be a resource hosted on a different server (e.g. VOSI-availability 
-may be implemented as a 
+or it may be hosted on a different server (e.g. VOSI-availability may be implemented as a 
 completely external resource that tests the service from the user perspective).
 
 A simple query-only DAL service like ConeSearch can be easily described as 
@@ -1309,6 +1310,15 @@ future, they may also be used to describe the value.
 \appendix
 
 \section{Changes}
+
+\subsection{PR-DALI-1.2}
+\begin{itemize}
+\item Clarified that truncation indicated by OVERFLOW can occur independent of
+MAXREC
+\item added new xtypes: moc, shape, multipolygon
+\item changed VOSI-availability to optional
+\item changed VOSI-capability so it is only required for registered services
+\end{itemize}
 
 \subsection{PR-DALI-1.1-20170412}
 
