@@ -14,7 +14,7 @@ DOCTYPE = WD
 
 # Source files for the TeX document (but the main file must always
 # be called $(DOCNAME).tex
-SOURCES = $(DOCNAME).tex role_diagram.xml
+SOURCES = $(DOCNAME).tex role_diagram.pdf
 
 # List of pixel image files to be included in submitted package 
 FIGURES = role_diagram.svg
