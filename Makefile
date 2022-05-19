@@ -26,3 +26,12 @@ VECTORFIGURES =
 AUX_FILES = 
 
 -include ivoatex/Makefile
+
+ivoatex/Makefile:
+	@echo "*** ivoatex submodule not found.  Initialising submodules."
+	@echo
+	git submodule update --init
+
+
+test:
+	@echo "No tests defined yet."
