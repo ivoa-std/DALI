@@ -42,7 +42,7 @@ need not repeat these common elements.
 \subsection{Role within the VO Architecture}
 DALI defines how DAL service specifications use other IVOA standards as well as 
 standard internet designs and protocols. Fig.~\ref{fig:archdiag} shows the role 
-this document plays within the IVOA architecture \citep{note:VOARCH}.
+this document plays within the IVOA architecture \citep{2021ivoa.spec.1101D}.
 
 \begin{figure}
 \centering
@@ -60,17 +60,17 @@ this document plays within the IVOA architecture \citep{note:VOARCH}.
 \end{figure}
 
 Astronomical coordinate values accepted and returned by DAL services use a 
-string representation of the Space-Time Coordinates \citep{std:STC} data 
+string representation of the Space-Time Coordinates \citep{2007ivoa.spec.1030R} data 
 model. The 
 concrete DAL service specification defines whether the returned resources are 
 serializations of a particular standard data model. For preserving backwards 
 compatibility or to enable service-specific use cases, the concrete DAL service 
 specification may explicitly specify the use of ad-hoc Utypes.
 
-A registry extension schema, usually extending VODataService \citep{std:VODS11}, 
+A registry extension schema, usually extending VODataService \citep{2021ivoa.spec.1102D}, 
 may be used to 
 describe the capabilities of a DAL service. This schema is used within the 
-VOSI-capabilities \citep{std:VOSI} resource and in registry records for the 
+VOSI-capabilities \citep{2017ivoa.spec.0524G} resource and in registry records for the 
 service.
 
 \subsection{Example Usage of the DALI Specification}
@@ -113,12 +113,12 @@ specification defines the job parameters and the manner of execution is defined
 by separate resources below.
 
 In addition to job list resources, DAL services also implement several Virtual 
-Observatory Support Interface \citep{std:VOSI} resources to describe 
+Observatory Support Interface \citep{2017ivoa.spec.0524G} resources to describe 
 service availability, capabilities, and content.
 
 A concrete DAL service must define at least one DALI-async or DALI-sync 
 resource. It may define both with the same job semantics (e.g. TAP-1.0 
-\citep{std:TAP}) or it may define one with one kind of job and the other with a 
+\citep{2010ivoa.spec.0327D}) or it may define one with one kind of job and the other with a 
 separate kind of job (a service that does some things synchronously and others 
 asynchronously). 
 
@@ -164,7 +164,7 @@ the result of the query.
 \subsection{Asynchronous Execution: DALI-async}
 \label{sec:dali-async}
 Asynchronous resources are resources that represent a list of asynchronous jobs 
-as defined by the Universal Worker Service (UWS) pattern \citep{std:UWS}. 
+as defined by the Universal Worker Service (UWS) pattern \citep{2016ivoa.spec.1024H}. 
 Requests can 
 create, modify, and delete jobs in the job list. UWS also specifies special 
 requests to modify the phase of the job (cause the job to execute or abort).
@@ -476,7 +476,7 @@ with a vocab and examples as described above.
 
 \subsection{Availability: VOSI-availability}
 \label{sec:vosi-availability}
-VOSI-availability \citep{std:VOSI} defines a simple web resource that 
+VOSI-availability \citep{2017ivoa.spec.0524G} defines a simple web resource that 
 reports on the current ability of the service to perform. 
 
 All DAL services must implement the VOSI-availability resource and provide a description
@@ -495,7 +495,7 @@ operation, e.g.:
 
 \subsection{Capabilities: VOSI-capabilities}
 \label{sec:vosi-capabilities}
-VOSI-capabilities \citep{std:VOSI} defines a simple web resource that 
+VOSI-capabilities \citep{2017ivoa.spec.0524G} defines a simple web resource that 
 returns an XML document 
 describing the service. In  DAL services, this resource is always accessed as a 
 resource named capabilities that is a child of the base URL for the service. The 
@@ -558,10 +558,10 @@ the standard a capability adheres to -- does not imply a particular (or any)
 
 \subsection{Tables: VOSI-tables}
 \label{sec:vosi-tables}
-VOSI-tables \citep{std:VOSI} defines a simple web resource that returns an 
+VOSI-tables \citep{2017ivoa.spec.0524G} defines a simple web resource that returns an 
 XML document 
 describing the content of the service. The document format is defined by the 
-VOSI \citep{std:VOSI} standard and allows the service to 
+VOSI \citep{2017ivoa.spec.0524G} standard and allows the service to 
 describe their content 
 as a tableset: schemas, tables, and columns.
 
@@ -636,7 +636,7 @@ non-standard 3D-vector might be \emph{geom:vector3d}.
 
 \subsubsection{Numbers}
 Integer and real numbers must be represented in a manner consistent with the 
-specification for numbers in VOTable \citep{std:VOTABLE}.
+specification for numbers in VOTable \citep{2019ivoa.spec.1021O}.
 
 \subsubsection{Boolean}
 Boolean values must be represented in a manner consistent with the 
@@ -656,7 +656,7 @@ BAR=false
 
 \subsubsection{Timestamp}
 Date and time values must be represented  using the convention established for 
-FITS \citep{std:FITS} and STC \citep{std:STC} for astronomical times:
+FITS \citep{std:FITS} and STC \citep{2007ivoa.spec.1030R} for astronomical times:
 
 \begin{verbatim}
 YYYY-MM-DD['T'hh:mm:ss[.SSS]]
@@ -692,10 +692,10 @@ where the optional Z character indicates the value is UTC. For example:
 are valid civil time values. In cases where time values may be 
 expressed using Julian Date (JD) or Modified Julian Date (MJD), these follow the 
 rules for double precision numbers above and may have additional metadata as 
-described in the VOTable standard \citep{std:VOTABLE}. All date-time values (formatted string, JD, 
+described in the VOTable standard \citep{2019ivoa.spec.1021O}. All date-time values (formatted string, JD, 
 and MJD) shall be interpreted as referring to time scale UTC and time reference 
 position UNKNOWN, unless either or both of these are explicitly specified to be 
-different \citep{std:STC}. 
+different \citep{2007ivoa.spec.1030R}. 
 
 Note that the format used here is very close to the standard ISO8601 timestamp 
 format except with respect to timezone handling. ISO8601 requires a Z character 
@@ -792,14 +792,14 @@ latitude ...) with an even number of values and at least three (3) points (six
 In spherical coordinates, all longitude values must fall within [0,360] and all 
 latitude values within [-90,90]. Vertices must be ordered such that the polygon 
 winding direction is counter-clockwise (when viewed from the origin toward the 
-sky) as described in \citep{std:STC}.
+sky) as described in \citep{2007ivoa.spec.1030R}.
 
 \subsubsection{MOC}
 MOC (Multi Order Coverage) values serialised in VOTable or service parameters must 
 have the following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, 
 \verb|arraysize="*"|, \verb|xtype="moc"|
 (where arraysize may also be fixed length or variable length with limit).
-The value is the string serialisation specified in \citep{std:MOC}.
+The value is the string serialisation specified in \citet{2019ivoa.spec.1007F}.
 
 \subsubsection{Multi-Polygon}
 Multi-polygon values serialised in VOTable or service parameters must have the 
@@ -1096,7 +1096,7 @@ were to be extended for use via other transport protocols, the normal mechanisms
 of those protocols should be used.
 
 An error document describing errors in use of the DAL service protocol may be a 
-VOTable document \citep{std:VOTABLE} or a plain text document. 
+VOTable document \citep{2019ivoa.spec.1021O} or a plain text document. 
 The content of 
 VOTable error documents is described in Section \ref{sec:use-votable} below. Service 
 specifications will enumerate specific text to be included. For plain text error 
@@ -1146,9 +1146,10 @@ HTTP semantics \citep{std:HTTP}.
 \subsection{Use of VOTable}
 \label{sec:use-votable}
 VOTable is a general format. In DAL services we require that it be used in a 
-particular way. The result VOTable document must comply with VOTable v1.2 
-\citep{std:VOTABLE}
-or later versions.
+particular way. The result VOTable document must comply with VOTable
+v1.2 or later versions
+\citep{2019ivoa.spec.1021O}.
+
 
 The VOTable format permits table creators to add additional metadata to describe 
 the values in the table. Once a standard for including such metadata is 
@@ -1469,7 +1470,7 @@ with fragment indicating the DALI-examples section of the document.
 \subsection{WD-DALI-1.0-20130212}
 Simplified DALI-examples to conform to RDFa-1.1 Lite in usage of attributes.
 
-\bibliography{ivoatex/ivoabib}
+\bibliography{ivoatex/ivoabib,ivoatex/docrepo.bib}
 
 
 \end{document}
