@@ -831,11 +831,14 @@ of a table), but specific services may define something that is applicable in a
 more limited context.
 
 \subsubsection{MOC}
-MOC (Multi Order Coverage) values serialised in VOTable or service parameters must 
-have the following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, 
-\verb|arraysize="*"|, \verb|xtype="moc"|
+Spatial MOC (Multi Order Coverage) values serialised in VOTable or service parameters must 
+have the following metadata in the \xmlel{FIELD} element: 
+\verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="moc"|
 (where arraysize may also be fixed length or variable length with limit).
-The value is the string serialisation specified in \citet{2019ivoa.spec.1007F}.
+The value is the ascii serialisation of a MOC specified in \citet{2022ivoa.spec.0727F}
+section 4.3.2 and may be a one- or two-dimension (spatial) MOC.
+
+Note: explicit time MOC and space-time MOC xtypes may be added in future version.
 
 \subsubsection{Multi-Polygon}
 Multi-polygon values serialised in VOTable or service parameters must have the 
@@ -845,7 +848,8 @@ following metadata in the \xmlel{FIELD} element:  \verb|datatype="double"| or \v
 The array holds a sequence of non-overlapping polygon(s) separated by a \verb|NaN| value. For example:
 
 \begin{verbatim}
-10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2 NaN 11.0 11.0 11.2 11.0 11.2 11.2 11.0 11.2
+10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2 NaN 
+11.0 11.0 11.2 11.0 11.2 11.2 11.0 11.2
 \end{verbatim}
 
 NOTE: Prototypes will determine if a single NaN value (as above) or two adjacent NaN values (a NaN point) 
