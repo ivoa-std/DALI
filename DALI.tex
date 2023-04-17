@@ -744,8 +744,8 @@ Integer interval values serialised in VOTable or service parameters must have th
 \xmlel{FIELD} element: \verb|datatype="short"| or \verb|datatype="int"| or 
 \verb|datatype="long"|, \verb|arraysize="2"|, \verb|xtype="interval"|.
 
-Interval values serialised in VOTable (\verb|FIELD|) or service parameters
-(\verb|PARAM|) with this xtype may include additional metadata like minimum and
+Interval values serialised in VOTable (\xmlel{FIELD}) or service parameters
+(\xmlel{PARAM}) with this xtype may include additional metadata like minimum and
 or maximum value. These are specified using the standard scalar \verb|MIN| and
 \verb|MAX| child elements to describe the (minimum) lower bound and (maximum)
 upper bound of interval(s) respectively.
@@ -787,7 +787,7 @@ In spherical coordinates, all longitude values must fall within [0,360] and all
 latitude values within [-90,90].
 
 Circle-valued service parameters may include additional metadata like minimum and
-or maximum value. These are specified using the a custom interpretation of the
+or maximum value. These are specified using a custom interpretation of the
 \verb|MAX| child element with a value that is the largest circle that makes sense
 for the operation. The value could be a maximum allowed by the service or simply
 the circle where larger circles and circles outside the specified maximum will not
@@ -818,11 +818,11 @@ winding direction is counter-clockwise (when viewed from the origin toward the
 sky) as described in \citep{2007ivoa.spec.1030R}.
 
 Polygon-valued service parameters may include additional metadata to describe minimum
-and/or maximum values. These are specified using the a custom interpretation of the
+and/or maximum values. These are specified using a custom interpretation of the
 \verb|MAX| child element with a value that is the largest polygon that makes sense
 for the operation. The value could be a maximum allowed by the service or simply
 the polygon that describes the target region. Since the maximum polygon includes
-coordinates and radius, it is useful for describing parameters of a request related
+coordinates, it is useful for describing parameters of a request related
 to a specific target location (for example, a SODA cutout of specific archival data).
 
 There is no general purpose definition of a minimum polygon value for parameters or
@@ -881,14 +881,34 @@ polygon 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
 The interpretation and constraints on the coordinate values are as specified for the individual xtypes above.
 
 Shape-valued service parameters may include additional metadata to describe minimum
-and/or maximum values. These are specified using the a custom interpretation of the
+and/or maximum values. These are specified using a custom interpretation of the
 \verb|MAX| child element with a value that is the largest shape that makes sense
 for the operation. The value could be a maximum allowed by the service or simply
 the shape that describes the target region. Since the maximum shape includes
 coordinates and radius, it is useful for describing parameters of a request related
 to a specific target location (for example, a SODA cutout of specific archival data).
-The type label used in the maximum shape only tells the client how to interpret the
-value; it does not limit the caller to only using that type of shape.
+
+For example, the following would describe the maximum shape for an input \verb|POS| 
+parameter for a large (IRIS) data file (accessible via the CADC SODA service):
+\begin{lstlisting}[language=XML]
+<GROUP name="inputParams">
+  <PARAM name="ID" datatype="char" arraysize="23" 
+         ucd="meta.id;meta.dataset" value="cadc:IRIS/I212B2H0.fits" />
+  ...
+  <PARAM name="POS" datatytpe="char" arraysize="*" xtype="shape" 
+         ucd="obs.field" value="">
+    <VALUES>
+      <MAX value="polygon 134.38 -6.37 134.42 6.01 
+                          146.87 5.97 146.84 -6.41" />
+    </VALUES>
+  </PARAM>
+  ...
+</GROUP>
+\end{lstlisting}
+In the specific context of a SODA service, the maximum shape is generally going 
+to be the bounds of the data. The type label used in the maximum shape only tells 
+the client how to interpret the value; it does not limit the caller to only using 
+that type of shape.
 
 There is no general purpose definition of a minimum shape value for parameters or
 a definition of a minimum or maximum shape to describe field values (in a column
@@ -912,7 +932,7 @@ single-valued.
 \label{sec:VERSION}
 The VERSION parameter has been removed because the different 
 meaning of request 
-parameters it is intended to disambiguate are not allowed within minor 
+parameters it is intended to disambiguate are not allowed within minor
 revisions of a standard; there are no useful scenarios where VERSION would work.
 
 \subsubsection{RESPONSEFORMAT}
