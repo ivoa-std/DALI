@@ -24,24 +24,24 @@
 \begin{document}
 
 \begin{abstract}
-This document describes the Data Access Layer Interface (DALI). DALI defines 
-the base web service interface common to all Data Access Layer (DAL) services. 
-This standard defines the behaviour of common resources, the meaning and use of 
-common parameters, success and error responses, and DAL service registration. 
-The goal of this specification is to define the common elements that are shared 
-across DAL services in order to foster consistency across concrete DAL service 
-specifications and to enable standard re-usable client and service 
+This document describes the Data Access Layer Interface (DALI). DALI defines
+the base web service interface common to all Data Access Layer (DAL) services.
+This standard defines the behaviour of common resources, the meaning and use of
+common parameters, success and error responses, and DAL service registration.
+The goal of this specification is to define the common elements that are shared
+across DAL services in order to foster consistency across concrete DAL service
+specifications and to enable standard re-usable client and service
 implementations and libraries to be written and widely adopted.
 \end{abstract}
 
 \section{Introduction}
-The Data Access Layer Interface (DALI) defines resources, parameters, and 
-responses common to all DAL services so that concrete DAL service specifications 
+The Data Access Layer Interface (DALI) defines resources, parameters, and
+responses common to all DAL services so that concrete DAL service specifications
 need not repeat these common elements.
 
 \subsection{Role within the VO Architecture}
-DALI defines how DAL service specifications use other IVOA standards as well as 
-standard internet designs and protocols. Fig.~\ref{fig:archdiag} shows the role 
+DALI defines how DAL service specifications use other IVOA standards as well as
+standard internet designs and protocols. Fig.~\ref{fig:archdiag} shows the role
 this document plays within the IVOA architecture \citep{2021ivoa.spec.1101D}.
 
 \begin{figure}
@@ -59,72 +59,72 @@ this document plays within the IVOA architecture \citep{2021ivoa.spec.1101D}.
 \label{fig:archdiag}
 \end{figure}
 
-Astronomical coordinate values accepted and returned by DAL services use a 
-string representation of the Space-Time Coordinates \citep{2007ivoa.spec.1030R} data 
-model. The 
-concrete DAL service specification defines whether the returned resources are 
-serializations of a particular standard data model. For preserving backwards 
-compatibility or to enable service-specific use cases, the concrete DAL service 
+Astronomical coordinate values accepted and returned by DAL services use a
+string representation of the Space-Time Coordinates \citep{2007ivoa.spec.1030R} data
+model. The
+concrete DAL service specification defines whether the returned resources are
+serializations of a particular standard data model. For preserving backwards
+compatibility or to enable service-specific use cases, the concrete DAL service
 specification may explicitly specify the use of ad-hoc Utypes.
 
-A registry extension schema, usually extending VODataService \citep{2021ivoa.spec.1102D}, 
-may be used to 
-describe the capabilities of a DAL service. This schema is used within the 
-VOSI-capabilities \citep{2017ivoa.spec.0524G} resource and in registry records for the 
+A registry extension schema, usually extending VODataService \citep{2021ivoa.spec.1102D},
+may be used to
+describe the capabilities of a DAL service. This schema is used within the
+VOSI-capabilities \citep{2017ivoa.spec.0524G} resource and in registry records for the
 service.
 
 \subsection{Example Usage of the DALI Specification}
-The DALI specification defines common elements that make up Data Access Layer 
-(DAL) services. DAL service specifications will refer to the sections in this 
-document by name rather than include all the explanatory text. For example, 
-suppose a document defines a service that stacks FITS images asynchronously, the 
+The DALI specification defines common elements that make up Data Access Layer
+(DAL) services. DAL service specifications will refer to the sections in this
+document by name rather than include all the explanatory text. For example,
+suppose a document defines a service that stacks FITS images asynchronously, the
 specification could say that the service has the following resources:
 
 
 \begin{itemize}
-\item a DALI-async resource that accepts one or more UPLOAD parameters 
-(section~\ref{sec:UPLOAD}) where the resources are FITS images; the resource 
-could also define a fixed set of error messages for anticipated failure modes 
+\item a DALI-async resource that accepts one or more UPLOAD parameters
+(section~\ref{sec:UPLOAD}) where the resources are FITS images; the resource
+could also define a fixed set of error messages for anticipated failure modes
 
-\item a VOSI-availability resource (section~\ref{sec:vosi-availability}) 
+\item a VOSI-availability resource (section~\ref{sec:vosi-availability})
 
-\item a VOSI-capabilities resource (section~\ref{sec:vosi-capabilities}) conforming 
-to a specified registry extension schema 
+\item a VOSI-capabilities resource (section~\ref{sec:vosi-capabilities}) conforming
+to a specified registry extension schema
 \end{itemize}
 
-and would have to define the registry extension schema to be used to register 
-services and to implement the VOSI-capabilities resource. Most of the service 
-specification would be in defining the semantics (possibly controllable via 
-additional input parameters) of the computations to be performed and in defining 
-the extension schema to describe service functionality and limits (e.g., maximum 
-input or result image sizes, result retention time and policies). The registry 
-extension schema may be part of the service specification or a separate 
+and would have to define the registry extension schema to be used to register
+services and to implement the VOSI-capabilities resource. Most of the service
+specification would be in defining the semantics (possibly controllable via
+additional input parameters) of the computations to be performed and in defining
+the extension schema to describe service functionality and limits (e.g., maximum
+input or result image sizes, result retention time and policies). The registry
+extension schema may be part of the service specification or a separate
 document.
 
 \section{Resources}
 \label{sec:resources}
-DAL services are normally implemented as HTTP REST \citep{fielding00} 
-web services, although 
-other transport protocols could be used in the future. The primary resource in 
-a DAL service is a job. A DAL job is defined by parameters 
-(section~\ref{sec:parameters}) and 
-can be executed either synchronously or asynchronously. A concrete service 
-specification defines the job parameters and the manner of execution is defined 
+DAL services are normally implemented as HTTP REST \citep{fielding00}
+web services, although
+other transport protocols could be used in the future. The primary resource in
+a DAL service is a job. A DAL job is defined by parameters
+(section~\ref{sec:parameters}) and
+can be executed either synchronously or asynchronously. A concrete service
+specification defines the job parameters and the manner of execution is defined
 by separate resources below.
 
-In addition to job list resources, DAL services also implement several Virtual 
-Observatory Support Interface \citep{2017ivoa.spec.0524G} resources to describe 
+In addition to job list resources, DAL services also implement several Virtual
+Observatory Support Interface \citep{2017ivoa.spec.0524G} resources to describe
 service availability, capabilities, and content.
 
-A concrete DAL service must define at least one DALI-async or DALI-sync 
-resource. It may define both with the same job semantics (e.g. TAP-1.0 
-\citep{2010ivoa.spec.0327D}) or it may define one with one kind of job and the other with a 
-separate kind of job (a service that does some things synchronously and others 
-asynchronously). 
+A concrete DAL service must define at least one DALI-async or DALI-sync
+resource. It may define both with the same job semantics (e.g. TAP-1.0
+\citep{2010ivoa.spec.0327D}) or it may define one with one kind of job and the other with a
+separate kind of job (a service that does some things synchronously and others
+asynchronously).
 
-The following table summarises the resources that are required in all concrete 
-DAL service specifications (and thus in all DAL services) and which kinds of 
-resources are defined and specified as required or optional in a concrete 
+The following table summarises the resources that are required in all concrete
+DAL service specifications (and thus in all DAL services) and which kinds of
+resources are defined and specified as required or optional in a concrete
 specification.
 
 
@@ -143,48 +143,48 @@ VOSI-tables & service specific & service specific & \\
 \end{tabular}
 
 The resource name is the path (relative to the base URL of the service). All implemented
-DALI and VOSI endpoints must be siblings, except for VOSI-availability (see below); 
+DALI and VOSI endpoints must be siblings, except for VOSI-availability (see below);
 concrete service specifications may constrain the names of these endpoints further.
-The relative path limitation enables a client with just the URL for a single endpoint to 
-find the VOSI-capabilities endpoint and then discover all the capabilities 
-provided by the service. 
+The relative path limitation enables a client with just the URL for a single endpoint to
+find the VOSI-capabilities endpoint and then discover all the capabilities
+provided by the service.
 
 A VOSI-capabilities endpoint is required for services registered in the IVOA registry system;
 the VOSI-capabilities endpoint is optional for services that are not registered
 or only included as auxiliary capabilities (e.g. of a data collection resource).
 
-The URL for the VOSI-availability is not constrained; it may be a sibling (e.g. /availability) 
-or it may be hosted on a different server (e.g. VOSI-availability may be implemented as a 
+The URL for the VOSI-availability is not constrained; it may be a sibling (e.g. /availability)
+or it may be hosted on a different server (e.g. VOSI-availability may be implemented as a
 completely external resource that tests the service from the user perspective).
 
-A simple query-only DAL service like ConeSearch can be easily described as 
-having a single DALI-sync resource where the job is a query and the response is 
-the result of the query. 
+A simple query-only DAL service like ConeSearch can be easily described as
+having a single DALI-sync resource where the job is a query and the response is
+the result of the query.
 
 \subsection{Asynchronous Execution: DALI-async}
 \label{sec:dali-async}
-Asynchronous resources are resources that represent a list of asynchronous jobs 
-as defined by the Universal Worker Service (UWS) pattern \citep{2016ivoa.spec.1024H}. 
-Requests can 
-create, modify, and delete jobs in the job list. UWS also specifies special 
+Asynchronous resources are resources that represent a list of asynchronous jobs
+as defined by the Universal Worker Service (UWS) pattern \citep{2016ivoa.spec.1024H}.
+Requests can
+create, modify, and delete jobs in the job list. UWS also specifies special
 requests to modify the phase of the job (cause the job to execute or abort).
 
-As specified in UWS, a job is created by using the HTTP POST method to modify 
-the job list. The response will always be an HTTP redirect (status code 303) and 
+As specified in UWS, a job is created by using the HTTP POST method to modify
+the job list. The response will always be an HTTP redirect (status code 303) and
 the Location (HTTP header) will contain the URL to the job.
 
 \begin{verbatim}
 POST http://example.com/base/async-jobs
 \end{verbatim}
 
-The response will include the HTTP status code 303 (See Other) and a header 
+The response will include the HTTP status code 303 (See Other) and a header
 named Location with a URL to the created job as a value, for example:
 
 \begin{verbatim}
 Location: http://example.com/base/async-jobs/123
 \end{verbatim}
 
-The job description (an XML document defined by the UWS schema) can always be 
+The job description (an XML document defined by the UWS schema) can always be
 retrieved by accessing the job URL with the HTTP GET method:
 
 \begin{verbatim}
@@ -212,73 +212,73 @@ GET http://example.com/base/async-jobs/123
 </uws:job>
 \end{lstlisting}
 
-In addition to the UWS job metadata, DAL jobs are defined by a set of 
-parameter-value pairs. The client may include parameters in the initial POST 
-that creates a job or it may add additional parameters by a POST to the current 
+In addition to the UWS job metadata, DAL jobs are defined by a set of
+parameter-value pairs. The client may include parameters in the initial POST
+that creates a job or it may add additional parameters by a POST to the current
 list of parameters, for example:
 
 \begin{verbatim}
 http://example.com/base/async-jobs/123/parameters
 \end{verbatim}
 
-DALI-async resources may provide other ways to interact with jobs as specified 
-in current or future UWS specifications, with the following exception: the 
-UWS-1.0 standard may be interpreted to allow POSTing of job parameters to the 
+DALI-async resources may provide other ways to interact with jobs as specified
+in current or future UWS specifications, with the following exception: the
+UWS-1.0 standard may be interpreted to allow POSTing of job parameters to the
 job URL, but DALI-async resources must not accept job parameters at this URL.
 
-Job parameters may only be POSTed while the job is in the PENDING phase; once 
-execution has been requested and the job is in any other phase, job parameters 
+Job parameters may only be POSTed while the job is in the PENDING phase; once
+execution has been requested and the job is in any other phase, job parameters
 may not be modified.
 
-A concrete DAL service specification will specify zero or more asynchronous job 
-submission resources and whether they are mandatory or optional. It may mandate 
-a specific resource name to support simple client use, or it can allow the 
+A concrete DAL service specification will specify zero or more asynchronous job
+submission resources and whether they are mandatory or optional. It may mandate
+a specific resource name to support simple client use, or it can allow the
 resource name to be described in the service metadata (Section 2.5 ).
 
 \subsection{Synchronous Execution: DALI-sync}
 \label{sec:dali-sync}
-Synchronous resources are resources that accept a request (a DAL job 
-description) and return the response (the result) directly. Synchronous requests 
-can be made using either the HTTP GET or POST method. If a specific type of job 
-is exposed through both DALI-async and DALI-sync resources (e.g. TAP queries), 
-then the parameters used to specify the job are the same for  this pair of 
-(synchronous and asynchronous) jobs. Service specifications may also specify 
-different types of jobs on different resources, which would have different job 
+Synchronous resources are resources that accept a request (a DAL job
+description) and return the response (the result) directly. Synchronous requests
+can be made using either the HTTP GET or POST method. If a specific type of job
+is exposed through both DALI-async and DALI-sync resources (e.g. TAP queries),
+then the parameters used to specify the job are the same for  this pair of
+(synchronous and asynchronous) jobs. Service specifications may also specify
+different types of jobs on different resources, which would have different job
 parameters.
 
-A synchronous job is created by a GET or POST request to a synchronous job list, 
-executed automatically, and the result returned in the response. The web service 
-is permitted to split the operation of a synchronous request into multiple HTTP 
-requests as long as it is transparent to standard clients. This means that the 
-service may use HTTP redirects (status code 302 or 303) and the Location header 
+A synchronous job is created by a GET or POST request to a synchronous job list,
+executed automatically, and the result returned in the response. The web service
+is permitted to split the operation of a synchronous request into multiple HTTP
+requests as long as it is transparent to standard clients. This means that the
+service may use HTTP redirects (status code 302 or 303) and the Location header
 to execute a synchronous job in multiple steps. For example, a service may
 
 \begin{itemize}
-\item immediately execute and return the result in the response, or 
-\item the response is an HTTP redirect (status code 303) and the Location (HTTP 
-header) will contain a URL; the client accesses this URL with the HTTP GET 
-method to execute the job and get the result 
+\item immediately execute and return the result in the response, or
+\item the response is an HTTP redirect (status code 303) and the Location (HTTP
+header) will contain a URL; the client accesses this URL with the HTTP GET
+method to execute the job and get the result
 \end{itemize}
 
-Clients must be prepared to get redirects and follow them (using normal HTTP 
+Clients must be prepared to get redirects and follow them (using normal HTTP
 semantics) in order to complete requests.
 
-A concrete DAL service specification will specify zero or more synchronous job 
-submission resources and whether they are mandatory or optional. It may mandate 
-a specific resource name to support simple client use, or it can allow the 
+A concrete DAL service specification will specify zero or more synchronous job
+submission resources and whether they are mandatory or optional. It may mandate
+a specific resource name to support simple client use, or it can allow the
 resource name to be described in the service capability metadata (Section 2.5 ).
 
 \subsection{DALI-examples}
 \label{sec:dali-examples}
-The DALI-examples resource returns a document with usage examples or similar 
-material to the user. In DAL services, this resource is always accessed as a 
-resource named examples that is a child of the base URL for the service. The 
-following specification is intended to make sure the content is usable for both 
-machines and humans. As such, the DALI-examples resource contains additional 
-markup conforming to the RDFa 1.1 Lite \citep{std:RDFaLite11} specification, 
-which defines the 
+The DALI-examples resource returns a document with usage examples or similar
+material to the user. In DAL services, this resource is always accessed as a
+resource named examples that is a child of the base URL for the service. The
+following specification is intended to make sure the content is usable for both
+machines and humans. As such, the DALI-examples resource contains additional
+markup conforming to the RDFa 1.1 Lite \citep{std:RDFaLite11} specification,
+which defines the
 following attributes: \xmlel{vocab}, \xmlel{typeof}, \xmlel{property},
-\xmlel{resource}, and \xmlel{prefix} (although we 
+\xmlel{resource}, and \xmlel{prefix} (although we
 do not include any use of the \xmlel{prefix} attribute).
 
 The DALI-examples capability identifier is:
@@ -286,22 +286,22 @@ $$
 \hbox{\nolinkurl{ivo://ivoa.net/std/DALI#examples}}
 $$
 
-DAL services may implement the /examples resource and include it in the 
-capabilities described by the VOSI-capabilities resource (Section 2.5 ); if they 
+DAL services may implement the /examples resource and include it in the
+capabilities described by the VOSI-capabilities resource (Section 2.5 ); if they
 do not, retrieving its URL must yield a 404 HTTP error code.
 
-The document at /examples must be well-formed XML. This restriction is imposed 
-in order to let clients parse the document using XML parsers rather than 
-much more complex parsers (e.g. HTML5 parsers). It is therefore advisable to 
-author it in XHTML, although this specification does not prescribe any document 
+The document at /examples must be well-formed XML. This restriction is imposed
+in order to let clients parse the document using XML parsers rather than
+much more complex parsers (e.g. HTML5 parsers). It is therefore advisable to
+author it in XHTML, although this specification does not prescribe any document
 types.
 
-The document should be viewable with ``common web browsers''. Javascript or CSS 
-must not be necessary to find and interpret the elements specified below.  Apart 
-from that, service operators are free to include whatever material or styling 
+The document should be viewable with ``common web browsers''. Javascript or CSS
+must not be necessary to find and interpret the elements specified below.  Apart
+from that, service operators are free to include whatever material or styling
 they desire in addition and within the example elements defined here.
 
-The elements containing examples must be descendants of an element that has a 
+The elements containing examples must be descendants of an element that has a
 \xmlel{vocab} attribute with the value as shown below:
 
 \begin{lstlisting}[language=XML]
@@ -310,28 +310,28 @@ The elements containing examples must be descendants of an element that has a
 </div>
 \end{lstlisting}
 
-In future, this URL may resolve to an RDF vocabulary document in human and 
-machine-readable format(s) and if so will contain the normative list of values 
+In future, this URL may resolve to an RDF vocabulary document in human and
+machine-readable format(s) and if so will contain the normative list of values
 for the property attribute and will supersede the ones specified below.
 
-No other \xmlel{vocab} attributes are allowed in the document. Each example resides in 
+No other \xmlel{vocab} attributes are allowed in the document. Each example resides in
 an element that has a \xmlel{typeof} attribute with the value
-\emph{example}. All such elements 
-must have an \xmlel{id} attribute to allow external referencing via fragments and a 
-\xmlel{resource} attribute with a reference pointing to the element itself. As an 
+\emph{example}. All such elements
+must have an \xmlel{id} attribute to allow external referencing via fragments and a
+\xmlel{resource} attribute with a reference pointing to the element itself. As an
 example,
 
 \begin{lstlisting}[language=XML]
 <div id="x" resource="#x" typeof="example"> ... </div>
 \end{lstlisting}
 
-\noindent located inside the element having the \xmlel{vocab} attribute would 
+\noindent located inside the element having the \xmlel{vocab} attribute would
 contain an example referable via the \emph{x} fragment identifier. The
-\xmlel{div} element is 
+\xmlel{div} element is
 a suitable HTML element to hold an example.
 
-The content of the example is expressed using the \xmlel{property} attribute. For 
-DALI-examples, we define the following values for the \xmlel{property} attribute: 
+The content of the example is expressed using the \xmlel{property} attribute. For
+DALI-examples, we define the following values for the \xmlel{property} attribute:
 
 \begin{itemize}
 \item \emph{name}
@@ -340,14 +340,14 @@ DALI-examples, we define the following values for the \xmlel{property} attribute
 \item \emph{continuation}.
 \end{itemize}
 
-Each example must include one 
-name.  DAL service specifications may define additional 
+Each example must include one
+name.  DAL service specifications may define additional
 properties so they can mark up additional information in their examples.
 
-In principle, any element permitted by the document type can include the RDFa 
-attributes, so authors may re-use existing markup intended for display. 
-Alternatively, the \xmlel{span} element is a good choice when the example values are 
-included in surrounding text and the author does not want any special rendering 
+In principle, any element permitted by the document type can include the RDFa
+attributes, so authors may re-use existing markup intended for display.
+Alternatively, the \xmlel{span} element is a good choice when the example values are
+included in surrounding text and the author does not want any special rendering
 to be applied by the machine-readable additions.
 
 To maintain compatibility with mainstream RDFa tools, extra care is
@@ -363,7 +363,7 @@ For instance,
 \begin{lstlisting}[language=XML]
 <!-- Wrong! -->
 <div id="x" resource="#x" typeof="example">
-<p>The case of <a property="name" 
+<p>The case of <a property="name"
   href="http://object-resolver.edu/M42">Messier 42</a> is special.</p>
 </div>
 \end{lstlisting}
@@ -394,9 +394,9 @@ written as:
 
 The content of this element must be plain text (i.e., no child
 elements) and
-should be suitable for display within a 
-space-limited label in user interface and still give some idea about the meaning 
-of the example.  In XHTML, a head element (\xmlel{h2}, say) would usually be a good 
+should be suitable for display within a
+space-limited label in user interface and still give some idea about the meaning
+of the example.  In XHTML, a head element (\xmlel{h2}, say) would usually be a good
 choice for the example name, for example:
 
 \begin{lstlisting}[language=XML]
@@ -405,9 +405,9 @@ choice for the example name, for example:
 
 \subsubsection{capability property}
 
-The capability property for an example specifies which service capability the 
+The capability property for an example specifies which service capability the
 example is to be used with by giving, in plain text, the standards URI
-as given in the respective capability's \xmlel{standardID} attribute. 
+as given in the respective capability's \xmlel{standardID} attribute.
 For example, if the text is describing how to use a
 SODA-1.0 service, the example could contain:
 
@@ -415,20 +415,20 @@ SODA-1.0 service, the example could contain:
 <span property="capability">ivo://ivoa.net/std/SODA#sync-1.0</span>
 \end{lstlisting}
 
-IVOA standard service capabilities are defined as URIs,  so example documents 
-may want to show the URI or show more user-friendly text depending on the 
-expected audience for the document. For specifications that do not define 
-specific capability identifiers, the IVOID for the specification itself should 
+IVOA standard service capabilities are defined as URIs,  so example documents
+may want to show the URI or show more user-friendly text depending on the
+expected audience for the document. For specifications that do not define
+specific capability identifiers, the IVOID for the specification itself should
 be used.
 
 \subsubsection{generic-parameter property}
 
-Request parameters are included within the example by using the 
+Request parameters are included within the example by using the
 generic-parameter property. The element must also be assigned a
-\xmlel{typeof} attribute 
-with value of \emph{keyval}. Within this element, the document must include a pair of 
-elements with \xmlel{property} attributes valued key and value, where the plain-text content are 
-the parameter name and value respectively. Multiple generic-parameter(s) are 
+\xmlel{typeof} attribute
+with value of \emph{keyval}. Within this element, the document must include a pair of
+elements with \xmlel{property} attributes valued key and value, where the plain-text content are
+the parameter name and value respectively. Multiple generic-parameter(s) are
 permitted, for example:
 
 \begin{lstlisting}[language=XML]
@@ -448,15 +448,15 @@ permitted, for example:
 
 \subsubsection{continuation property}
 
-If the examples are spread over multiple linked documents, the links to 
-documents with additional examples must be within the parent element defining 
-the \xmlel{vocab} attribute and the link elements must contain the following additional 
+If the examples are spread over multiple linked documents, the links to
+documents with additional examples must be within the parent element defining
+the \xmlel{vocab} attribute and the link elements must contain the following additional
 attributes:  a \xmlel{property} attribute with the value
 \emph{continuation}, a \xmlel{resource}
 attribute with an empty value (referring to the current document), and
 the \xmlel{href}
-attribute with the URL of another document formatted as above (i.e. another 
-collection of examples that clients should read to collect the full set of 
+attribute with the URL of another document formatted as above (i.e. another
+collection of examples that clients should read to collect the full set of
 examples).
 
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
@@ -471,22 +471,22 @@ examples).
 </div>
 \end{lstlisting}
 
-In the above example, the two linked documents would also contain some element 
-with a vocab and examples as described above. 
+In the above example, the two linked documents would also contain some element
+with a vocab and examples as described above.
 
 \subsection{Availability: VOSI-availability}
 \label{sec:vosi-availability}
-VOSI-availability \citep{2017ivoa.spec.0524G} defines a simple web resource that 
-reports on the current ability of the service to perform. 
+VOSI-availability \citep{2017ivoa.spec.0524G} defines a simple web resource that
+reports on the current ability of the service to perform.
 
 All DAL services must implement the VOSI-availability resource and provide a description
 of this capability in the VOSI-capabilities document. The VOSI-availability resource is
-intended to respond with a dynamically generated document describing the current state of the service 
+intended to respond with a dynamically generated document describing the current state of the service
 operation, e.g.:
 
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
 <?xml version="1.0" encoding="UTF-8"?>
-<vosi:availability  
+<vosi:availability
   xmlns:vosi="http://www.ivoa.net/xml/VOSIAvailability/v1.0">
   <vosi:available>true</vosi:available>
   <vosi:note>service is accepting queries</vosi:note>
@@ -495,15 +495,15 @@ operation, e.g.:
 
 \subsection{Capabilities: VOSI-capabilities}
 \label{sec:vosi-capabilities}
-VOSI-capabilities \citep{2017ivoa.spec.0524G} defines a simple web resource that 
-returns an XML document 
-describing the service. In  DAL services, this resource is always accessed as a 
-resource named capabilities that is a child of the base URL for the service. The 
-VOSI-capabilities should describe all the resources exposed by the service, 
+VOSI-capabilities \citep{2017ivoa.spec.0524G} defines a simple web resource that
+returns an XML document
+describing the service. In  DAL services, this resource is always accessed as a
+resource named capabilities that is a child of the base URL for the service. The
+VOSI-capabilities should describe all the resources exposed by the service,
 including which standards each resource implements.
 
-All DAL services must implement the /capabilities resource. The following 
-capabilities document shows the three VOSI resources and a TAP base resource: 
+All DAL services must implement the /capabilities resource. The following
+capabilities document shows the three VOSI resources and a TAP base resource:
 
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
 <?xml version="1.0" encoding="UTF-8"?>
@@ -548,41 +548,41 @@ capabilities document shows the three VOSI resources and a TAP base resource:
 </vosi:capabilities>
 \end{lstlisting}
 
-Note that while this example shows the use of a registry extension schema (the 
-inline \verb|xmlns:tr="http://www.ivoa.net/xml/TAPRegExt/v1.0"| in the last capability 
-element) this is not required; services may be registered and described without 
+Note that while this example shows the use of a registry extension schema (the
+inline \verb|xmlns:tr="http://www.ivoa.net/xml/TAPRegExt/v1.0"| in the last capability
+element) this is not required; services may be registered and described without
 such an extension. The use of \xmlel{standardID} -- which should contain the
-IVOID of 
-the standard a capability adheres to -- does not imply a particular (or any) 
+IVOID of
+the standard a capability adheres to -- does not imply a particular (or any)
 \xmlel{xsi:type} be included.
 
 \subsection{Tables: VOSI-tables}
 \label{sec:vosi-tables}
-VOSI-tables \citep{2017ivoa.spec.0524G} defines a simple web resource that returns an 
-XML document 
-describing the content of the service. The document format is defined by the 
-VOSI \citep{2017ivoa.spec.0524G} standard and allows the service to 
-describe their content 
+VOSI-tables \citep{2017ivoa.spec.0524G} defines a simple web resource that returns an
+XML document
+describing the content of the service. The document format is defined by the
+VOSI \citep{2017ivoa.spec.0524G} standard and allows the service to
+describe their content
 as a tableset: schemas, tables, and columns.
 
-A concrete DAL service specification will specify if the VOSI-tables resource is 
+A concrete DAL service specification will specify if the VOSI-tables resource is
 permitted or required and may restrict the resource name or location.
-Since DAL services with a VOSI-tables resource will specify 
-in the capabilities which version they are using, DAL services can make use of 
+Since DAL services with a VOSI-tables resource will specify
+in the capabilities which version they are using, DAL services can make use of
 new versions without change to the DAL service specification.
 
 \section{Parameters}
 \label{sec:parameters}
-A DAL job is defined by a set of parameter-value pairs. Some of these parameters 
-have a standard meaning and are defined here, but most are defined by the 
-service specification or another related standard. 
+A DAL job is defined by a set of parameter-value pairs. Some of these parameters
+have a standard meaning and are defined here, but most are defined by the
+service specification or another related standard.
 
 \subsection{Case Sensitivity}
 Parameter names are not case sensitive; a DAL service must treat
-\hbox{upper-,} \hbox{lower-,} 
-and mixed-case parameter names as equal. Parameter values are case sensitive 
-unless a concrete DAL service specification explicitly states that the values of 
-a specific parameter are to be treated as case-insensitive. For example, the 
+\hbox{upper-,} \hbox{lower-,}
+and mixed-case parameter names as equal. Parameter values are case sensitive
+unless a concrete DAL service specification explicitly states that the values of
+a specific parameter are to be treated as case-insensitive. For example, the
 following are equivalent:
 
 \begin{verbatim}
@@ -599,15 +599,15 @@ FOO=Bar
 FOO=BAR
 \end{verbatim}
 
-In this document, parameter names are typically shown in upper-case for 
+In this document, parameter names are typically shown in upper-case for
 typographical clarity, not as a requirement.
 
 \subsection{Multiple Values}
-Parameters may be assigned multiple values with multiple parameter=value pairs 
-using the same parameter name. Whether or not multiple values are permitted and 
-the meaning of multiple values is specified for each parameter by the 
-specification that defines the parameter. For example, the UPLOAD parameter 
-(section~\ref{sec:UPLOAD}) permits multiple occurrences of the specified 
+Parameters may be assigned multiple values with multiple parameter=value pairs
+using the same parameter name. Whether or not multiple values are permitted and
+the meaning of multiple values is specified for each parameter by the
+specification that defines the parameter. For example, the UPLOAD parameter
+(section~\ref{sec:UPLOAD}) permits multiple occurrences of the specified
 pair (table,uri), e.g.:
 
 \begin{verbatim}
@@ -615,34 +615,34 @@ UPLOAD=foo,http://example.com/foo
 UPLOAD=bar,http://example.com/bar
 \end{verbatim}
 
-Services must respond with an error if the request includes multiple values for 
+Services must respond with an error if the request includes multiple values for
 parameters defined to be single-valued.
 
 \subsection{Literal Values}
-In this section we specify how values are to be expressed. These literal values 
-are used as input or output from DAL services: as parameter values when 
-invoking simple services, as data values in response documents (e.g. VOTable), 
-etc. We define some general purpose values for the \xmlel{xtype} attribute of 
+In this section we specify how values are to be expressed. These literal values
+are used as input or output from DAL services: as parameter values when
+invoking simple services, as data values in response documents (e.g. VOTable),
+etc. We define some general purpose values for the \xmlel{xtype} attribute of
 the VOTable \xmlel{FIELD} and \xmlel{PARAM} elements  for simple
-structured values: \emph{timestamp}, \emph{interval}, 
-\emph{point}, \emph{circle}, \emph{polygon}, \emph{moc}, \emph{multipolygon}, 
-and \emph{shape} (see below). 
-Services may 
-use non-standard \xmlel{xtype} values for non-standard datatypes, but if they 
-do so they should include a simple prefix (a string followed by a colon 
-followed by the non-standard xtype) so client software can easily determine 
-if a value is standard or not. For example, an \xmlel{xtype} for a 
+structured values: \emph{timestamp}, \emph{interval},
+\emph{point}, \emph{circle}, \emph{polygon}, \emph{moc}, \emph{multipolygon},
+and \emph{shape} (see below).
+Services may
+use non-standard \xmlel{xtype} values for non-standard datatypes, but if they
+do so they should include a simple prefix (a string followed by a colon
+followed by the non-standard xtype) so client software can easily determine
+if a value is standard or not. For example, an \xmlel{xtype} for a
 non-standard 3D-vector might be \emph{geom:vector3d}.
 
 \subsubsection{Numbers}
-Integer and real numbers must be represented in a manner consistent with the 
+Integer and real numbers must be represented in a manner consistent with the
 specification for numbers in VOTable \citep{2019ivoa.spec.1021O}.
 
 \subsubsection{Boolean}
-Boolean values must be represented in a manner consistent with the 
-specification 
-for Boolean in XML Schema Datatypes \citep{std:XSD2}. The values 0 and false 
-are equivalent. The values 1 and true are equivalent.  
+Boolean values must be represented in a manner consistent with the
+specification
+for Boolean in XML Schema Datatypes \citep{std:XSD2}. The values 0 and false
+are equivalent. The values 1 and true are equivalent.
 
 \begin{verbatim}
 FOO=1
@@ -655,15 +655,15 @@ BAR=false
 \end{verbatim}
 
 \subsubsection{Timestamp}
-Date and time values must be represented  using the convention established for 
+Date and time values must be represented  using the convention established for
 FITS \citep{std:FITS} and STC \citep{2007ivoa.spec.1030R} for astronomical times:
 
 \begin{verbatim}
 YYYY-MM-DD['T'hh:mm:ss[.SSS]]
 \end{verbatim}
 
-where the  T is a character separating the date and time components. The time 
-component is optional, in which case the T separator is not used. Fractions of a 
+where the  T is a character separating the date and time components. The time
+component is optional, in which case the T separator is not used. Fractions of a
 second are permitted but not required. For example:
 
 \begin{verbatim}
@@ -672,10 +672,10 @@ second are permitted but not required. For example:
 2002-03-04
 \end{verbatim}
 
-are all legal date or date plus time values. Astronomical values never 
-include a time zone indicator. However, values that 
-are civil in nature (e.g. when some processing was completed, when some record 
-was last modified) may include the time zone indicator Z to explicitly specify 
+are all legal date or date plus time values. Astronomical values never
+include a time zone indicator. However, values that
+are civil in nature (e.g. when some processing was completed, when some record
+was last modified) may include the time zone indicator Z to explicitly specify
 the UTC time zone. Civil times conform to:
 
 \begin{verbatim}
@@ -689,33 +689,33 @@ where the optional Z character indicates the value is UTC. For example:
 2000-01-02T15:20:30Z
 \end{verbatim}
 
-are valid civil time values. In cases where time values may be 
-expressed using Julian Date (JD) or Modified Julian Date (MJD), these follow the 
-rules for double precision numbers above and may have additional metadata as 
-described in the VOTable standard \citep{2019ivoa.spec.1021O}. All date-time values (formatted string, JD, 
-and MJD) shall be interpreted as referring to time scale UTC and time reference 
-position UNKNOWN, unless either or both of these are explicitly specified to be 
-different \citep{2007ivoa.spec.1030R}. 
+are valid civil time values. In cases where time values may be
+expressed using Julian Date (JD) or Modified Julian Date (MJD), these follow the
+rules for double precision numbers above and may have additional metadata as
+described in the VOTable standard \citep{2019ivoa.spec.1021O}. All date-time values (formatted string, JD,
+and MJD) shall be interpreted as referring to time scale UTC and time reference
+position UNKNOWN, unless either or both of these are explicitly specified to be
+different \citep{2007ivoa.spec.1030R}.
 
-Note that the format used here is very close to the standard ISO8601 timestamp 
-format except with respect to timezone handling. ISO8601 requires a Z character 
-at the end of the string when the timezone is UTC; here, we follow the FITS 
-\citep{std:FITS} convention for astronomical values by omitting the Z but still 
+Note that the format used here is very close to the standard ISO8601 timestamp
+format except with respect to timezone handling. ISO8601 requires a Z character
+at the end of the string when the timezone is UTC; here, we follow the FITS
+\citep{std:FITS} convention for astronomical values by omitting the Z but still
 defaulting to UTC.
 
-Timestamp values serialised on VOTable or in service parameters must have the following metadata in 
+Timestamp values serialised on VOTable or in service parameters must have the following metadata in
 the \xmlel{FIELD} element: \verb|datatype="char"|,  \verb|arraysize="*"|,
-\verb|xtype="timestamp"|; the arraysize may be set to a more specific value if it is known (e.g. 
+\verb|xtype="timestamp"|; the arraysize may be set to a more specific value if it is known (e.g.
 \verb|arraysize="10"| for dates only).
- 
+
 \subsubsection{Intervals}
-Numeric intervals are pairs of numeric values (integer and floating-point). For floating point 
-intervals, special values for positive and negative infinity may be used to specify open-ended intervals. 
-Finite bounding values are included in the interval. Open-ended floating-point 
+Numeric intervals are pairs of numeric values (integer and floating-point). For floating point
+intervals, special values for positive and negative infinity may be used to specify open-ended intervals.
+Finite bounding values are included in the interval. Open-ended floating-point
 intervals have one or both bounding values that are infinite. Intervals with two identical values
 are equivalent to a scalar value but must still be serialised as a pair of values.
 
-The representation of an interval uses the numeric array serialisation from 
+The representation of an interval uses the numeric array serialisation from
 VOTable. For example:
 
 \begin{verbatim}
@@ -734,14 +734,14 @@ VOTable. For example:
 0 0
 \end{verbatim}
 
-\noindent are all legal integer interval values. 
+\noindent are all legal integer interval values.
 
-Floating point interval values serialised in VOTable or service parameters must have the following metadata in the 
-\xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|, 
+Floating point interval values serialised in VOTable or service parameters must have the following metadata in the
+\xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|,
 \verb|arraysize="2"|, \verb|xtype="interval"|.
 
-Integer interval values serialised in VOTable or service parameters must have the following metadata in the 
-\xmlel{FIELD} element: \verb|datatype="short"| or \verb|datatype="int"| or 
+Integer interval values serialised in VOTable or service parameters must have the following metadata in the
+\xmlel{FIELD} element: \verb|datatype="short"| or \verb|datatype="int"| or
 \verb|datatype="long"|, \verb|arraysize="2"|, \verb|xtype="interval"|.
 
 Interval values serialised in VOTable (\xmlel{FIELD}) or service parameters
@@ -751,39 +751,39 @@ or maximum value. These are specified using the standard scalar \verb|MIN| and
 upper bound of interval(s) respectively.
 
 \subsubsection{Point}
-Geometry values are two-dimensional; although they are usually longitude and 
-latitude values in spherical coordinates this is specified in the coordinate 
-metadata and not in the values. 
+Geometry values are two-dimensional; although they are usually longitude and
+latitude values in spherical coordinates this is specified in the coordinate
+metadata and not in the values.
 
-Point values serialised in VOTable or service parameters must have the following metadata in the 
+Point values serialised in VOTable or service parameters must have the following metadata in the
 \xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="2"|,
-\verb|xtype="point"|. For points in a 
-spherical coordinate system, the values are ordered as: longitude latitude. For 
+\verb|xtype="point"|. For points in a
+spherical coordinate system, the values are ordered as: longitude latitude. For
 example:
 
 \begin{verbatim}
 12.3 45.6
 \end{verbatim}
 
-In spherical coordinates, all longitude values must fall within [0,360] and all 
+In spherical coordinates, all longitude values must fall within [0,360] and all
 latitude values within [-90,90].
 
 There is no general purpose definition of minimum and/or maximum point values, but
 specific services may define something that is applicable in a more limited context.
 
 \subsubsection{Circle}
-Circle values serialised in VOTable or service parameters must have the following metadata in the 
+Circle values serialised in VOTable or service parameters must have the following metadata in the
 \xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="3"|,
-\verb|xtype="circle"|. For circles 
-in a spherical coordinate system, the values are ordered as: longitude latitude 
-radius; longitude values must fall within [0,360], latitude values 
+\verb|xtype="circle"|. For circles
+in a spherical coordinate system, the values are ordered as: longitude latitude
+radius; longitude values must fall within [0,360], latitude values
 within [-90,90], and radius values in (0,180]. For example:
 
 \begin{verbatim}
 12.3 45.6 0.5
 \end{verbatim}
 
-In spherical coordinates, all longitude values must fall within [0,360] and all 
+In spherical coordinates, all longitude values must fall within [0,360] and all
 latitude values within [-90,90].
 
 Circle-valued service parameters may include additional metadata like minimum and
@@ -801,20 +801,20 @@ of a table), but specific services may define something that is applicable in a
 more limited context.
 
 \subsubsection{Polygon}
-Polygon values serialised in VOTable or service parameters must have the following metadata in the 
+Polygon values serialised in VOTable or service parameters must have the following metadata in the
 \xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|,  \verb|arraysize="*"|, \verb|xtype="polygon"|
 (where arraysize may also be fixed length or variable length with limit).
-The array holds a sequence of vertices (points) (e.g. longitude latitude longitude 
-latitude ...) with an even number of values and at least three (3) points (six 
+The array holds a sequence of vertices (points) (e.g. longitude latitude longitude
+latitude ...) with an even number of values and at least three (3) points (six
 (6) numeric values). For example:
 
 \begin{verbatim}
 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
 \end{verbatim}
 
-In spherical coordinates, all longitude values must fall within [0,360] and all 
-latitude values within [-90,90]. Vertices must be ordered such that the polygon 
-winding direction is counter-clockwise (when viewed from the origin toward the 
+In spherical coordinates, all longitude values must fall within [0,360] and all
+latitude values within [-90,90]. Vertices must be ordered such that the polygon
+winding direction is counter-clockwise (when viewed from the origin toward the
 sky) as described in \citep{2007ivoa.spec.1030R}.
 
 Polygon-valued service parameters may include additional metadata to describe minimum
@@ -831,8 +831,8 @@ of a table), but specific services may define something that is applicable in a
 more limited context.
 
 \subsubsection{MOC}
-Spatial MOC (Multi Order Coverage) values serialised in VOTable or service parameters must 
-have the following metadata in the \xmlel{FIELD} element: 
+Spatial MOC (Multi Order Coverage) values serialised in VOTable or service parameters must
+have the following metadata in the \xmlel{FIELD} element:
 \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="moc"|
 (where arraysize may also be fixed length or variable length with limit).
 The value is the ascii serialisation of a MOC specified in \citet{2022ivoa.spec.0727F}
@@ -841,33 +841,33 @@ section 4.3.2 and may be a one- or two-dimension (spatial) MOC.
 Note: explicit time MOC and space-time MOC xtypes may be added in future version.
 
 \subsubsection{Multi-Polygon}
-Multi-polygon values serialised in VOTable or service parameters must have the 
-following metadata in the \xmlel{FIELD} element:  \verb|datatype="double"| or \verb|datatype="float"|, 
+Multi-polygon values serialised in VOTable or service parameters must have the
+following metadata in the \xmlel{FIELD} element:  \verb|datatype="double"| or \verb|datatype="float"|,
 \verb|arraysize="*"|, \verb|xtype="multipolygon"|
 (where arraysize may also be fixed length or variable length with limit).
 The array holds a sequence of non-overlapping polygon(s) separated by a \verb|NaN| value. For example:
 
 \begin{verbatim}
-10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2 NaN 
+10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2 NaN
 11.0 11.0 11.2 11.0 11.2 11.2 11.0 11.2
 \end{verbatim}
 
-NOTE: Prototypes will determine if a single NaN value (as above) or two adjacent NaN values (a NaN point) 
+NOTE: Prototypes will determine if a single NaN value (as above) or two adjacent NaN values (a NaN point)
 is easier to serialise, parse, and validate.
 
 A multi-polygon without a separator is allowed, so all (simple) polygons are also valid multi-polygons. The
 component polygons in a multipolygon may touch (vertex of one on an edge of another, including sharing vertices)
 but may not have any common area.
 
-Multi-polygon-valued service parameters can have additional metadata as described 
+Multi-polygon-valued service parameters can have additional metadata as described
 for polygon above, except that the maximum value may be a multipolygon.
 
 \subsubsection{Shape}
-Shape values serialised in VOTable or service parameters must have the following metadata in the 
+Shape values serialised in VOTable or service parameters must have the following metadata in the
 \xmlel{FIELD} element: \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="shape"|
 (where arraysize may also be fixed length or variable length with limit).
 The value is a polymorphic shape made up of a type label (equivalent to an existing xtype: \verb|circle|,
-\verb|polygon|, or \verb|multipolygon|) and the string serialisation of the value 
+\verb|polygon|, or \verb|multipolygon|) and the string serialisation of the value
 as described above. For example:
 
 \begin{verbatim}
@@ -888,26 +888,26 @@ the shape that describes the target region. Since the maximum shape includes
 coordinates and radius, it is useful for describing parameters of a request related
 to a specific target location (for example, a SODA cutout of specific archival data).
 
-For example, the following would describe the maximum shape for an input \verb|POS| 
+For example, the following would describe the maximum shape for an input \verb|POS|
 parameter for a large (IRIS) data file (accessible via the CADC SODA service):
 \begin{lstlisting}[language=XML]
 <GROUP name="inputParams">
-  <PARAM name="ID" datatype="char" arraysize="23" 
+  <PARAM name="ID" datatype="char" arraysize="23"
          ucd="meta.id;meta.dataset" value="cadc:IRIS/I212B2H0.fits" />
   ...
-  <PARAM name="POS" datatytpe="char" arraysize="*" xtype="shape" 
+  <PARAM name="POS" datatytpe="char" arraysize="*" xtype="shape"
          ucd="obs.field" value="">
     <VALUES>
-      <MAX value="polygon 134.38 -6.37 134.42 6.01 
+      <MAX value="polygon 134.38 -6.37 134.42 6.01
                           146.87 5.97 146.84 -6.41" />
     </VALUES>
   </PARAM>
   ...
 </GROUP>
 \end{lstlisting}
-In the specific context of a SODA service, the maximum shape is generally going 
-to be the bounds of the data. The type label used in the maximum shape only tells 
-the client how to interpret the value; it does not limit the caller to only using 
+In the specific context of a SODA service, the maximum shape is generally going
+to be the bounds of the data. The type label used in the maximum shape only tells
+the client how to interpret the value; it does not limit the caller to only using
 that type of shape.
 
 There is no general purpose definition of a minimum shape value for parameters or
@@ -920,34 +920,34 @@ more limited context.
 
 \subsubsection{REQUEST}
 \label{sec:REQUEST}
-The REQUEST parameter is intended for service capabilities that have 
-multiple modes or operations, including non-standard (site-specific) optional 
-features. Most standard service capabilities will not define values for this 
+The REQUEST parameter is intended for service capabilities that have
+multiple modes or operations, including non-standard (site-specific) optional
+features. Most standard service capabilities will not define values for this
 parameter.
 
-If defined for a specific service capability, the REQUEST parameter is always 
+If defined for a specific service capability, the REQUEST parameter is always
 single-valued.
 
 \subsubsection{VERSION}
 \label{sec:VERSION}
-The VERSION parameter has been removed because the different 
-meaning of request 
+The VERSION parameter has been removed because the different
+meaning of request
 parameters it is intended to disambiguate are not allowed within minor
 revisions of a standard; there are no useful scenarios where VERSION would work.
 
 \subsubsection{RESPONSEFORMAT}
 \label{sec:RESPONSEFORMAT}
-The RESPONSEFORMAT parameter is used so the client can specify the format of the 
-response (e.g. the output of the job). For DALI-sync requests, this is the 
-content-type of the response. For DALI-async requests, this is the content-type 
-of the result resource(s) the client can retrieve from the UWS result list 
-resource; if a DALI-async job creates multiple results, the RESPONSEFORMAT 
-should control the primary result type, but details can be specific to 
-individual service specifications. While the list of supported values are 
-specific to a concrete service specification, the general usage is to support 
-values that are MIME media types \citep{std:MIME} for known 
-formats as well as 
-shortcut symbolic values. 
+The RESPONSEFORMAT parameter is used so the client can specify the format of the
+response (e.g. the output of the job). For DALI-sync requests, this is the
+content-type of the response. For DALI-async requests, this is the content-type
+of the result resource(s) the client can retrieve from the UWS result list
+resource; if a DALI-async job creates multiple results, the RESPONSEFORMAT
+should control the primary result type, but details can be specific to
+individual service specifications. While the list of supported values are
+specific to a concrete service specification, the general usage is to support
+values that are MIME media types \citep{std:MIME} for known
+formats as well as
+shortcut symbolic values.
 
 \begin{tabular}{l l l l l}
 \sptablerule
@@ -964,90 +964,90 @@ pretty-printed Web page & text/html & html & \\
 \label{tab:mimetypes}
 \end{tabular}
 
-In some cases, the specification for a specific format may be parameterised 
-(e.g., the media type may include optional semi-colon and additional key-value 
-parameters). A DAL service must accept a RESPONSEFORMAT parameter indicating a 
-format that the service supports and should  fail (Section 4.2 ) where the 
-RESPONSEFORMAT parameter specifies a format not supported by the service 
+In some cases, the specification for a specific format may be parameterised
+(e.g., the media type may include optional semi-colon and additional key-value
+parameters). A DAL service must accept a RESPONSEFORMAT parameter indicating a
+format that the service supports and should  fail (Section 4.2 ) where the
+RESPONSEFORMAT parameter specifies a format not supported by the service
 implementation.
 
-A concrete DAL service specification will specify any mandatory or optional 
-formats as well as new formats not listed above; it may also place limitations 
-on the structure for formats that are flexible.  For example, a resource that 
-responds with tabular output may impose a limitation that FITS files only 
+A concrete DAL service specification will specify any mandatory or optional
+formats as well as new formats not listed above; it may also place limitations
+on the structure for formats that are flexible.  For example, a resource that
+responds with tabular output may impose a limitation that FITS files only
 contain FITS tables, possibly only of specific types (ascii or binary).
 
-If a client requests a format by specifying the media type (as opposed to one of 
+If a client requests a format by specifying the media type (as opposed to one of
 the short forms), the response that delivers that content must set that
-media type 
-in the Content-Type header. This is only an issue when a format has multiple 
-acceptable media types (e.g., VOTable). This allows the client to control the 
-Content-Type so that it can reliably cause specific applications to handle the 
-response (e.g., a browser rendering a VOTable generally requires the text/xml 
-media type). If the client requests a plain media type (e.g., not parameterised) and 
-the media type does allow optional parameters, the service may respond with a 
-parameterised media type to more clearly describe the output. For example, the 
-text/csv media type allows two optional parameters: charset and header. If the 
-request includes RESPONSEFORMAT=text/csv the response could have Content-Type 
-text/csv or text/csv;header=absent at the discretion of the service. If the 
-request specifies specific values for parameters, the response must be 
+media type
+in the Content-Type header. This is only an issue when a format has multiple
+acceptable media types (e.g., VOTable). This allows the client to control the
+Content-Type so that it can reliably cause specific applications to handle the
+response (e.g., a browser rendering a VOTable generally requires the text/xml
+media type). If the client requests a plain media type (e.g., not parameterised) and
+the media type does allow optional parameters, the service may respond with a
+parameterised media type to more clearly describe the output. For example, the
+text/csv media type allows two optional parameters: charset and header. If the
+request includes RESPONSEFORMAT=text/csv the response could have Content-Type
+text/csv or text/csv;header=absent at the discretion of the service. If the
+request specifies specific values for parameters, the response must be
 equivalent.
 
-Individual DAL services (not just specifications) are free to support custom 
+Individual DAL services (not just specifications) are free to support custom
 formats by accepting non-standard values for the RESPONSEFORMAT parameter.
 
-The RESPONSEFORMAT parameter should not be confused with the FORMAT parameter 
-used in many DAL services. The latter is generally used as a query parameter to 
-search for data in the specified format; FORMAT and RESPONSEFORMAT have the same 
+The RESPONSEFORMAT parameter should not be confused with the FORMAT parameter
+used in many DAL services. The latter is generally used as a query parameter to
+search for data in the specified format; FORMAT and RESPONSEFORMAT have the same
 sense in TAP-1.0, but this is not generally the case.
 
 The RESPONSEFORMAT parameter is always single-valued.
 
 \subsubsection{MAXREC}
 \label{sec:MAXREC}
-For resources performing discovery (querying for an arbitrary number of 
-records), the resource must accept a MAXREC parameter specifying the maximum 
-number of records to be returned. If MAXREC is not specified in a request, the 
-service may apply a default value or may set no limit. The service may also 
-enforce a limit on the value of MAXREC that is smaller than the value in the 
-request. If the size of the result exceeds the resulting limit, the service must 
-only return the requested number of rows. If the result set is truncated in this 
+For resources performing discovery (querying for an arbitrary number of
+records), the resource must accept a MAXREC parameter specifying the maximum
+number of records to be returned. If MAXREC is not specified in a request, the
+service may apply a default value or may set no limit. The service may also
+enforce a limit on the value of MAXREC that is smaller than the value in the
+request. If the size of the result exceeds the resulting limit, the service must
+only return the requested number of rows. If the result set is truncated in this
 fashion, it must include an overflow indicator as specified in Section 4.4.1 .
 
-The service must support the special value of MAXREC=0. This value indicates 
-that, in the event of an otherwise valid request, a valid response be returned 
-containing metadata, no results, and an overflow indicator (Section 4.4.1 ). The 
-service is not required to execute the request and the overflow indicator does 
-not necessarily mean that there is at least one record satisfying the query. The 
-service may perform validation and may try to execute the request, in which case 
+The service must support the special value of MAXREC=0. This value indicates
+that, in the event of an otherwise valid request, a valid response be returned
+containing metadata, no results, and an overflow indicator (Section 4.4.1 ). The
+service is not required to execute the request and the overflow indicator does
+not necessarily mean that there is at least one record satisfying the query. The
+service may perform validation and may try to execute the request, in which case
 a MAXREC=0 request can fail.
 
 The MAXREC parameter is always single-valued.
 
 \subsubsection{UPLOAD}
 \label{sec:UPLOAD}
-The UPLOAD parameter is used to reference read-only external resources 
-(typically files) via their URI, to be uploaded for use as input resources to 
-the query. The value of the UPLOAD parameter is a resource name-URI pair. For 
+The UPLOAD parameter is used to reference read-only external resources
+(typically files) via their URI, to be uploaded for use as input resources to
+the query. The value of the UPLOAD parameter is a resource name-URI pair. For
 example:
 
 \begin{verbatim}
 UPLOAD=table1,http://example.com/t1
 \end{verbatim}
 
-would define an input named table1 at the given URI. Resource names must be 
-simple strings made up of alphabetic, numeric, and the underscore characters 
+would define an input named table1 at the given URI. Resource names must be
+simple strings made up of alphabetic, numeric, and the underscore characters
 only and must start with an alphabetic character.
 
-Services that implement UPLOAD must support http or https as a URI scheme. 
-A VOSpace URI (vos:<something>)  is a 
-more generic example of a URI that requires more service-side functionality; 
+Services that implement UPLOAD must support http or https as a URI scheme.
+A VOSpace URI (vos:<something>)  is a
+more generic example of a URI that requires more service-side functionality;
 support for the vos scheme is optional.
 
-To upload a resource inline, the caller specifies the UPLOAD parameter (as 
-above) using a special URI scheme \emph{param}. This scheme indicates that the value 
-after the colon will be the name of the inline content. The content type used is 
-multipart/form-data, using a \emph{file} type input element. The \xmlel{name} attribute 
+To upload a resource inline, the caller specifies the UPLOAD parameter (as
+above) using a special URI scheme \emph{param}. This scheme indicates that the value
+after the colon will be the name of the inline content. The content type used is
+multipart/form-data, using a \emph{file} type input element. The \xmlel{name} attribute
 must match that used in the UPLOAD parameter.
 
 For example, in the POST data we would have this parameter:
@@ -1069,12 +1069,12 @@ Content-type: application/x-votable+xml
 [...]
 \end{verbatim}
 
-If inline upload is used by a client, the client must POST both the UPLOAD 
-parameter and the associated inline content in the same request. Services that 
+If inline upload is used by a client, the client must POST both the UPLOAD
+parameter and the associated inline content in the same request. Services that
 implement upload of resources must support the param scheme for inline uploads.
 
-In principle, any number of resources can be uploaded using the UPLOAD parameter 
-and any combination of URI schemes supported by the service as long as they are 
+In principle, any number of resources can be uploaded using the UPLOAD parameter
+and any combination of URI schemes supported by the service as long as they are
 assigned unique names in the request. For example:
 
 \begin{verbatim}
@@ -1083,42 +1083,42 @@ UPLOAD=image1,vos://example.authority!tempSpace/foo.fits
 UPLOAD=table3,param:t3
 \end{verbatim}
 
-Services may limit the size and number of uploaded resources; if the service 
-refuses to accept the upload, it must respond with an error as described in 
-Section \ref{sec:response-error}. Concrete service specifications will 
-typically provide a mechanism for referring to uploaded resources (e.g. in 
+Services may limit the size and number of uploaded resources; if the service
+refuses to accept the upload, it must respond with an error as described in
+Section \ref{sec:response-error}. Concrete service specifications will
+typically provide a mechanism for referring to uploaded resources (e.g. in
 other request parameters) where necessary.
 
 \subsubsection{RUNID}
 \label{sec:RUNID}
-The service should implement the RUNID parameter, used to tag service requests 
-with the identifier of a larger job of which the request may be part. The RUNID 
+The service should implement the RUNID parameter, used to tag service requests
+with the identifier of a larger job of which the request may be part. The RUNID
 value is a string with a maximum length of 64 characters.
 
-For example, if a cross match portal issues multiple requests to remote services 
-to carry out a cross-match operation, all would receive the same RUNID, and the 
-service logs could later be analysed to reconstruct the service operations 
-initiated in response to the job. The service should ensure that RUNID is 
-preserved in any service logs and  should pass on the RUNID value in calls to 
+For example, if a cross match portal issues multiple requests to remote services
+to carry out a cross-match operation, all would receive the same RUNID, and the
+service logs could later be analysed to reconstruct the service operations
+initiated in response to the job. The service should ensure that RUNID is
+preserved in any service logs and  should pass on the RUNID value in calls to
 other services made while processing the request.
 
 The RUNID parameter is always single-valued.
 
 \section{Responses}
 \label{sec:responses}
-All DAL service requests eventually (after zero or more HTTP redirects) result 
-in one of three kinds of responses: 
-successful HTTP status code (200) and a service- and resource-specific 
-representation of the results, or an HTTP status code and a standard error 
-document (see below), or an HTTP status code and a service- and 
+All DAL service requests eventually (after zero or more HTTP redirects) result
+in one of three kinds of responses:
+successful HTTP status code (200) and a service- and resource-specific
+representation of the results, or an HTTP status code and a standard error
+document (see below), or an HTTP status code and a service- and
 resource-specific error document.
 
 \subsection{Successful Requests}
 \label{sec:response-ok}
-Successfully executed requests must eventually (after zero or more redirects) 
-result in a response with HTTP status code 200 (OK) and a response in the format 
-requested by the client (Section \ref{sec:RESPONSEFORMAT}) or in the default format for the 
-service. The service should set HTTP headers \citep{std:HTTP} that are useful to the correct values 
+Successfully executed requests must eventually (after zero or more redirects)
+result in a response with HTTP status code 200 (OK) and a response in the format
+requested by the client (Section \ref{sec:RESPONSEFORMAT}) or in the default format for the
+service. The service should set HTTP headers \citep{std:HTTP} that are useful to the correct values
 where possible. Recommended headers to set when possible:
 
 \begin{tabular}{l l l l l}
@@ -1129,119 +1129,119 @@ Content-Length \\
 Last-Modified \\
 \end{tabular}
 
-For jobs executed using a DALI-async resource, the result(s) must be made 
-available as child resources of the result list and directly accessible there. 
-For jobs that inherently create a fixed result, service specifications may 
-specify the name of the result explicitly. For example, TAP-1.0 has a single 
+For jobs executed using a DALI-async resource, the result(s) must be made
+available as child resources of the result list and directly accessible there.
+For jobs that inherently create a fixed result, service specifications may
+specify the name of the result explicitly. For example, TAP-1.0 has a single
 result and it must be named result, e.g.:
 
 \begin{verbatim}
 GET http://example.com/base/joblist/123/results/result
 \end{verbatim}
 
-For concrete DAL service specifications where multiple result files may be 
-produced, the specification may dictate the names or it may leave it up to 
+For concrete DAL service specifications where multiple result files may be
+produced, the specification may dictate the names or it may leave it up to
 implementations to choose suitable names.
 
 \subsection{Errors}
 \label{sec:response-error}
-If the service detects an exceptional condition, it must return an error 
-document with an appropriate HTTP-status code. DAL services distinguish three 
+If the service detects an exceptional condition, it must return an error
+document with an appropriate HTTP-status code. DAL services distinguish three
 classes of errors:
 
 \begin{itemize}
-\item Errors in communicating with the DAL service 
+\item Errors in communicating with the DAL service
 
-\item Errors in the use of the specific DAL protocol, including an invalid 
-request 
+\item Errors in the use of the specific DAL protocol, including an invalid
+request
 
-\item Errors caused by a failure of the service to complete a valid request 
+\item Errors caused by a failure of the service to complete a valid request
 \end{itemize}
 
-Error documents for communication errors, including those caused by accessing 
-non-existent resources, authentication or authorization failures, services being 
-off-line or broken are not specified here since responses to these errors may be 
-generated by other off-the-shelf software and cannot be controlled by service 
-implementations. There are several cases where a DAL service could return such 
-an error. First, a DALI-async resource must return a 404 (not found) error if 
-the client accesses a job within the UWS job list that does not exist, or 
-accesses a child resource of the job that does not exist (e.g., the error 
-resource of a job that has not run and failed, or a specific result resource in 
-the result list  that does not exist). Second, access to a resource could result 
-in an HTTP 401 (not authorized) response if authentication is required or an 
-HTTP 403 (forbidden) error if the client is not allowed to access the requested 
-resource. Although UWS is currently specified for HTTP transport only, if it 
-were to be extended for use via other transport protocols, the normal mechanisms 
+Error documents for communication errors, including those caused by accessing
+non-existent resources, authentication or authorization failures, services being
+off-line or broken are not specified here since responses to these errors may be
+generated by other off-the-shelf software and cannot be controlled by service
+implementations. There are several cases where a DAL service could return such
+an error. First, a DALI-async resource must return a 404 (not found) error if
+the client accesses a job within the UWS job list that does not exist, or
+accesses a child resource of the job that does not exist (e.g., the error
+resource of a job that has not run and failed, or a specific result resource in
+the result list  that does not exist). Second, access to a resource could result
+in an HTTP 401 (not authorized) response if authentication is required or an
+HTTP 403 (forbidden) error if the client is not allowed to access the requested
+resource. Although UWS is currently specified for HTTP transport only, if it
+were to be extended for use via other transport protocols, the normal mechanisms
 of those protocols should be used.
 
-An error document describing errors in use of the DAL service protocol may be a 
-VOTable document \citep{2019ivoa.spec.1021O} or a plain text document. 
-The content of 
-VOTable error documents is described in Section \ref{sec:use-votable} below. Service 
-specifications will enumerate specific text to be included. For plain text error 
-documents the required text would be included at the start of the document; for 
-VOTable error documents, the required (and optional) text would be included as 
-content of the INFO element described in Section \ref{sect:errors}. In either case, DAL 
-services will allow service implementers to add additional explanatory text 
-after the required text (on the same line or on subsequent lines). In all cases, 
-these are errors that occur when the job is executed and do not override any 
-error behaviour for a UWS resource which specifies the behaviour and errors 
+An error document describing errors in use of the DAL service protocol may be a
+VOTable document \citep{2019ivoa.spec.1021O} or a plain text document.
+The content of
+VOTable error documents is described in Section \ref{sec:use-votable} below. Service
+specifications will enumerate specific text to be included. For plain text error
+documents the required text would be included at the start of the document; for
+VOTable error documents, the required (and optional) text would be included as
+content of the INFO element described in Section \ref{sect:errors}. In either case, DAL
+services will allow service implementers to add additional explanatory text
+after the required text (on the same line or on subsequent lines). In all cases,
+these are errors that occur when the job is executed and do not override any
+error behaviour for a UWS resource which specifies the behaviour and errors
 associated with interacting with the job itself.
 
-If the invalid job is being executed using a DALI-async resource, the error 
-document must be accessible from the <DALI-async>/<jobid>/error resource 
-(specified by UWS) and when accessed via that resource it must be returned with 
+If the invalid job is being executed using a DALI-async resource, the error
+document must be accessible from the <DALI-async>/<jobid>/error resource
+(specified by UWS) and when accessed via that resource it must be returned with
 an HTTP status code 200, e.g.:
 
 \begin{verbatim}
 GET http://example.com/base/joblist/123/error
 \end{verbatim}
 
-For DALI-async errors, services should recommend and may mandate that required 
-text be included in the error summary field of the UWS job in addition to the 
-error document; this permits generic UWS clients to consume the standard part of 
+For DALI-async errors, services should recommend and may mandate that required
+text be included in the error summary field of the UWS job in addition to the
+error document; this permits generic UWS clients to consume the standard part of
 the error description.
 
-If the error document is being returned directly after a DALI-sync request, the 
-service should use a suitable error code to describe the failure and include the 
-error document in the body of the response. The Content-Type header will tell 
-the client the format of the error document that is included in the body of the 
-response. In general, HTTP status codes from 400-499 signify a problem with the 
-client request and status codes greater than or equal to 500 signify that the 
-request is (probably) valid but the server has failed to function. For transport 
-protocols other than HTTP, the normal error reporting mechanisms of those 
+If the error document is being returned directly after a DALI-sync request, the
+service should use a suitable error code to describe the failure and include the
+error document in the body of the response. The Content-Type header will tell
+the client the format of the error document that is included in the body of the
+response. In general, HTTP status codes from 400-499 signify a problem with the
+client request and status codes greater than or equal to 500 signify that the
+request is (probably) valid but the server has failed to function. For transport
+protocols other than HTTP, the normal error reporting mechanisms of those
 protocols should be used.
 
 \subsection{Redirection}
 \label{sec:redirects}
-A concrete DAL service specification may require that HTTP redirects (302 or 
-303) be used to communicate the location of an alternate resource which should 
-be accessed by the client via the HTTP GET method. For example, the UWS pattern 
-used for DALI-async (Section 2.1 ) requires this behaviour. Even when not 
-required, concrete DAL service specifications must allow implementers to use 
-redirects and clients must be prepared to follow these redirects using normal 
+A concrete DAL service specification may require that HTTP redirects (302 or
+303) be used to communicate the location of an alternate resource which should
+be accessed by the client via the HTTP GET method. For example, the UWS pattern
+used for DALI-async (Section 2.1 ) requires this behaviour. Even when not
+required, concrete DAL service specifications must allow implementers to use
+redirects and clients must be prepared to follow these redirects using normal
 HTTP semantics \citep{std:HTTP}.
 
 \subsection{Use of VOTable}
 \label{sec:use-votable}
-VOTable is a general format. In DAL services we require that it be used in a 
+VOTable is a general format. In DAL services we require that it be used in a
 particular way. The result VOTable document must comply with VOTable
 v1.2 or later versions
 \citep{2019ivoa.spec.1021O}.
 
 
-The VOTable format permits table creators to add additional metadata to describe 
-the values in the table. Once a standard for including such metadata is 
-available, service implementers should use such mechanisms to augment the 
-results with additional metadata. Concrete DAL service specifications may 
+The VOTable format permits table creators to add additional metadata to describe
+the values in the table. Once a standard for including such metadata is
+available, service implementers should use such mechanisms to augment the
+results with additional metadata. Concrete DAL service specifications may
 require additional metadata of this form.
 
-The VOTable must contain one  \xmlel{RESOURCE} element identified with the attribute 
-\verb|type="results"|; this resource contains the primary result (e.g., the only result 
-for simple DAL services). Concrete DAL service specifications define what goes 
-into the primary result. The primary \xmlel{RESOURCE} element must contain, before the 
-\xmlel{TABLE} element, an 
-\xmlel{INFO} element with attribute \xmlel{name} valued \emph{QUERY\_STATUS}. The value 
+The VOTable must contain one  \xmlel{RESOURCE} element identified with the attribute
+\verb|type="results"|; this resource contains the primary result (e.g., the only result
+for simple DAL services). Concrete DAL service specifications define what goes
+into the primary result. The primary \xmlel{RESOURCE} element must contain, before the
+\xmlel{TABLE} element, an
+\xmlel{INFO} element with attribute \xmlel{name} valued \emph{QUERY\_STATUS}. The value
 attribute must contain one of the following values:
 
 \begin{tabular}{l p{8cm}}
@@ -1249,15 +1249,15 @@ attribute must contain one of the following values:
 \emph{QUERY\_STATUS}&\textbf{Interpretation}\\
 \sptablerule
 OK & the job executed successfully and the result is included in the resource \\
-ERROR & an error was detected at the level of the protocol, the job failed to 
+ERROR & an error was detected at the level of the protocol, the job failed to
 execute, or an error occurred while writing the table data \\
-OVERFLOW & the job executed successfully, the result is included in the 
+OVERFLOW & the job executed successfully, the result is included in the
 resource, and the result was truncated \\
 \sptablerule
 \label{tab:query-status}
 \end{tabular}
 
-The content of the \xmlel{INFO} element conveying the status should be a message 
+The content of the \xmlel{INFO} element conveying the status should be a message
 suitable for display to the user describing the status.
 
 \begin{lstlisting}[language=XML]
@@ -1274,18 +1274,18 @@ value out of range in POS=45,91
 </INFO>
 \end{lstlisting}
 
-Additional \xmlel{RESOURCE} elements may be present, but the usage of any such elements 
-is not defined here. Concrete DAL service specifications may define additional 
-resources (and the type attribute to describe them) and service implementers are 
-also free to add their own. 
+Additional \xmlel{RESOURCE} elements may be present, but the usage of any such elements
+is not defined here. Concrete DAL service specifications may define additional
+resources (and the type attribute to describe them) and service implementers are
+also free to add their own.
 
 \subsubsection{Overflow}
 \label{sec:response-overflow}
-If an overflow occurs (for example, result exceeds MAXREC), the service must include an 
+If an overflow occurs (for example, result exceeds MAXREC), the service must include an
 \xmlel{INFO}
-element in the \xmlel{RESOURCE} with \verb|name="QUERY\_STATUS"| and the 
-\verb|value="OVERFLOW"|. If 
-the initial \xmlel{INFO} element (above) specified the overflow, no further elements are 
+element in the \xmlel{RESOURCE} with \verb|name="QUERY\_STATUS"| and the
+\verb|value="OVERFLOW"|. If
+the initial \xmlel{INFO} element (above) specified the overflow, no further elements are
 needed, e.g.:
 
 \begin{lstlisting}[language=XML]
@@ -1296,7 +1296,7 @@ needed, e.g.:
 </RESOURCE>
 \end{lstlisting}
 
-If the initial \xmlel{INFO} element specified a status of OK then the service must 
+If the initial \xmlel{INFO} element specified a status of OK then the service must
 append an \xmlel{INFO} element for the overflow after the table, e.g.:
 
 \begin{lstlisting}[language=XML]
@@ -1310,15 +1310,15 @@ append an \xmlel{INFO} element for the overflow after the table, e.g.:
 
 In general, services may truncate the output results when reaching a limit. A default or
 user-specified value of the MAXREC parameter is a common mechanism that causes truncation
-of results, but service providers may also impose limits in services that do not use 
+of results, but service providers may also impose limits in services that do not use
 MAXREC and indicate that the limit was reached with the overflow indicator.
 
 
 \subsubsection{Errors}
 \label{sect:errors}
 
-If an error occurs, the service must include an \xmlel{INFO} element with 
-\verb|name="QUERY_STATUS"| and the \verb|value="ERROR"|. If the initial info element (above) 
+If an error occurs, the service must include an \xmlel{INFO} element with
+\verb|name="QUERY_STATUS"| and the \verb|value="ERROR"|. If the initial info element (above)
 specified the error, no further elements are needed, e.g.:
 
 \begin{lstlisting}[language=XML]
@@ -1328,7 +1328,7 @@ specified the error, no further elements are needed, e.g.:
 </RESOURCE>
 \end{lstlisting}
 
-If the initial \xmlel{INFO} element specified a status of OK then the service must 
+If the initial \xmlel{INFO} element specified a status of OK then the service must
 append an \xmlel{INFO} element for the error after the table, e.g.:
 
 \begin{lstlisting}[language=XML]
@@ -1342,15 +1342,15 @@ unexpected IO error while converting something
 </RESOURCE>
 \end{lstlisting}
 
-The use of trailing \xmlel{INFO} element allows a service to stream output and still 
-report overflows or errors to the client. The content of these trailing INFO 
-elements is optional and intended for users; client software should not depend 
+The use of trailing \xmlel{INFO} element allows a service to stream output and still
+report overflows or errors to the client. The content of these trailing INFO
+elements is optional and intended for users; client software should not depend
 on it.
 
 \subsubsection{Additional Information}
-Additional \xmlel{INFO} elements should be provided, e.g., to echo the input parameters 
-back to the client in the query response (a useful feature for debugging or to 
-self-document the query response), but clients should not depend on these. For 
+Additional \xmlel{INFO} elements should be provided, e.g., to echo the input parameters
+back to the client in the query response (a useful feature for debugging or to
+self-document the query response), but clients should not depend on these. For
 example:
 
 \begin{lstlisting}[language=XML]
@@ -1361,7 +1361,7 @@ example:
 </RESOURCE>
 \end{lstlisting}
 
-The following names for \xmlel{INFO} elements should be used if applicable, but this 
+The following names for \xmlel{INFO} elements should be used if applicable, but this
 list is not definitive.
 
 \begin{tabular}{l p{8cm}}
@@ -1369,22 +1369,22 @@ list is not definitive.
 \textbf{Info Name}&\textbf{Value Interpretation}\\
 \sptablerule
 standardID & IVOA standardID for the service specification \\
-citation & Reference to a publication that can/should be referenced if the 
+citation & Reference to a publication that can/should be referenced if the
 result is used \\
 \sptablerule
 \end{tabular}
 
-The standardID of a service specification is the IVOA resource identifier for 
-the StandardsRegExt record not including capability-specific fragments. For example, 
-a VOTable produced by the \verb|ivo://ivoa.net/std/SIA#query-2.0| capability 
-would use the base \verb|ivo://ivoa.net/SIA| (as in the above example) to say that 
+The standardID of a service specification is the IVOA resource identifier for
+the StandardsRegExt record not including capability-specific fragments. For example,
+a VOTable produced by the \verb|ivo://ivoa.net/std/SIA#query-2.0| capability
+would use the base \verb|ivo://ivoa.net/SIA| (as in the above example) to say that
 the VOTable was produced by a SIA service.
 
 For citations, the \xmlel{INFO} element should also include a
-\xmlel{ucd} attribute with the 
+\xmlel{ucd} attribute with the
 value \emph{meta.bib} (if the value is a free-text reference) or
-\emph{meta.bib.bibcode} (if 
-the value is a bibcode). If other \xmlel{meta.bib} UCDs are added to the vocabulary in 
+\emph{meta.bib.bibcode} (if
+the value is a bibcode). If other \xmlel{meta.bib} UCDs are added to the vocabulary in
 future, they may also be used to describe the value.
 
 \appendix
@@ -1414,14 +1414,14 @@ change benign for a point release.
 \subsection{PR-DALI-1.1-20161101}
 
 \begin{itemize}
-\item added explicit allowance for the use of non-standard xtypes with an 
+\item added explicit allowance for the use of non-standard xtypes with an
 arbitrary prefix
 \end{itemize}
 
 \subsection{WD-DALI-1.1-20160920}
 
 \begin{itemize}
-\item modified timestamp serialisation to allow the Z timezone indicator for 
+\item modified timestamp serialisation to allow the Z timezone indicator for
 civil time values
 \item specified counter-clockwise winding direction for polygons
 \end{itemize}
@@ -1431,7 +1431,7 @@ civil time values
 \begin{itemize}
 \item Removed introductory language on including capability-propertied elements in
 examples.
-\item Expanded section on intervals to allow use of all integer and floating point datatypes 
+\item Expanded section on intervals to allow use of all integer and floating point datatypes
 supported by VOTable; only floating point intervals support open-ended intervals.
 \item Expanded section on geometry to allow use of \verb|datatype="float"| in addition to double.
 \item Removed restrictions on the resource name and location for VOSI-availability resource.
@@ -1442,89 +1442,89 @@ supported by VOTable; only floating point intervals support open-ended intervals
 
 \subsection{WD-DALI-1.1-20151027}
 
-Removed the requirement that the REQUEST must be a standard parameter. It is 
-now recommended if a service capability supports more than one mode or 
-operation. Removed VERSION parameter following experiences with TAP-1.1 
+Removed the requirement that the REQUEST must be a standard parameter. It is
+now recommended if a service capability supports more than one mode or
+operation. Removed VERSION parameter following experiences with TAP-1.1
 prototypes.
 
-Re-organised the section on literal values and clarified that these rules 
-are intended to make input (parameters and other input docs) and output 
-(response documents like VOTable) of services consistent. Added specification 
-of interval, point, circle, and polygon literal values and specified VOTable 
-xtype values for serialising such values in VOTable. Added VOTable serialisation 
+Re-organised the section on literal values and clarified that these rules
+are intended to make input (parameters and other input docs) and output
+(response documents like VOTable) of services consistent. Added specification
+of interval, point, circle, and polygon literal values and specified VOTable
+xtype values for serialising such values in VOTable. Added VOTable serialisation
 and xtype for timestamp values. (Needed by SIA-2.0 and TAP-1.1)
 
 Added bibtex cross-references.
 
 \subsection{PR-DALI-1.0-20130919}
-The following changes are in response to additional RFC commands and during the 
+The following changes are in response to additional RFC commands and during the
 TCG review.
 
 New architecture diagram and minor editorial changes to improve document.
 
-Clarified RESPONSEFORMAT text to allow services to append mimetype parameters if 
+Clarified RESPONSEFORMAT text to allow services to append mimetype parameters if
 the client did not specify them.
 
-Relaxed the VERSION parameter so services should default to latest (instead of 
+Relaxed the VERSION parameter so services should default to latest (instead of
 must) and to not differentiate between REC and pre-REC status.
 
-Clarified the requirement for a VOTable RESOURCE with \verb|type="results"| attribute 
-so it is clear that this is the primary result and other RESOURCES may be 
+Clarified the requirement for a VOTable RESOURCE with \verb|type="results"| attribute
+so it is clear that this is the primary result and other RESOURCES may be
 present.
 
-Clarified that HTTP-specific rules apply to RESTful web services and that 
-although we describe such services here we do not preclude future use of other 
+Clarified that HTTP-specific rules apply to RESTful web services and that
+although we describe such services here we do not preclude future use of other
 transport protocols.
 
 \subsection{PR-DALI-1.0-20130521}
 The following changes are in response to comments from the RFC period.
 
-Made editorial changes from the DALI wiki page that were missed during WG 
+Made editorial changes from the DALI wiki page that were missed during WG
 review.
 
 Changed all cross-references to be readable text.
 
 Replaced example curl output from a POST with explanatory text.
 
-POST of job parameters directly to job: restricted to creation and /parameters 
+POST of job parameters directly to job: restricted to creation and /parameters
 resource
 
 Changed number of DALI-async and DALI-sync resources to zero or more.
 
-Clarified that job parameters are the same if the type of job is the same, but 
-services can have different types of jobs (and hence different parameters) on 
+Clarified that job parameters are the same if the type of job is the same, but
+services can have different types of jobs (and hence different parameters) on
 different job-list resources.
 
 Fixed text forbidding any other vocab attributes in DALI-examples document.
 
-Replace http-action and base-url with something or add sync vs async: replaced 
+Replace http-action and base-url with something or add sync vs async: replaced
 with capability property
 
 Preventing loops with continuation in examples: removed.
 
-Clarified that VOSI-capabilities does not require a registry extension schema 
+Clarified that VOSI-capabilities does not require a registry extension schema
 and use of xsi:type.
 
-Explicitly require that if VOSI-tables is not implemented, the service responds 
+Explicitly require that if VOSI-tables is not implemented, the service responds
 with a 404.
 
-Clarified the purpose of requiring the service to use client-specified 
+Clarified the purpose of requiring the service to use client-specified
 RESPONSEFORMAT as the Content-Type of the response.
 
 Attempted to clarify the acceptable use of status codes for errors.
 
 Removed single-table restriction from votable usage.
 
-Clarified interpretation of dates and times as UTC timescale by default but 
+Clarified interpretation of dates and times as UTC timescale by default but
 permitting specific metadata to be specified.
 
-Removed formatting of example links so they are not real hyperlinks in output 
+Removed formatting of example links so they are not real hyperlinks in output
 documents.
 
 Clarified that services can enforce a smaller limit than a requested MAXREC.
 
-Removed text refering to IVOA notes on STC and Photometric metadata; added more 
-general text that services should include additional metadata once standards for 
+Removed text refering to IVOA notes on STC and Photometric metadata; added more
+general text that services should include additional metadata once standards for
 such are in place.
 
 Explain the table at start of section 2.
@@ -1533,17 +1533,17 @@ Clarify requests that effect UWS job phase in DALI-async.
 
 Removed malformed http post example from DALI-async section.
 
-Remove reference to SGML specifically, but mention HTML5 as a poor choice for 
+Remove reference to SGML specifically, but mention HTML5 as a poor choice for
 DALI-examples.
 
-Add reference to RFC2616 in the RESPONSEFORMAT section since it talks about 
+Add reference to RFC2616 in the RESPONSEFORMAT section since it talks about
 mimetypes.
 
-Clarified text about setting job parameters and banned posting parameters 
+Clarified text about setting job parameters and banned posting parameters
 directly to the job URL.
 
-Replaced the base-url and http-action properties with a single capability 
-property in DAL-examples. Changed the vocab identifier to be the IVOID for DALI 
+Replaced the base-url and http-action properties with a single capability
+property in DAL-examples. Changed the vocab identifier to be the IVOID for DALI
 with fragment indicating the DALI-examples section of the document.
 
 \subsection{WD-DALI-1.0-20130212}
