@@ -310,9 +310,14 @@ The elements containing examples must be descendants of an element that has a
 </div>
 \end{lstlisting}
 
-In future, this URL may resolve to an RDF vocabulary document in human and
-machine-readable format(s) and if so will contain the normative list of values
-for the property attribute and will supersede the ones specified below.
+The URI in the \xmlel{vocab} attribute resolves to an IVOA vocabulary of
+concepts useful for describing examples.  That vocabulary complies to
+Vocabularies in the VO version 2 \citep{2021ivoa.spec.0525D}.   The
+values of the \xmlel{property} attributes below are described in it, and
+the concept URIs formed according to RDFa rules resolve to elements
+within it, which may be useful for documentation purposes.  Clients
+purely interested in presenting the examples to their users usually have
+no reason to retrieve the vocabulary.
 
 No other \xmlel{vocab} attributes are allowed in the document. Each example resides in
 an element that has a \xmlel{typeof} attribute with the value
@@ -342,7 +347,9 @@ DALI-examples, we define the following values for the \xmlel{property} attribute
 
 Each example must include one
 name.  DAL service specifications may define additional
-properties so they can mark up additional information in their examples.
+properties so they can mark up additional information in their examples
+using the procedures described in Vocabularies in the VO 2.  For
+instance, TAP has introduced the notions of \emph{query} and \emph{table}.
 
 In principle, any element permitted by the document type can include the RDFa
 attributes, so authors may re-use existing markup intended for display.
