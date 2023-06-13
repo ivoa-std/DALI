@@ -627,7 +627,8 @@ the VOTable \xmlel{FIELD} and \xmlel{PARAM} elements  for simple
 structured values: \emph{timestamp}, \emph{interval},
 \emph{hms}, \emph{dms},
 \emph{point}, \emph{circle}, \emph{range}, \emph{polygon}, \emph{moc}, 
-\emph{multipolygon}, \emph{shape}, \emph{uri}, and \emph{uuid} (see below). 
+\emph{multipolygon}, \emph{shape}, \emph{uri}, and \emph{uuid} (see below).
+
 Services may 
 use non-standard \xmlel{xtype} values for non-standard datatypes, but if they 
 do so they should include a simple prefix (a string followed by a colon 
@@ -988,6 +989,28 @@ variable length with limit).
 
 UUID values \citep{std:RFC4122} are serialised using the canonical ascii (hex) 
 representation, for example: e0b895ca-2ee4-4f0f-b595-cbd83be40b04.
+
+\subsubsection{Unsupported Types}
+
+Support for any specific \xmlel{xtype} in implementations (client or service) is specified in
+the service standard document. However, support for a specific \xmlel{xtype} as input (params
+and uploaded content) should generally be considered optional. Implementations should 
+be able to read and write the underlying data type without knowing the semantics added 
+by the \xmlel{xtype}. In cases where understanding the meaning of an \xmlel{xtype} is required (for 
+example, the POS param in SODA) and a service does not support the serialized value, 
+the service should issue an error message that starts with the following text with the 
+most specific \xmlel{xtype} noted:
+\begin{verbatim}
+unsupported-xtype: {xtype} [optional detail here]
+\end{verbatim}
+and may include additional detail where noted. For example, the value of the SODA POS parameter
+is a \verb|xtype="shape"|, but if the implementation does not support the "range" construct, it 
+would respond (minimally) with:
+\begin{verbatim}
+unsupported-xtype: range
+\end{verbatim}
+This behaviour will allow for new \xmlel{xtype}s to be introduced and for \verb|xtype="shape"| 
+to be extended to include additional subtypes in the future.
 
 \subsection{Standard Parameters}
 
