@@ -7,7 +7,7 @@ DALI: Data Access Layer Interface
 
 DALI-1.1 is an IVOA standard.
 
-Ideas for inclusion into DALI-1.2 can be found on the 
-<a href="https://wiki.ivoa.net/twiki/bin/view/IVOA/DALI-1_1-Next">DALI-1_1-Next</a> 
+Ideas for inclusion into DALI-1.2 can be found on the
+<a href="https://wiki.ivoa.net/twiki/bin/view/IVOA/DALI-1_1-Next">DALI-1_1-Next</a>
 wiki page.
 
