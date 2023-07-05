@@ -625,17 +625,18 @@ UPLOAD=bar,http://example.com/bar
 Services must respond with an error if the request includes multiple values for
 parameters defined to be single-valued.
 
-\subsection{Literal Values}
+\subsection{Data Types and Literal Values}
 In this section we specify how values are to be expressed. These literal values
 are used as input or output from DAL services: as parameter values when
 invoking simple services, as data values in response documents (e.g. VOTable),
 etc. We define some general purpose values for the \xmlel{xtype} attribute of
 the VOTable \xmlel{FIELD} and \xmlel{PARAM} elements  for simple
 structured values: \emph{timestamp}, \emph{interval},
-\emph{point}, \emph{circle}, \emph{polygon}, \emph{moc}, \emph{multipolygon},
-and \emph{shape} (see below).
-Services may
-use non-standard \xmlel{xtype} values for non-standard datatypes, but if they
+\emph{hms}, \emph{dms},
+\emph{point}, \emph{circle}, \emph{range}, \emph{polygon}, \emph{moc},
+\emph{multipolygon}, \emph{shape}, \emph{uri}, and \emph{uuid} (see below).
+
+Services may use non-standard \xmlel{xtype} values for non-standard datatypes, but if they
 do so they should include a simple prefix (a string followed by a colon
 followed by the non-standard xtype) so client software can easily determine
 if a value is standard or not. For example, an \xmlel{xtype} for a
@@ -757,6 +758,25 @@ or maximum value. These are specified using the standard scalar \verb|MIN| and
 \verb|MAX| child elements to describe the (minimum) lower bound and (maximum)
 upper bound of interval(s) respectively.
 
+\subsubsection{Sexagessimal Coordinates}
+Coordinate values expressed in sexagessimal form can be described using the following
+xtypes in both VOTable \xmlel{FIELD} and \xmlel{PARAM} elements:
+
+right ascension: \verb|datatype="char"| \verb|arraysize="*"| \verb|xtype="hms"|
+
+declination: \verb|datatype="char"| \verb|arraysize="*"| \verb|xtype="dms"|
+
+For \verb|xtype="hms"|, the values are serialised as hours:minutes:seconds where hours
+and minutes are integer values and seconds is a real value. For \verb|xtype="dms"|, the values
+are serialised as degrees:minutes:seconds where degrees and minutes are integer
+values and seconds is a real value. All hours must fall within [0,24], degrees
+(latitude) must fall within [-90,90], minutes must fall within [0,60), and seconds
+must fall within [0,60). Valid values for \verb|xtype="hms"| are from 0:0:0 to 24:0:0.
+Valid values for \verb|xtype="dms"| are from -90:0:0 to 90:0:0; an optional + sign at
+the start is allowed (e.g. +10:20:30) but not required. Since the upper bound on minutes 
+and seconds is not part of the valid range; for example 12:34:60 is not allowed and must 
+be expressed as 12:35:00 instead.
+
 \subsubsection{Point}
 Geometry values are two-dimensional; although they are usually longitude and
 latitude values in spherical coordinates this is specified in the coordinate
@@ -807,13 +827,47 @@ a definition of a minimum or maximum circle to describe field values (in a colum
 of a table), but specific services may define something that is applicable in a
 more limited context.
 
+\subsubsection{Range}
+Range values serialised in VOTable or service parameters must have the following
+metadata in the \xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|,
+\verb|arraysize="4"|, \verb|xtype="range"|. A range is a coordinate bounding box specified
+as two pairs of coordinate values: min-coordinate1 max-coordinate1 min-coordinate2 max-coordinate2.
+For example:
+
+\begin{verbatim}
+10.0 11.0 20.0 21.0
+\end{verbatim}
+
+includes values from 10 to 11 (coordinate1) and from 20 to 21 (coordinate2).
+
+In spherical coordinates, coordinates are longitude followed by latitude; longitude values must
+fall within [0,360] and all latitude values within [-90,90]. This range form is used as part of
+the value of the POS parameter in \citep{2015ivoa.spec.1223D} and \citep{2017ivoa.spec.0517B}
+(see also "shape" below). A range can span the meridian (longitude 0): 359 1 -1 1 is interpreted
+as the small (2x2 degree) coordinate range from 359 across the meridian to 1 degree longitude.
+
+Range-valued service parameters may include additional metadata like minimum and
+or maximum value. These are specified using a custom interpretation of the
+\verb|MAX| child element with a value that is the largest range that makes sense
+for the operation. The value could be a maximum allowed by the service or simply
+the range where larger ranges and ranges outside the specified maximum will not yield
+useful results.
+
+There is no general purpose definition of a minimum range value for parameters or
+a definition of a minimum or maximum range to describe field values (in a column
+of a table), but specific services may define something that is applicable in a
+more limited context.
+
 \subsubsection{Polygon}
 Polygon values serialised in VOTable or service parameters must have the following metadata in the
 \xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|,  \verb|arraysize="*"|, \verb|xtype="polygon"|
 (where arraysize may also be fixed length or variable length with limit).
 The array holds a sequence of vertices (points) (e.g. longitude latitude longitude
 latitude ...) with an even number of values and at least three (3) points (six
-(6) numeric values). For example:
+(6) numeric values). A polygon is always implicitly closed: there is an implied edge from
+the last point back to the first point; explicitly including the first point at the end is
+not allowed (highly discouraged?) because it creates an edge of length 0 that has
+negative side effects on some polygon computations. For example:
 
 \begin{verbatim}
 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
@@ -859,9 +913,6 @@ The array holds a sequence of non-overlapping polygon(s) separated by a \verb|Na
 11.0 11.0 11.2 11.0 11.2 11.2 11.0 11.2
 \end{verbatim}
 
-NOTE: Prototypes will determine if a single NaN value (as above) or two adjacent NaN values (a NaN point)
-is easier to serialise, parse, and validate.
-
 A multi-polygon without a separator is allowed, so all (simple) polygons are also valid multi-polygons. The
 component polygons in a multipolygon may touch (vertex of one on an edge of another, including sharing vertices)
 but may not have any common area.
@@ -873,19 +924,28 @@ for polygon above, except that the maximum value may be a multipolygon.
 Shape values serialised in VOTable or service parameters must have the following metadata in the
 \xmlel{FIELD} element: \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="shape"|
 (where arraysize may also be fixed length or variable length with limit).
-The value is a polymorphic shape made up of a type label (equivalent to an existing xtype: \verb|circle|,
-\verb|polygon|, or \verb|multipolygon|) and the string serialisation of the value
-as described above. For example:
+The value is a polymorphic shape made up of a type label (equivalent to an existing simple
+geometric xtype and the string serialisation of the value as described above.
+
+The allowed shapes are: \verb|circle|, \verb|range|, \verb|polygon|. For example:
 
 \begin{verbatim}
 circle 12.3 45.6 0.5
 \end{verbatim}
 
 \begin{verbatim}
+range 10.0 11.0 20.0 21.0
+\end{verbatim}
+
+\begin{verbatim}
 polygon 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
 \end{verbatim}
 
-The interpretation and constraints on the coordinate values are as specified for the individual xtypes above.
+The interpretation and constraints on the coordinate values are as specified 
+for the individual xtypes above.
+
+The shape xtype provides a compatible description of the POS parameter in
+\citep{2015ivoa.spec.1223D} and \citep{2017ivoa.spec.0517B}.
 
 Shape-valued service parameters may include additional metadata to describe minimum
 and/or maximum values. These are specified using a custom interpretation of the
@@ -922,6 +982,42 @@ a definition of a minimum or maximum shape to describe field values (in a column
 of a table), but specific services may define something that is applicable in a
 more limited context.
 
+\subsubsection{URI}
+URI values \citep{std:RFC3986} serialised in VOTable or service parameters 
+should have the following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, 
+\verb|arraysize="*"|, \verb|xtype="uri"| (where arraysize may also be fixed length or 
+variable length with limit).
+
+\subsubsection{UUID}
+Univeral Unique Identifier (UUID) values serialised in VOTable or service parameters 
+should have the following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, 
+\verb|arraysize="36"|, \verb|xtype="uuid"| (where arraysize may also be fixed length or 
+variable length with limit).
+
+UUID values \citep{std:RFC4122} are serialised using the canonical ascii (hex) 
+representation, for example: e0b895ca-2ee4-4f0f-b595-cbd83be40b04.
+
+\subsubsection{Unsupported Types}
+
+Support for any specific \xmlel{xtype} in implementations (client or service) is specified in
+the service standard document. However, support for a specific \xmlel{xtype} as input (params
+and uploaded content) should generally be considered optional. Implementations should 
+be able to read and write the underlying data type without knowing the semantics added 
+by the \xmlel{xtype}. In cases where understanding the meaning of an \xmlel{xtype} is required (for 
+example, the POS param in SODA) and a service does not support the serialized value, 
+the service should issue an error message that starts with the following text with the 
+most specific \xmlel{xtype} noted:
+\begin{verbatim}
+unsupported-xtype: {xtype} [optional detail here]
+\end{verbatim}
+and may include additional detail where noted. For example, the value of the SODA POS parameter
+is a \verb|xtype="shape"|, but if the implementation does not support the "range" construct, it 
+would respond (minimally) with:
+\begin{verbatim}
+unsupported-xtype: range
+\end{verbatim}
+This behaviour will allow for new \xmlel{xtype}s to be introduced and for \verb|xtype="shape"| 
+to be extended to include additional subtypes in the future.
 
 \subsection{Standard Parameters}
 
@@ -1402,7 +1498,7 @@ future, they may also be used to describe the value.
 \begin{itemize}
 \item Clarified that truncation indicated by OVERFLOW can occur independent of
 MAXREC
-\item added new xtypes: moc, shape, multipolygon
+\item added new xtypes: hms, dms, moc, multipolygon, range, shape, uri, uuid
 \item changed VOSI-availability to optional
 \item changed VOSI-capability so it is only required for registered services
 \end{itemize}
