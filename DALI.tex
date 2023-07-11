@@ -578,54 +578,8 @@ Since DAL services with a VOSI-tables resource will specify
 in the capabilities which version they are using, DAL services can make use of
 new versions without change to the DAL service specification.
 
-\section{Parameters}
-\label{sec:parameters}
-A DAL job is defined by a set of parameter-value pairs. Some of these parameters
-have a standard meaning and are defined here, but most are defined by the
-service specification or another related standard.
-
-\subsection{Case Sensitivity}
-Parameter names are not case sensitive; a DAL service must treat
-\hbox{upper-,} \hbox{lower-,}
-and mixed-case parameter names as equal. Parameter values are case sensitive
-unless a concrete DAL service specification explicitly states that the values of
-a specific parameter are to be treated as case-insensitive. For example, the
-following are equivalent:
-
-\begin{verbatim}
-FOO=bar
-Foo=bar
-foo=bar
-\end{verbatim}
-
-Unless explicitly stated by the service specification, these are not equivalent:
-
-\begin{verbatim}
-FOO=bar
-FOO=Bar
-FOO=BAR
-\end{verbatim}
-
-In this document, parameter names are typically shown in upper-case for
-typographical clarity, not as a requirement.
-
-\subsection{Multiple Values}
-Parameters may be assigned multiple values with multiple parameter=value pairs
-using the same parameter name. Whether or not multiple values are permitted and
-the meaning of multiple values is specified for each parameter by the
-specification that defines the parameter. For example, the UPLOAD parameter
-(section~\ref{sec:UPLOAD}) permits multiple occurrences of the specified
-pair (table,uri), e.g.:
-
-\begin{verbatim}
-UPLOAD=foo,http://example.com/foo
-UPLOAD=bar,http://example.com/bar
-\end{verbatim}
-
-Services must respond with an error if the request includes multiple values for
-parameters defined to be single-valued.
-
-\subsection{Data Types and Literal Values}
+\section{Data Types and Literal Values}
+\label{sec:xtypes}
 In this section we specify how values are to be expressed. These literal values
 are used as input or output from DAL services: as parameter values when
 invoking simple services, as data values in response documents (e.g. VOTable),
@@ -642,11 +596,11 @@ followed by the non-standard xtype) so client software can easily determine
 if a value is standard or not. For example, an \xmlel{xtype} for a
 non-standard 3D-vector might be \emph{geom:vector3d}.
 
-\subsubsection{Numbers}
+\subsection{Numbers}
 Integer and real numbers must be represented in a manner consistent with the
 specification for numbers in VOTable \citep{2019ivoa.spec.1021O}.
 
-\subsubsection{Boolean}
+\subsection{Boolean}
 Boolean values must be represented in a manner consistent with the
 specification
 for Boolean in XML Schema Datatypes \citep{std:XSD2}. The values 0 and false
@@ -662,7 +616,7 @@ BAR=0
 BAR=false
 \end{verbatim}
 
-\subsubsection{Timestamp}
+\subsection{Timestamp}
 Date and time values must be represented  using the convention established for
 FITS \citep{std:FITS} and STC \citep{2007ivoa.spec.1030R} for astronomical times:
 
@@ -716,7 +670,7 @@ the \xmlel{FIELD} element: \verb|datatype="char"|,  \verb|arraysize="*"|,
 \verb|xtype="timestamp"|; the arraysize may be set to a more specific value if it is known (e.g.
 \verb|arraysize="10"| for dates only).
 
-\subsubsection{Intervals}
+\subsection{Intervals}
 Numeric intervals are pairs of numeric values (integer and floating-point). For floating point
 intervals, special values for positive and negative infinity may be used to specify open-ended intervals.
 Finite bounding values are included in the interval. Open-ended floating-point
@@ -758,7 +712,7 @@ or maximum value. These are specified using the standard scalar \verb|MIN| and
 \verb|MAX| child elements to describe the (minimum) lower bound and (maximum)
 upper bound of interval(s) respectively.
 
-\subsubsection{Sexagessimal Coordinates}
+\subsection{Sexagessimal Coordinates}
 Coordinate values expressed in sexagessimal form can be described using the following
 xtypes in both VOTable \xmlel{FIELD} and \xmlel{PARAM} elements:
 
@@ -778,7 +732,7 @@ the start is allowed (e.g. +10:20:30) but not required. The upper bound on minut
 and seconds is not part of the valid range; for example 12:34:60 is not allowed and must 
 be expressed as 12:35:00 instead.
 
-\subsubsection{Point}
+\subsection{Point}
 Geometry values are two-dimensional; although they are usually longitude and
 latitude values in spherical coordinates this is specified in the coordinate
 metadata and not in the values.
@@ -799,7 +753,7 @@ latitude values within [-90,90].
 There is no general purpose definition of minimum and/or maximum point values, but
 specific services may define something that is applicable in a more limited context.
 
-\subsubsection{Circle}
+\subsection{Circle}
 Circle values serialised in VOTable or service parameters must have the following metadata in the
 \xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="3"|,
 \verb|xtype="circle"|. For circles
@@ -828,7 +782,7 @@ a definition of a minimum or maximum circle to describe field values (in a colum
 of a table), but specific services may define something that is applicable in a
 more limited context.
 
-\subsubsection{Range}
+\subsection{Range}
 Range values serialised in VOTable or service parameters must have the following
 metadata in the \xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|,
 \verb|arraysize="4"|, \verb|xtype="range"|. A range is a coordinate bounding box specified
@@ -859,7 +813,7 @@ a definition of a minimum or maximum range to describe field values (in a column
 of a table), but specific services may define something that is applicable in a
 more limited context.
 
-\subsubsection{Polygon}
+\subsection{Polygon}
 Polygon values serialised in VOTable or service parameters must have the following metadata in the
 \xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|,  \verb|arraysize="*"|, \verb|xtype="polygon"|
 (where arraysize may also be fixed length or variable length with limit).
@@ -892,7 +846,7 @@ a definition of a minimum or maximum polygon to describe field values (in a colu
 of a table), but specific services may define something that is applicable in a
 more limited context.
 
-\subsubsection{MOC}
+\subsection{MOC}
 Spatial MOC (Multi Order Coverage) values serialised in VOTable or service parameters must
 have the following metadata in the \xmlel{FIELD} element:
 \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="moc"|
@@ -902,7 +856,7 @@ section 4.3.2 and may be a one- or two-dimension (spatial) MOC.
 
 Note: explicit time MOC and space-time MOC xtypes may be added in future version.
 
-\subsubsection{Multi-Polygon}
+\subsection{Multi-Polygon}
 Multi-polygon values serialised in VOTable or service parameters must have the
 following metadata in the \xmlel{FIELD} element:  \verb|datatype="double"| or \verb|datatype="float"|,
 \verb|arraysize="*"|, \verb|xtype="multipolygon"|
@@ -921,7 +875,7 @@ but may not have any common area.
 Multi-polygon-valued service parameters can have additional metadata as described
 for polygon above, except that the maximum value may be a multipolygon.
 
-\subsubsection{Shape}
+\subsection{Shape}
 Shape values serialised in VOTable or service parameters must have the following metadata in the
 \xmlel{FIELD} element: \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="shape"|
 (where arraysize may also be fixed length or variable length with limit).
@@ -983,13 +937,13 @@ a definition of a minimum or maximum shape to describe field values (in a column
 of a table), but specific services may define something that is applicable in a
 more limited context.
 
-\subsubsection{URI}
+\subsection{URI}
 URI values \citep{std:RFC3986} serialised in VOTable or service parameters 
 should have the following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, 
 \verb|arraysize="*"|, \verb|xtype="uri"| (where arraysize may also be fixed length or 
 variable length with limit).
 
-\subsubsection{UUID}
+\subsection{UUID}
 Univeral Unique Identifier (UUID) values serialised in VOTable or service parameters 
 should have the following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, 
 \verb|arraysize="36"|, \verb|xtype="uuid"| (where arraysize may also be fixed length or 
@@ -998,7 +952,7 @@ variable length with limit).
 UUID values \citep{std:RFC4122} are serialised using the canonical ascii (hex) 
 representation, for example: e0b895ca-2ee4-4f0f-b595-cbd83be40b04.
 
-\subsubsection{Unsupported Types}
+\subsection{Unsupported Types}
 
 Support for any specific \xmlel{xtype} in implementations (client or service) is specified in
 the service standard document. However, support for a specific \xmlel{xtype} as input (params
@@ -1019,6 +973,53 @@ unsupported-xtype: range
 \end{verbatim}
 This behaviour will allow for new \xmlel{xtype}s to be introduced and for \verb|xtype="shape"| 
 to be extended to include additional subtypes in the future.
+
+\section{Parameters}
+\label{sec:parameters}
+A DAL job is defined by a set of parameter-value pairs. Some of these parameters
+have a standard meaning and are defined here, but most are defined by the
+service specification or another related standard.
+
+\subsection{Case Sensitivity}
+Parameter names are not case sensitive; a DAL service must treat
+\hbox{upper-,} \hbox{lower-,}
+and mixed-case parameter names as equal. Parameter values are case sensitive
+unless a concrete DAL service specification explicitly states that the values of
+a specific parameter are to be treated as case-insensitive. For example, the
+following are equivalent:
+
+\begin{verbatim}
+FOO=bar
+Foo=bar
+foo=bar
+\end{verbatim}
+
+Unless explicitly stated by the service specification, these are not equivalent:
+
+\begin{verbatim}
+FOO=bar
+FOO=Bar
+FOO=BAR
+\end{verbatim}
+
+In this document, parameter names are typically shown in upper-case for
+typographical clarity, not as a requirement.
+
+\subsection{Multiple Values}
+Parameters may be assigned multiple values with multiple parameter=value pairs
+using the same parameter name. Whether or not multiple values are permitted and
+the meaning of multiple values is specified for each parameter by the
+specification that defines the parameter. For example, the UPLOAD parameter
+(section~\ref{sec:UPLOAD}) permits multiple occurrences of the specified
+pair (table,uri), e.g.:
+
+\begin{verbatim}
+UPLOAD=foo,http://example.com/foo
+UPLOAD=bar,http://example.com/bar
+\end{verbatim}
+
+Services must respond with an error if the request includes multiple values for
+parameters defined to be single-valued.
 
 \subsection{Standard Parameters}
 
