@@ -1,4 +1,6 @@
 # ivoatex Makefile.  The ivoatex/README for the targets available.
+AUTHOR_EMAIL = pdowler.cadc@gmail.com
+IVOA_GROUP = Data Access Layer
 
 # short name of your document (edit $DOCNAME.tex; would be like RegTAP)
 DOCNAME = DALI
@@ -7,7 +9,7 @@ DOCNAME = DALI
 DOCVERSION = 1.2
 
 # Publication date, ISO format; update manually for "releases"
-DOCDATE = 2023-05-29
+DOCDATE = 2023-07-12
 
 # What is it you're writing: NOTE, WD, PR, or REC
 DOCTYPE = WD
