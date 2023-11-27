@@ -1391,12 +1391,11 @@ also free to add their own.
 
 \subsubsection{Overflow}
 \label{sec:response-overflow}
-If an overflow occurs (for example, result exceeds MAXREC), the service must include an
-\xmlel{INFO}
-element in the \xmlel{RESOURCE} with \verb|name="QUERY\_STATUS"| and the
-\verb|value="OVERFLOW"|. If
-the initial \xmlel{INFO} element (above) specified the overflow, no further elements are
-needed, e.g.:
+If an overflow occurs (for example, result exceeds MAXREC) and the output format
+is VOTable, the service must include an \xmlel{INFO} element in the \xmlel{RESOURCE}
+with \verb|name="QUERY\_STATUS"| and the \verb|value="OVERFLOW"|. If the initial
+\xmlel{INFO} element (above) specified the overflow, no further elements are needed,
+e.g.:
 
 \begin{lstlisting}[language=XML]
 <RESOURCE type="results">
@@ -1417,6 +1416,10 @@ append an \xmlel{INFO} element for the overflow after the table, e.g.:
 <INFO name="QUERY_STATUS" value="OVERFLOW"/>
 </RESOURCE>
 \end{lstlisting}
+
+There is no defined mechanism to indicate overflow (truncation) of output for formats
+other than VOTable. Specifically, simple text formats like \verb|text/csv| and
+\verb|text/tab-separated-values| do not support indicating overflow.
 
 In general, services may truncate the output results when reaching a limit. A default or
 user-specified value of the MAXREC parameter is a common mechanism that causes truncation
