@@ -233,7 +233,7 @@ may not be modified.
 A concrete DAL service specification will specify zero or more asynchronous job
 submission resources and whether they are mandatory or optional. It may mandate
 a specific resource name to support simple client use, or it can allow the
-resource name to be described in the service metadata (Section 2.5 ).
+resource name to be described in the service metadata (Section~\ref{sec:vosi-capabilities}).
 
 \subsection{Synchronous Execution: DALI-sync}
 \label{sec:dali-sync}
@@ -266,7 +266,8 @@ semantics) in order to complete requests.
 A concrete DAL service specification will specify zero or more synchronous job
 submission resources and whether they are mandatory or optional. It may mandate
 a specific resource name to support simple client use, or it can allow the
-resource name to be described in the service capability metadata (Section 2.5 ).
+resource name to be described in the service capability metadata 
+(Section~\ref{sec:vosi-capabilities}).
 
 \subsection{DALI-examples}
 \label{sec:dali-examples}
@@ -287,7 +288,8 @@ $$
 $$
 
 DAL services may implement the /examples resource and include it in the
-capabilities described by the VOSI-capabilities resource (Section 2.5 ); if they
+capabilities described by the VOSI-capabilities resource 
+(Section~\ref{sec:vosi-capabilities}); if they
 do not, retrieving its URL must yield a 404 HTTP error code.
 
 The document at /examples must be well-formed XML. This restriction is imposed
@@ -1075,8 +1077,8 @@ pretty-printed Web page & text/html & html & \\
 In some cases, the specification for a specific format may be parameterised
 (e.g., the media type may include optional semi-colon and additional key-value
 parameters). A DAL service must accept a RESPONSEFORMAT parameter indicating a
-format that the service supports and should  fail (Section 4.2 ) where the
-RESPONSEFORMAT parameter specifies a format not supported by the service
+format that the service supports and should  fail (Section~\ref{sec:response-error}) 
+where the RESPONSEFORMAT parameter specifies a format not supported by the service
 implementation.
 
 A concrete DAL service specification will specify any mandatory or optional
@@ -1120,11 +1122,11 @@ service may apply a default value or may set no limit. The service may also
 enforce a limit on the value of MAXREC that is smaller than the value in the
 request. If the size of the result exceeds the resulting limit, the service must
 only return the requested number of rows. If the result set is truncated in this
-fashion, it must include an overflow indicator as specified in Section 4.4.1 .
+fashion, it must include an overflow indicator as specified in Section \ref{sec:response-overflow}.
 
 The service must support the special value of MAXREC=0. This value indicates
 that, in the event of an otherwise valid request, a valid response be returned
-containing metadata, no results, and an overflow indicator (Section 4.4.1 ). The
+containing metadata, no results, and an overflow indicator. The
 service is not required to execute the request and the overflow indicator does
 not necessarily mean that there is at least one record satisfying the query. The
 service may perform validation and may try to execute the request, in which case
@@ -1325,7 +1327,7 @@ protocols should be used.
 A concrete DAL service specification may require that HTTP redirects (302 or
 303) be used to communicate the location of an alternate resource which should
 be accessed by the client via the HTTP GET method. For example, the UWS pattern
-used for DALI-async (Section 2.1 ) requires this behaviour. Even when not
+used for DALI-async (\ref{sec:dali-async}) requires this behaviour. Even when not
 required, concrete DAL service specifications must allow implementers to use
 redirects and clients must be prepared to follow these redirects using normal
 HTTP semantics \citep{std:HTTP}.
