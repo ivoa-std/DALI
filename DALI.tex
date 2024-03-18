@@ -515,7 +515,8 @@ VOSI-capabilities should describe all the resources exposed by the service,
 including which standards each resource implements.
 
 All registered DAL services must implement the /capabilities resource. The following
-capabilities document shows the three VOSI resources and a TAP base resource:
+capabilities document shows the capabilities and tables VOSI resources
+and a TAP base resource:
 
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
 <?xml version="1.0" encoding="UTF-8"?>
@@ -528,14 +529,6 @@ capabilities document shows the three VOSI resources and a TAP base resource:
     <interface xsi:type="vod:ParamHTTP" version="1.0">
       <accessURL use="full">
          http://example.com/tap/capabilities
-      </accessURL>
-    </interface>
-  </capability>
-
-  <capability standardID="ivo://ivoa.net/std/VOSI#availability">
-    <interface xsi:type="vod:ParamHTTP" version="1.0">
-      <accessURL use="full">
-         http://example.com/tap/availability
       </accessURL>
     </interface>
   </capability>
