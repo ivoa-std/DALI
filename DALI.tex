@@ -92,6 +92,7 @@ could also define a fixed set of error messages for anticipated failure modes
 to a specified registry extension schema
 \end{itemize}
 
+\noindent
 and would have to define the registry extension schema to be used to register
 services and to implement the VOSI-capabilities resource. Most of the service
 specification would be in defining the semantics (possibly controllable via
@@ -377,6 +378,7 @@ For instance,
 </div>
 \end{lstlisting}
 
+\noindent
 would imply that the name of the example \texttt{x} is
 \nolinkurl{http://object-resolver.edu/M42} rather than just ``Messier
 42''.  Full RDFa offers the \xmlel{content} attribute to allow correct
@@ -626,7 +628,8 @@ FITS \citep{std:FITS} and STC \citep{2007ivoa.spec.1030R} for astronomical times
 YYYY-MM-DD['T'hh:mm:ss[.SSS]]
 \end{verbatim}
 
-where the  T is a character separating the date and time components. The time
+\noindent
+where the T is a character separating the date and time components. The time
 component is optional, in which case the T separator is not used. Fractions of a
 second are permitted but not required. For example:
 
@@ -636,6 +639,7 @@ second are permitted but not required. For example:
 2002-03-04
 \end{verbatim}
 
+\noindent
 are all legal date or date plus time values. Astronomical values never
 include a time zone indicator. However, values that
 are civil in nature (e.g. when some processing was completed, when some record
@@ -646,6 +650,7 @@ the UTC time zone. Civil times conform to:
 YYYY-MM-DD['T'hh:mm:ss[.SSS]['Z']]
 \end{verbatim}
 
+\noindent
 where the optional Z character indicates the value is UTC. For example:
 
 \begin{verbatim}
@@ -653,6 +658,7 @@ where the optional Z character indicates the value is UTC. For example:
 2000-01-02T15:20:30Z
 \end{verbatim}
 
+\noindent
 are valid civil time values. In cases where time values may be
 expressed using Julian Date (JD) or Modified Julian Date (MJD), these follow the
 rules for double precision numbers above and may have additional metadata as
@@ -797,6 +803,7 @@ For example:
 10.0 11.0 20.0 21.0
 \end{verbatim}
 
+\noindent
 includes values from 10 to 11 (coordinate1) and from 20 to 21 (coordinate2).
 
 Valid coordinate value limits are specified by \verb|xtype="point"| above. 
@@ -1145,6 +1152,7 @@ example:
 UPLOAD=table1,http://example.com/t1
 \end{verbatim}
 
+\noindent
 would define an input named table1 at the given URI. Resource names must be
 simple strings made up of alphabetic, numeric, and the underscore characters
 only and must start with an alphabetic character.
