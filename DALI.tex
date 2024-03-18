@@ -490,8 +490,9 @@ with a vocab and examples as described above.
 VOSI-availability \citep{2017ivoa.spec.0524G} defines a simple web resource that
 reports on the current ability of the service to perform.
 
-All DAL services must implement the VOSI-availability resource and provide a description
-of this capability in the VOSI-capabilities document. The VOSI-availability resource is
+If the VOSI-availability resource is implemented a description
+of this capability must be provided in the VOSI-capabilities document.
+The VOSI-availability resource is
 intended to respond with a dynamically generated document describing the current state of the service
 operation, e.g.:
 
@@ -513,7 +514,7 @@ resource named capabilities that is a child of the base URL for the service. The
 VOSI-capabilities should describe all the resources exposed by the service,
 including which standards each resource implements.
 
-All DAL services must implement the /capabilities resource. The following
+All registered DAL services must implement the /capabilities resource. The following
 capabilities document shows the three VOSI resources and a TAP base resource:
 
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
