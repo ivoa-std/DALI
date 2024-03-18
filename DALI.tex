@@ -1126,7 +1126,7 @@ service may apply a default value or may set no limit. The service may also
 enforce a limit on the value of MAXREC that is smaller than the value in the
 request. If the size of the result exceeds the resulting limit, the service must
 only return the requested number of rows. If the result set is truncated in this
-fashion, it must include an overflow indicator as specified in Section \ref{sec:response-overflow}.
+fashion, it must include an overflow indicator where possible as specified in Section \ref{sec:response-overflow}.
 
 The service must support the special value of MAXREC=0. This value indicates
 that, in the event of an otherwise valid request, a valid response be returned
@@ -1427,7 +1427,8 @@ other than VOTable. Specifically, simple text formats like \verb|text/csv| and
 \verb|text/tab-separated-values| do not support indicating overflow.
 
 In general, services may truncate the output results when reaching a limit. A default or
-user-specified value of the MAXREC parameter is a common mechanism that causes truncation
+user-specified value of the MAXREC parameter defined in Section \ref{sec:MAXREC}
+is a common mechanism that causes truncation
 of results, but service providers may also impose limits in services that do not use
 MAXREC and indicate that the limit was reached with the overflow indicator.
 
