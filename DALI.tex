@@ -729,6 +729,9 @@ xtypes in both VOTable \xmlel{FIELD} and \xmlel{PARAM} elements:
 \item declination: \verb|datatype="char"| \verb|arraysize="*"| \verb|xtype="dms"|
 \end{itemize}
 
+\noindent
+(the arraysize may also be a fixed length or variable length with limit).
+
 For \verb|xtype="hms"|, the values are serialised as hours:minutes:seconds where hours
 and minutes are integer values and seconds is a real value. For \verb|xtype="dms"|, the values
 are serialised as degrees:minutes:seconds where degrees and minutes are integer
