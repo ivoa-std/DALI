@@ -92,6 +92,7 @@ could also define a fixed set of error messages for anticipated failure modes
 to a specified registry extension schema
 \end{itemize}
 
+\noindent
 and would have to define the registry extension schema to be used to register
 services and to implement the VOSI-capabilities resource. Most of the service
 specification would be in defining the semantics (possibly controllable via
@@ -377,6 +378,7 @@ For instance,
 </div>
 \end{lstlisting}
 
+\noindent
 would imply that the name of the example \texttt{x} is
 \nolinkurl{http://object-resolver.edu/M42} rather than just ``Messier
 42''.  Full RDFa offers the \xmlel{content} attribute to allow correct
@@ -488,8 +490,9 @@ with a vocab and examples as described above.
 VOSI-availability \citep{2017ivoa.spec.0524G} defines a simple web resource that
 reports on the current ability of the service to perform.
 
-All DAL services must implement the VOSI-availability resource and provide a description
-of this capability in the VOSI-capabilities document. The VOSI-availability resource is
+If the VOSI-availability resource is implemented a description
+of this capability must be provided in the VOSI-capabilities document.
+The VOSI-availability resource is
 intended to respond with a dynamically generated document describing the current state of the service
 operation, e.g.:
 
@@ -511,8 +514,9 @@ resource named capabilities that is a child of the base URL for the service. The
 VOSI-capabilities should describe all the resources exposed by the service,
 including which standards each resource implements.
 
-All DAL services must implement the /capabilities resource. The following
-capabilities document shows the three VOSI resources and a TAP base resource:
+All registered DAL services must implement the /capabilities resource. The following
+capabilities document shows the capabilities and tables VOSI resources
+and a TAP base resource:
 
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
 <?xml version="1.0" encoding="UTF-8"?>
@@ -525,14 +529,6 @@ capabilities document shows the three VOSI resources and a TAP base resource:
     <interface xsi:type="vod:ParamHTTP" version="1.0">
       <accessURL use="full">
          http://example.com/tap/capabilities
-      </accessURL>
-    </interface>
-  </capability>
-
-  <capability standardID="ivo://ivoa.net/std/VOSI#availability">
-    <interface xsi:type="vod:ParamHTTP" version="1.0">
-      <accessURL use="full">
-         http://example.com/tap/availability
       </accessURL>
     </interface>
   </capability>
@@ -626,7 +622,8 @@ FITS \citep{std:FITS} and STC \citep{2007ivoa.spec.1030R} for astronomical times
 YYYY-MM-DD['T'hh:mm:ss[.SSS]]
 \end{verbatim}
 
-where the  T is a character separating the date and time components. The time
+\noindent
+where the T is a character separating the date and time components. The time
 component is optional, in which case the T separator is not used. Fractions of a
 second are permitted but not required. For example:
 
@@ -636,6 +633,7 @@ second are permitted but not required. For example:
 2002-03-04
 \end{verbatim}
 
+\noindent
 are all legal date or date plus time values. Astronomical values never
 include a time zone indicator. However, values that
 are civil in nature (e.g. when some processing was completed, when some record
@@ -646,6 +644,7 @@ the UTC time zone. Civil times conform to:
 YYYY-MM-DD['T'hh:mm:ss[.SSS]['Z']]
 \end{verbatim}
 
+\noindent
 where the optional Z character indicates the value is UTC. For example:
 
 \begin{verbatim}
@@ -653,6 +652,7 @@ where the optional Z character indicates the value is UTC. For example:
 2000-01-02T15:20:30Z
 \end{verbatim}
 
+\noindent
 are valid civil time values. In cases where time values may be
 expressed using Julian Date (JD) or Modified Julian Date (MJD), these follow the
 rules for double precision numbers above and may have additional metadata as
@@ -709,7 +709,7 @@ Integer interval values serialised in VOTable or service parameters must have th
 \verb|datatype="long"|, \verb|arraysize="2"|, \verb|xtype="interval"|.
 
 Interval values serialised in VOTable (\xmlel{FIELD}) or service parameters
-(\xmlel{PARAM}) with this xtype may include additional metadata like minimum and
+(\xmlel{PARAM}) with this xtype may include additional metadata like minimum
 or maximum value. These are specified using the standard scalar \verb|MIN| and
 \verb|MAX| child elements to describe the (minimum) lower bound and (maximum)
 upper bound of interval(s) respectively.
@@ -722,6 +722,9 @@ xtypes in both VOTable \xmlel{FIELD} and \xmlel{PARAM} elements:
 \item right ascension: \verb|datatype="char"| \verb|arraysize="*"| \verb|xtype="hms"|
 \item declination: \verb|datatype="char"| \verb|arraysize="*"| \verb|xtype="dms"|
 \end{itemize}
+
+\noindent
+(the arraysize may also be a fixed length or variable length with limit).
 
 For \verb|xtype="hms"|, the values are serialised as hours:minutes:seconds where hours
 and minutes are integer values and seconds is a real value. For \verb|xtype="dms"|, the values
@@ -797,6 +800,7 @@ For example:
 10.0 11.0 20.0 21.0
 \end{verbatim}
 
+\noindent
 includes values from 10 to 11 (coordinate1) and from 20 to 21 (coordinate2).
 
 Valid coordinate value limits are specified by \verb|xtype="point"| above. 
@@ -826,7 +830,7 @@ The array holds a sequence of vertices (points) (e.g. longitude latitude longitu
 latitude ...) with an even number of values and at least three (3) points (six
 (6) numeric values). A polygon is always implicitly closed: there is an implied edge from
 the last point back to the first point; explicitly including the first point at the end is
-not allowed (highly discouraged?) because it creates an edge of length 0 that has
+highly discouraged because it creates an edge of length 0 that has
 negative side effects on some polygon computations. For example:
 
 \begin{verbatim}
@@ -859,7 +863,7 @@ have the following metadata in the \xmlel{FIELD} element:
 The value is the ascii serialisation of a MOC specified in \citet{2022ivoa.spec.0727F}
 section 4.3.2 and may be a one- or two-dimension (spatial) MOC.
 
-Note: explicit time MOC and space-time MOC xtypes may be added in future version.
+Note: explicit time MOC and space-time MOC xtypes may be added in a future version.
 
 \subsection{Multi-Polygon}
 Multi-polygon values serialised in VOTable or service parameters must have the
@@ -1122,7 +1126,7 @@ service may apply a default value or may set no limit. The service may also
 enforce a limit on the value of MAXREC that is smaller than the value in the
 request. If the size of the result exceeds the resulting limit, the service must
 only return the requested number of rows. If the result set is truncated in this
-fashion, it must include an overflow indicator as specified in Section \ref{sec:response-overflow}.
+fashion, it must include an overflow indicator where possible as specified in Section \ref{sec:response-overflow}.
 
 The service must support the special value of MAXREC=0. This value indicates
 that, in the event of an otherwise valid request, a valid response be returned
@@ -1145,6 +1149,7 @@ example:
 UPLOAD=table1,http://example.com/t1
 \end{verbatim}
 
+\noindent
 would define an input named table1 at the given URI. Resource names must be
 simple strings made up of alphabetic, numeric, and the underscore characters
 only and must start with an alphabetic character.
@@ -1393,7 +1398,7 @@ also free to add their own.
 \label{sec:response-overflow}
 If an overflow occurs (for example, result exceeds MAXREC) and the output format
 is VOTable, the service must include an \xmlel{INFO} element in the \xmlel{RESOURCE}
-with \verb|name="QUERY\_STATUS"| and the \verb|value="OVERFLOW"|. If the initial
+with \verb|name="QUERY_STATUS"| and the \verb|value="OVERFLOW"|. If the initial
 \xmlel{INFO} element (above) specified the overflow, no further elements are needed,
 e.g.:
 
@@ -1422,7 +1427,8 @@ other than VOTable. Specifically, simple text formats like \verb|text/csv| and
 \verb|text/tab-separated-values| do not support indicating overflow.
 
 In general, services may truncate the output results when reaching a limit. A default or
-user-specified value of the MAXREC parameter is a common mechanism that causes truncation
+user-specified value of the MAXREC parameter defined in Section \ref{sec:MAXREC}
+is a common mechanism that causes truncation
 of results, but service providers may also impose limits in services that do not use
 MAXREC and indicate that the limit was reached with the overflow indicator.
 
