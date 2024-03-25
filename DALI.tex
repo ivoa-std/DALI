@@ -870,10 +870,11 @@ Multi-polygon values serialised in VOTable or service parameters must have the
 following metadata in the \xmlel{FIELD} element:  \verb|datatype="double"| or \verb|datatype="float"|,
 \verb|arraysize="*"|, \verb|xtype="multipolygon"|
 (where arraysize may also be fixed length or variable length with limit).
-The array holds a sequence of non-overlapping polygon(s) separated by a \verb|NaN| value. For example:
+The array holds a sequence of non-overlapping polygon(s) separated by a pair of \verb|NaN| values
+(a NaN point). For example:
 
 \begin{verbatim}
-10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2 NaN
+10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2 NaN NaN
 11.0 11.0 11.2 11.0 11.2 11.2 11.0 11.2
 \end{verbatim}
 
