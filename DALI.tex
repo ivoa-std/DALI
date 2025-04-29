@@ -596,23 +596,13 @@ non-standard 3D-vector might be \emph{geom:vector3d}.
 
 \subsection{Numbers}
 Integer and real numbers must be represented in a manner consistent with the
-specification for numbers in VOTable \citep{2019ivoa.spec.1021O}.
+specification for numbers in VOTable \citep{2019ivoa.spec.1021O}.  When used as
+values in service parameters, the serialization for \xmlel{TABLEDATA} must be used.
 
 \subsection{Boolean}
 Boolean values must be represented in a manner consistent with the
-specification
-for Boolean in XML Schema Datatypes \citep{std:XSD2}. The values 0 and false
-are equivalent. The values 1 and true are equivalent.
-
-\begin{verbatim}
-FOO=1
-FOO=true
-\end{verbatim}
-
-\begin{verbatim}
-BAR=0
-BAR=false
-\end{verbatim}
+specification for boolean in VOTable \citep{2019ivoa.spec.1021O}. When used as
+values in service parameters, the serialization for \xmlel{TABLEDATA} must be used.
 
 \subsection{Timestamp}
 Date and time values must be represented  using the convention established for
@@ -1515,11 +1505,12 @@ future, they may also be used to describe the value.
 
 \subsection{PR-DALI-1.2}
 \begin{itemize}
-\item Clarified that truncation indicated by OVERFLOW can occur independent of
+\item clarified that truncation indicated by OVERFLOW can occur independent of
 MAXREC
 \item added new xtypes: hms, dms, moc, multipolygon, range, shape, uri, uuid
 \item changed VOSI-availability to optional
 \item changed VOSI-capability so it is only required for registered services
+\item clarified use of VOTable serialisation for numbers and boolean
 \end{itemize}
 
 \subsection{PR-DALI-1.1-20170412}
