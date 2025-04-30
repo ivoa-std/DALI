@@ -580,9 +580,9 @@ new versions without change to the DAL service specification.
 \label{sec:xtypes}
 In this section we specify how values are to be expressed. These literal values
 are used as input or output from DAL services: as parameter values when
-invoking simple services, as data values in response documents (e.g. VOTable),
+invoking services, as data values in response documents (e.g. VOTable),
 etc. We define some general purpose values for the \xmlel{xtype} attribute of
-the VOTable \xmlel{FIELD} and \xmlel{PARAM} elements  for simple
+the VOTable \xmlel{FIELD} and \xmlel{PARAM} elements for simple
 structured values: \emph{timestamp}, \emph{interval},
 \emph{hms}, \emph{dms},
 \emph{point}, \emph{circle}, \emph{range}, \emph{polygon}, \emph{moc},
@@ -658,7 +658,7 @@ at the end of the string when the timezone is UTC; here, we follow the FITS
 defaulting to UTC.
 
 Timestamp values serialised on VOTable or in service parameters must have the following metadata in
-the \xmlel{FIELD} element: \verb|datatype="char"|,  \verb|arraysize="*"|,
+\xmlel{FIELD} and/or \xmlel{PARAM} elements: \verb|datatype="char"|,  \verb|arraysize="*"|,
 \verb|xtype="timestamp"|; the arraysize may be set to a more specific value if it is known (e.g.
 \verb|arraysize="10"| for dates only).
 
@@ -690,12 +690,12 @@ VOTable. For example:
 
 \noindent are all legal integer interval values.
 
-Floating point interval values serialised in VOTable or service parameters must have the following metadata in the
-\xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|,
+Floating point interval values serialised in VOTable or service parameters must have the following metadata
+in \xmlel{FIELD} and/or \xmlel{PARAM} elements: \verb|datatype="double"| or \verb|datatype="float"|,
 \verb|arraysize="2"|, \verb|xtype="interval"|.
 
-Integer interval values serialised in VOTable or service parameters must have the following metadata in the
-\xmlel{FIELD} element: \verb|datatype="short"| or \verb|datatype="int"| or
+Integer interval values serialised in VOTable or service parameters must have the following metadata
+in \xmlel{FIELD} and/or \xmlel{PARAM} elements: \verb|datatype="short"| or \verb|datatype="int"| or
 \verb|datatype="long"|, \verb|arraysize="2"|, \verb|xtype="interval"|.
 
 Interval values serialised in VOTable (\xmlel{FIELD}) or service parameters
@@ -754,8 +754,8 @@ There is no general purpose definition of minimum and/or maximum point values, b
 specific services may define something that is applicable in a more limited context.
 
 \subsection{Circle}
-Circle values serialised in VOTable or service parameters must have the following metadata in the
-\xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="3"|,
+Circle values serialised in VOTable or service parameters must have the following metadata in
+\xmlel{FIELD} and/or \xmlel{PARAM} elements: \verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="3"|,
 \verb|xtype="circle"|. 
 The values are ordered as a point followed by a radius. For example:
 
@@ -781,8 +781,9 @@ more limited context.
 
 \subsection{Range}
 Range values serialised in VOTable or service parameters must have the following
-metadata in the \xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|,
-\verb|arraysize="4"|, \verb|xtype="range"|. A range is a coordinate bounding box specified
+metadata in the \xmlel{FIELD} and/or \xmlel{PARAM} elements: 
+\verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="4"|, \verb|xtype="range"|. 
+A range is a coordinate bounding box specified
 as two pairs of coordinate values: min-coordinate1 max-coordinate1 min-coordinate2 max-coordinate2.
 For example:
 
@@ -813,8 +814,9 @@ of a table), but specific services may define something that is applicable in a
 more limited context.
 
 \subsection{Polygon}
-Polygon values serialised in VOTable or service parameters must have the following metadata in the
-\xmlel{FIELD} element: \verb|datatype="double"| or \verb|datatype="float"|,  \verb|arraysize="*"|, \verb|xtype="polygon"|
+Polygon values serialised in VOTable or service parameters must have the following metadata in
+\xmlel{FIELD} and/or \xmlel{PARAM} elements: 
+\verb|datatype="double"| or \verb|datatype="float"|,  \verb|arraysize="*"|, \verb|xtype="polygon"|
 (where arraysize may also be fixed length or variable length with limit).
 The array holds a sequence of vertices (points) (e.g. longitude latitude longitude
 latitude ...) with an even number of values and at least three (3) points (six
@@ -847,7 +849,7 @@ more limited context.
 
 \subsection{MOC}
 Spatial MOC (Multi Order Coverage) values serialised in VOTable or service parameters must
-have the following metadata in the \xmlel{FIELD} element:
+have the following metadata in \xmlel{FIELD} and/or \xmlel{PARAM} elements:
 \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="moc"|
 (where arraysize may also be fixed length or variable length with limit).
 The value is the ascii serialisation of a MOC specified in \citet{2022ivoa.spec.0727F}
@@ -857,8 +859,8 @@ Note: explicit time MOC and space-time MOC xtypes may be added in a future versi
 
 \subsection{Multi-Polygon}
 Multi-polygon values serialised in VOTable or service parameters must have the
-following metadata in the \xmlel{FIELD} element:  \verb|datatype="double"| or \verb|datatype="float"|,
-\verb|arraysize="*"|, \verb|xtype="multipolygon"|
+following metadata in \xmlel{FIELD} and/or \xmlel{PARAM} elements:
+\verb|datatype="double"| or \verb|datatype="float"|, \verb|arraysize="*"|, \verb|xtype="multipolygon"|
 (where arraysize may also be fixed length or variable length with limit).
 The array holds a sequence of non-overlapping polygon(s) separated by a pair of \verb|NaN| values
 (a NaN point). For example:
@@ -876,8 +878,8 @@ Multi-polygon-valued service parameters can have additional metadata as describe
 for polygon above, except that the maximum value may be a multipolygon.
 
 \subsection{Shape}
-Shape values serialised in VOTable or service parameters must have the following metadata in the
-\xmlel{FIELD} element: \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="shape"|
+Shape values serialised in VOTable or service parameters must have the following metadata in
+\xmlel{FIELD} and/or \xmlel{PARAM} elements: \verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="shape"|
 (where arraysize may also be fixed length or variable length with limit).
 The value is a polymorphic shape made up of a type label (equivalent to an existing simple
 geometric xtype and the string serialisation of the value as described above.
@@ -939,15 +941,15 @@ more limited context.
 
 \subsection{URI}
 URI values \citep{std:RFC3986} serialised in VOTable or service parameters 
-should have the following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, 
-\verb|arraysize="*"|, \verb|xtype="uri"| (where arraysize may also be fixed length or 
-variable length with limit).
+should have the following metadata in \xmlel{FIELD} and/or \xmlel{PARAM} elements: 
+\verb|datatype="char"|, \verb|arraysize="*"|, \verb|xtype="uri"| 
+(where arraysize may also be fixed length or variable length with limit).
 
 \subsection{UUID}
 Universal Unique Identifier (UUID) values serialised in VOTable or service parameters 
-should have the following metadata in the \xmlel{FIELD} element: \verb|datatype="char"|, 
-\verb|arraysize="36"|, \verb|xtype="uuid"| (where arraysize may also be fixed length or 
-variable length with limit).
+should have the following metadata in \xmlel{FIELD} and/or \xmlel{PARAM} elements: 
+\verb|datatype="char"|, \verb|arraysize="36"|, \verb|xtype="uuid"| 
+(where arraysize may also be fixed length or variable length with limit).
 
 UUID values \citep{std:RFC4122} are serialised using the canonical ascii (hex) 
 representation, for example: e0b895ca-2ee4-4f0f-b595-cbd83be40b04.
