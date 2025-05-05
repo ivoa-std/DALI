@@ -588,6 +588,12 @@ structured values: \emph{timestamp}, \emph{interval},
 \emph{point}, \emph{circle}, \emph{range}, \emph{polygon}, \emph{moc},
 \emph{multipolygon}, \emph{shape}, \emph{uri}, and \emph{uuid} (see below).
 
+A special case is the \emph{json} xtype: It allows publishers to, in
+effect, embed complex, structured data in VOTables.  Publishers
+intending to use it are encouraged to carefully review whether
+interoperable and metadata-rich VOTable constructs can be employed
+instead.
+
 Services may use non-standard \xmlel{xtype} values for non-standard datatypes, but if they
 do so they should include a simple prefix (a string followed by a colon
 followed by the non-standard xtype) so client software can easily determine
@@ -961,6 +967,20 @@ variable length with limit).
 
 UUID values \citep{std:RFC4122} are serialised using the canonical ascii (hex)
 representation, for example: e0b895ca-2ee4-4f0f-b595-cbd83be40b04.
+
+\subsection{JSON}
+
+For complex data blobs that are not intended to be queriable, publishers
+may choose to store them as serialised JSON \citep{std:JSON} strings in
+VOTables.  Note that in general, an appropriate VOTable serialisation
+(e.g., as a \xmlel{GROUP} for a \xmlel{PARAM} or as unrolled
+\xmlel{FIELD}\/s or a separate table for table cells) is preferred.
+
+\xmlel{PARAM}\/s and \xmlel{FIELD}\/s containing JSON values should be
+marked up with a \xmlel{datatype} of \verb|char| or \verb|unicodeChar|,
+with variable or fixed \xmlel{arraysize} and an \xmlel{xtype} of
+\verb|json|.
+
 
 \subsection{Unsupported Types}
 
@@ -1517,7 +1537,8 @@ future, they may also be used to describe the value.
 \begin{itemize}
 \item Clarified that truncation indicated by OVERFLOW can occur independent of
 MAXREC
-\item added new xtypes: hms, dms, moc, multipolygon, range, shape, uri, uuid
+\item added new xtypes: hms, dms, moc, multipolygon, range, shape, uri,
+uuid, json
 \item changed VOSI-availability to optional
 \item changed VOSI-capability so it is only required for registered services
 \end{itemize}
