@@ -586,7 +586,7 @@ the VOTable \xmlel{FIELD} and \xmlel{PARAM} elements for simple
 structured values: \emph{timestamp}, \emph{interval},
 \emph{hms}, \emph{dms},
 \emph{point}, \emph{circle}, \emph{range}, \emph{polygon}, \emph{moc},
-\emph{multipolygon}, \emph{shape}, \emph{uri}, and \emph{uuid} (see below).
+\emph{shape}, \emph{multishape}, \emph{uri}, and \emph{uuid} (see below).
 
 In the following, where we say \verb|datatype="char"| we also allow the VOTable 
 \verb|datatype="unicodeChar"|. Where we say \verb|arraysize="*"| we also allow 
@@ -696,6 +696,13 @@ datatype="int" arraysize="2" xtype="interval"
 \end{verbatim}
 \noindent where \verb|short| or \verb|long| are also permitted.
 
+Multiple intervals may be serialised in a single value and described as (possibly) multiple
+with the following VOTable type metadata:
+
+\begin{verbatim}
+datatype="double" arraysize="*" xtype="interval"
+\end{verbatim}
+
 The representation of an interval uses the numeric array serialisation from
 VOTable. For example:
 
@@ -706,8 +713,7 @@ VOTable. For example:
 -Inf +Inf
 1.0 1.0
 \end{verbatim}
-
-\noindent are all legal floating-point interval values and:
+\noindent where each line is a legal floating-point interval value and:
 
 \begin{verbatim}
 0 2
@@ -715,7 +721,12 @@ VOTable. For example:
 0 0
 \end{verbatim}
 
-\noindent are all legal integer interval values.
+\noindent  where each line is a legal integer interval value and:
+
+\begin{verbatim}
+1.0 3.0 4.0 5.0
+\end{verbatim}
+\noindent is a valid value for multiple intervals ([1.0,3.0], [4.0,5.0]).
 
 Interval values serialised in VOTable or described in service parameters
 with this xtype may include additional metadata like minimum
@@ -896,31 +907,6 @@ section 4.3.2 and may be a one- or two-dimension (spatial) MOC.
 
 Note: explicit time MOC and space-time MOC xtypes may be added in a future version.
 
-\subsection{Multi-Polygon}
-Multi-polygon values serialised in VOTable or service parameters must have the
-following VOTable type metadata:
-
-\begin{verbatim}
-datatype="double" arraysize="*" xtype="multipolygon"
-\end{verbatim}
-\noindent where \verb|float| is also allowed.
-
-\noindent
-The array holds a sequence of non-overlapping polygon(s) separated by a pair of \verb|NaN| values
-(a NaN point). For example:
-
-\begin{verbatim}
-10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2 NaN NaN
-11.0 11.0 11.2 11.0 11.2 11.2 11.0 11.2
-\end{verbatim}
-
-A multi-polygon without a separator is allowed, so all (simple) polygons are also valid multi-polygons. The
-component polygons in a multipolygon may touch (vertex of one on an edge of another, including sharing vertices)
-but may not have any common area.
-
-Multi-polygon-valued service parameters can have additional metadata as described
-for polygon above, except that the maximum value may be a multipolygon.
-
 \subsection{Shape}
 Shape values serialised in VOTable or described in service parameters must have the following VOTable type metadata:
 
@@ -986,6 +972,42 @@ There is no general purpose definition of a minimum shape value for parameters o
 a definition of a minimum or maximum shape to describe field values (in a column
 of a table), but specific services may define something that is applicable in a
 more limited context.
+
+\subsection{Multishape}
+The \verb|multishape| xtype is a way to convey complex regions created by combining
+simple regions (e.g. the footprint of an observation) in a way that cannot be described
+using one of the simpler geometry xtypes. A multishape value is interpretted as the union
+of all component shapes. Multishape values serialised in VOTable or described in service
+parameters must have the following VOTable type metadata:
+
+\begin{verbatim}
+datatype="char" arraysize="*" xtype="multishape"
+\end{verbatim}
+
+\noindent
+The array holds a sequence of shape(s) separated by whitespace (usually a single space
+character, the examples below formatted for clarity). The shape type label denotes the
+start of a new shape. For example:
+
+\begin{verbatim}
+polygon 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
+polygon 11.0 11.0 11.2 11.0 11.2 11.2 11.0 11.2
+\end{verbatim}
+\noindent is the union of two disjoint polygons.
+
+A multishape with a single shape is allowed, so all shapes are also valid multishapes. The
+component shapes in a multishape may be different types and may touch or overlap. For example:
+
+\begin{verbatim}
+polygon 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
+circle 10.0 10.0 0.2 circle 14.0 14.0 0.2
+\end{verbatim}
+\noindent is the union of a polygon and two circles, one overlapping and one disjoint.
+
+As with shape above, there is no general purpose definition of a minimum multishape value
+for parameters or a definition of a minimum or maximum multishape to describe field values
+(in a column of a table), but specific services may define something that is applicable in
+a more limited context.
 
 \subsection{URI}
 URI values \citep{std:RFC3986} serialised in VOTable or described in service parameters 
@@ -1561,10 +1583,11 @@ future, they may also be used to describe the value.
 \begin{itemize}
 \item clarified that truncation indicated by OVERFLOW can occur independent of
 MAXREC
-\item added new xtypes: hms, dms, moc, multipolygon, range, shape, uri, uuid
+\item added new xtypes: hms, dms, moc, range, shape, multishape, uri, uuid
 \item changed VOSI-availability to optional
 \item changed VOSI-capability so it is only required for registered services
 \item clarified use of VOTable serialisation for numbers and boolean
+\item clarified use of VOTable datatype and arraysize when used with xtype
 \end{itemize}
 
 \subsection{PR-DALI-1.1-20170412}
