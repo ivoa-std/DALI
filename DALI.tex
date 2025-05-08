@@ -267,7 +267,7 @@ semantics) in order to complete requests.
 A concrete DAL service specification will specify zero or more synchronous job
 submission resources and whether they are mandatory or optional. It may mandate
 a specific resource name to support simple client use, or it can allow the
-resource name to be described in the service capability metadata 
+resource name to be described in the service capability metadata
 (Section~\ref{sec:vosi-capabilities}).
 
 \subsection{DALI-examples}
@@ -289,7 +289,7 @@ $$
 $$
 
 DAL services may implement the /examples resource and include it in the
-capabilities described by the VOSI-capabilities resource 
+capabilities described by the VOSI-capabilities resource
 (Section~\ref{sec:vosi-capabilities}); if they
 do not, retrieving its URL must yield a 404 HTTP error code.
 
@@ -588,12 +588,18 @@ structured values: \emph{timestamp}, \emph{interval},
 \emph{point}, \emph{circle}, \emph{range}, \emph{polygon}, \emph{moc},
 \emph{shape}, \emph{multishape}, \emph{uri}, and \emph{uuid} (see below).
 
-In the following, where we say \verb|datatype="char"| we also allow the VOTable 
-\verb|datatype="unicodeChar"|. Where we say \verb|arraysize="*"| we also allow 
-providers to be more explicit by using a fixed size (e.g. \verb|20|) or fixed 
+A special case is the \emph{json} xtype: It allows publishers to, in
+effect, embed complex, structured data in VOTables.  Publishers
+intending to use it are encouraged to carefully review whether
+interoperable and metadata-rich VOTable constructs can be employed
+instead.
+
+In the following, where we say \verb|datatype="char"| we also allow the VOTable
+\verb|datatype="unicodeChar"|. Where we say \verb|arraysize="*"| we also allow
+providers to be more explicit by using a fixed size (e.g. \verb|20|) or fixed
 with a limit (e.g. \verb|20*|) when applicable.
 
-In the following, where we say "VOTable type metadata", we mean either VOTable 
+In the following, where we say "VOTable type metadata", we mean either VOTable
 \xmlel{FIELD} or \xmlel{PARAM} elements.
 
 Services may use non-standard \xmlel{xtype} values for non-standard datatypes, but if they
@@ -613,7 +619,7 @@ specification for boolean in VOTable \citep{2019ivoa.spec.1021O}. When used as
 values in service parameters, the serialization for \xmlel{TABLEDATA} must be used.
 
 \subsection{Timestamp}
-Timestamp values serialised in VOTable or described in service parameters must have 
+Timestamp values serialised in VOTable or described in service parameters must have
 the following VOTable type metadata:
 
 \begin{verbatim}
@@ -680,7 +686,7 @@ Finite bounding values are included in the interval. Open-ended floating-point
 intervals have one or both bounding values that are infinite. Intervals with two identical values
 are equivalent to a scalar value but must still be serialised as a pair of values.
 
-Floating point interval values serialised in VOTable or described in service parameters must have 
+Floating point interval values serialised in VOTable or described in service parameters must have
 the following VOTable type metadata:
 
 \begin{verbatim}
@@ -688,7 +694,7 @@ datatype="double" arraysize="2" xtype="interval"
 \end{verbatim}
 \noindent where \verb|float| is also permitted.
 
-Integer interval values serialised in VOTable or described in service parameters must have the 
+Integer interval values serialised in VOTable or described in service parameters must have the
 following VOTable type metadata:
 
 \begin{verbatim}
@@ -735,7 +741,7 @@ or maximum value. These are specified using the standard scalar \verb|MIN| and
 upper bound of interval(s) respectively.
 
 \subsection{Sexagesimal Coordinates}
-Coordinate values expressed in sexagesimal form can be described using the 
+Coordinate values expressed in sexagesimal form can be described using the
 following VOTable type metadata. For right ascension:
 
 \begin{verbatim}
@@ -752,11 +758,11 @@ are serialised as degrees:minutes:seconds where degrees and minutes (of arc) are
 values and seconds is a real value. All hours must fall within [0,24], degrees
 (latitude) must fall within [-90,90], minutes must fall within [0,60), and seconds
 must fall within [0,60). Leading zeros are permitted so that values of minutes and the integer
-part of seconds can be expressed as 2-digit numbers. Valid values for \verb|xtype="hms"| are 
+part of seconds can be expressed as 2-digit numbers. Valid values for \verb|xtype="hms"| are
 from 00:00:00 to 24:00:00.
 Valid values for \verb|xtype="dms"| are from -90:00:00 to 90:00:00; an optional + sign at
-the start is allowed (e.g. +10:20:30) but not required. The upper bound on minutes 
-and seconds is not part of the valid range; for example 12:34:60 is not allowed and must 
+the start is allowed (e.g. +10:20:30) but not required. The upper bound on minutes
+and seconds is not part of the valid range; for example 12:34:60 is not allowed and must
 be expressed as 12:35:00 instead.
 
 \subsection{Point}
@@ -764,13 +770,13 @@ Geometry values are two-dimensional; although they are usually longitude and
 latitude values in spherical coordinates this is specified in the coordinate
 metadata and not in the values.
 
-Point values serialised in VOTable or described in service parameters must have following 
+Point values serialised in VOTable or described in service parameters must have following
 VOTable type metadata:
 
 \begin{verbatim}
 datatype="double" arraysize="2" xtype="point"
 \end{verbatim}
-\noindent where \verb|float| is also allowed. 
+\noindent where \verb|float| is also allowed.
 
 For points in a spherical coordinate system, the values are ordered as: longitude latitude. For example:
 
@@ -780,7 +786,7 @@ For points in a spherical coordinate system, the values are ordered as: longitud
 
 Coordinate values are not limited to fall within a defined valid range; this is a change from
 DALI 1.1 where equatorial coordinates were explicitly limited. Software may have
-to perform range reduction in some coordinate systems (for example, spherical coordinates) in 
+to perform range reduction in some coordinate systems (for example, spherical coordinates) in
 order to correctly interpret or use the coordinate values. Coordinate values are more likely to
 work as expected if they are expressed in the simplest form and do not require range reduction.
 For example, in spherical coordinates, \verb|362.0 2.0| is equivalent to \verb|2.0 2.0|, but the
@@ -794,7 +800,7 @@ Circle values serialised in VOTable or described in service parameters must have
 \begin{verbatim}
 datatype="double" arraysize="3" xtype="circle"
 \end{verbatim}
-\noindent where \verb|float| is also allowed. 
+\noindent where \verb|float| is also allowed.
 
 The values are ordered as a point followed by a radius. For example:
 
@@ -819,11 +825,11 @@ of a table), but specific services may define something that is applicable in a
 more limited context.
 
 \subsection{Range}
-Range values serialised in VOTable or described in service parameters must have the following VOTable type metadata: 
+Range values serialised in VOTable or described in service parameters must have the following VOTable type metadata:
 \begin{verbatim}
 datatype="double" arraysize="4" xtype="range"
 \end{verbatim}
-\noindent where \verb|float| is also allowed. 
+\noindent where \verb|float| is also allowed.
 
 A range is a coordinate bounding box specified
 as two pairs of coordinate values: min-coordinate1 max-coordinate1 min-coordinate2 max-coordinate2.
@@ -836,11 +842,11 @@ For example:
 \noindent
 includes values from 10 to 11 (coordinate1) and from 20 to 21 (coordinate2).
 
-Valid coordinate value limits are specified by \verb|xtype="point"| above. 
-This range form is used as part of the value of the POS parameter in 
-\citep{2015ivoa.spec.1223D} and \citep{2017ivoa.spec.0517B} (see also "shape" below). 
+Valid coordinate value limits are specified by \verb|xtype="point"| above.
+This range form is used as part of the value of the POS parameter in
+\citep{2015ivoa.spec.1223D} and \citep{2017ivoa.spec.0517B} (see also "shape" below).
 For example, a range can span the meridian (longitude 0): 359 1 -1 1 is interpreted
-as the small (2x2 degree) coordinate range from 359 across the meridian to 1 degree 
+as the small (2x2 degree) coordinate range from 359 across the meridian to 1 degree
 longitude.
 
 Range-valued service parameters may include additional metadata like minimum and
@@ -856,13 +862,13 @@ of a table), but specific services may define something that is applicable in a
 more limited context.
 
 \subsection{Polygon}
-Polygon values serialised in VOTable or described in service parameters must have the 
+Polygon values serialised in VOTable or described in service parameters must have the
 following VOTable type metadata:
 
 \begin{verbatim}
 datatype="double" arraysize="*" xtype="polygon"
 \end{verbatim}
-\noindent where \verb|float| is also allowed. 
+\noindent where \verb|float| is also allowed.
 
 The array holds a sequence of vertices (points) (e.g. longitude latitude longitude
 latitude ...) with an even number of values and at least three (3) points (six
@@ -875,7 +881,7 @@ negative side effects on some polygon computations. For example:
 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
 \end{verbatim}
 
-Valid coordinate value limits are specified by \verb|xtype="point"| above. 
+Valid coordinate value limits are specified by \verb|xtype="point"| above.
 Vertices must be ordered such that the polygon
 winding direction is counter-clockwise (when viewed from the origin toward the
 sky) as described in \citep{2007ivoa.spec.1030R}.
@@ -932,7 +938,7 @@ range 10.0 11.0 20.0 21.0
 polygon 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
 \end{verbatim}
 
-The interpretation and constraints on the coordinate values are as specified 
+The interpretation and constraints on the coordinate values are as specified
 for the individual xtypes above.
 
 The shape xtype provides a compatible description of the POS parameter in
@@ -1010,44 +1016,59 @@ for parameters or a definition of a minimum or maximum multishape to describe fi
 a more limited context.
 
 \subsection{URI}
-URI values \citep{std:RFC3986} serialised in VOTable or described in service parameters 
-should have the following VOTable type metadata:
+URI values \citep{std:RFC3986} serialised in VOTable or described in service parameters
+should have the type following metadata:
 
 \begin{verbatim}
 datatype="char" arraysize="*" xtype="uri"
 \end{verbatim}
 
 \subsection{UUID}
-Universal Unique Identifier (UUID) values serialised in VOTable or described in service parameters 
+Universal Unique Identifier (UUID) values serialised in VOTable or described in service parameters
 should have the following VOTable type metadata:
 
 \begin{verbatim}
 datatype="char" arraysize="*" xtype="uuid"
 \end{verbatim}
 
-UUID values \citep{std:RFC4122} are serialised using the canonical ascii (hex) 
+UUID values \citep{std:RFC4122} are serialised using the canonical ascii (hex)
 representation, for example: e0b895ca-2ee4-4f0f-b595-cbd83be40b04.
+
+\subsection{JSON}
+
+For complex data blobs that are not intended to be queriable, publishers
+may choose to store them as serialised JSON \citep{std:JSON} strings in
+VOTables.  Note that in general, an appropriate VOTable serialisation
+(e.g., as a \xmlel{GROUP} for a \xmlel{PARAM} or as unrolled
+\xmlel{FIELD}\/s or a separate table for table cells) is preferred.
+
+JSON values serialised in VOTable or described in service parameters should have
+the following VOTable type metadata:
+
+\begin{verbatim}
+datatype="char" arraysize="*" xtype="json"
+\end{verbatim}
 
 \subsection{Unsupported Types}
 
 Support for any specific \xmlel{xtype} in implementations (client or service) is specified in
 the service standard document. However, support for a specific \xmlel{xtype} as input (params
-and uploaded content) should generally be considered optional. Implementations should 
-be able to read and write the underlying data type without knowing the semantics added 
-by the \xmlel{xtype}. In cases where understanding the meaning of an \xmlel{xtype} is required (for 
-example, the POS param in SODA) and a service does not support the serialized value, 
-the service should issue an error message that starts with the following text with the 
+and uploaded content) should generally be considered optional. Implementations should
+be able to read and write the underlying data type without knowing the semantics added
+by the \xmlel{xtype}. In cases where understanding the meaning of an \xmlel{xtype} is required (for
+example, the POS param in SODA) and a service does not support the serialized value,
+the service should issue an error message that starts with the following text with the
 most specific \xmlel{xtype} noted:
 \begin{verbatim}
 unsupported-xtype: {xtype} [optional detail here]
 \end{verbatim}
 and may include additional detail where noted. For example, the value of the SODA POS parameter
-is a \verb|xtype="shape"|, but if the implementation does not support the "range" construct, it 
+is a \verb|xtype="shape"|, but if the implementation does not support the "range" construct, it
 would respond (minimally) with:
 \begin{verbatim}
 unsupported-xtype: range
 \end{verbatim}
-This behaviour will allow for new \xmlel{xtype}s to be introduced and for \verb|xtype="shape"| 
+This behaviour will allow for new \xmlel{xtype}s to be introduced and for \verb|xtype="shape"|
 to be extended to include additional subtypes in the future.
 
 \section{Parameters}
@@ -1150,7 +1171,7 @@ pretty-printed Web page & text/html & html \\
 In some cases, the specification for a specific format may be parameterised
 (e.g., the media type may include optional semi-colon and additional key-value
 parameters). A DAL service must accept a RESPONSEFORMAT parameter indicating a
-format that the service supports and should  fail (Section~\ref{sec:response-error}) 
+format that the service supports and should  fail (Section~\ref{sec:response-error})
 where the RESPONSEFORMAT parameter specifies a format not supported by the service
 implementation.
 
@@ -1583,7 +1604,8 @@ future, they may also be used to describe the value.
 \begin{itemize}
 \item clarified that truncation indicated by OVERFLOW can occur independent of
 MAXREC
-\item added new xtypes: hms, dms, moc, range, shape, multishape, uri, uuid
+\item added new xtypes: hms, dms, moc, multipolygon, range, shape, uri,
+uuid, json
 \item changed VOSI-availability to optional
 \item changed VOSI-capability so it is only required for registered services
 \item clarified use of VOTable serialisation for numbers and boolean
