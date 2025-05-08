@@ -679,35 +679,21 @@ at the end of the string when the timezone is UTC; here, we follow the FITS
 \citep{std:FITS} convention for astronomical values by omitting the Z but still
 defaulting to UTC.
 
-\subsection{Intervals}
+\subsection{Interval}
 Numeric intervals are pairs of numeric values (integer and floating-point). For floating point
 intervals, special values for positive and negative infinity may be used to specify open-ended intervals.
 Finite bounding values are included in the interval. Open-ended floating-point
 intervals have one or both bounding values that are infinite. Intervals with two identical values
 are equivalent to a scalar value but must still be serialised as a pair of values.
 
-Floating point interval values serialised in VOTable or described in service parameters must have
+Interval values serialised in VOTable or described in service parameters must have
 the following VOTable type metadata:
 
 \begin{verbatim}
 datatype="double" arraysize="2" xtype="interval"
 \end{verbatim}
-\noindent where \verb|float| is also permitted.
-
-Integer interval values serialised in VOTable or described in service parameters must have the
-following VOTable type metadata:
-
-\begin{verbatim}
-datatype="int" arraysize="2" xtype="interval"
-\end{verbatim}
-\noindent where \verb|short| or \verb|long| are also permitted.
-
-Multiple intervals may be serialised in a single value and described as (possibly) multiple
-with the following VOTable type metadata:
-
-\begin{verbatim}
-datatype="double" arraysize="*" xtype="interval"
-\end{verbatim}
+\noindent where other numeric datatypes (\verb|float|, \verb|short|, \verb|int|, \verb|long|)
+are also permitted.
 
 The representation of an interval uses the numeric array serialisation from
 VOTable. For example:
@@ -726,19 +712,38 @@ VOTable. For example:
 -5 5
 0 0
 \end{verbatim}
-
 \noindent  where each line is a legal integer interval value and:
-
-\begin{verbatim}
-1.0 3.0 4.0 5.0
-\end{verbatim}
-\noindent is a valid value for multiple intervals ([1.0,3.0], [4.0,5.0]).
 
 Interval values serialised in VOTable or described in service parameters
 with this xtype may include additional metadata like minimum
 or maximum value. These are specified using the standard scalar \verb|MIN| and
 \verb|MAX| child elements to describe the (minimum) lower bound and (maximum)
 upper bound of interval(s) respectively.
+
+\subsection{Multiinterval}
+The \verb|multiinterval| xtype is a way to convey complex one dimensional extent
+(e.g. the temporal coverage of an observation made by combining several exposures)
+made up of multiple intervals. A multiinterval value is interpreted as the union
+of all component intervals. Multiple intervals may be serialised in a single value and 
+described as (possibly) multiple with the following VOTable type metadata:
+
+\begin{verbatim}
+datatype="double" arraysize="*" xtype="multiinterval"
+\end{verbatim}
+\noindent where other numeric datatypes (\verb|float|, \verb|short|, \verb|int|, \verb|long|)
+are also permitted. A single interval value is also a valid multiinterval. For example:
+
+\begin{verbatim}
+1.0 3.0 4.0 5.0
+\end{verbatim}
+\noindent is a valid value for multiple intervals ([1.0,3.0] and [4.0,5.0]).
+
+Multiinterval values serialised in VOTable or described in service parameters
+with this xtype may include additional metadata like minimum
+or maximum value. These are specified using the standard scalar \verb|MIN| and
+\verb|MAX| child elements to describe the minimum lower bound and maximum
+upper bound of all component intervals respectively (e.g. 1.0 and 5.0 in the example
+above).
 
 \subsection{Sexagesimal Coordinates}
 Coordinate values expressed in sexagesimal form can be described using the
@@ -982,7 +987,7 @@ more limited context.
 \subsection{Multishape}
 The \verb|multishape| xtype is a way to convey complex regions created by combining
 simple regions (e.g. the footprint of an observation) in a way that cannot be described
-using one of the simpler geometry xtypes. A multishape value is interpretted as the union
+using one of the simpler geometry xtypes. A multishape value is interpreted as the union
 of all component shapes. Multishape values serialised in VOTable or described in service
 parameters must have the following VOTable type metadata:
 
@@ -1604,8 +1609,9 @@ future, they may also be used to describe the value.
 \begin{itemize}
 \item clarified that truncation indicated by OVERFLOW can occur independent of
 MAXREC
-\item added new xtypes: hms, dms, moc, multipolygon, range, shape, uri,
+\item added new xtypes: hms, dms, moc, range, shape, uri,
 uuid, json
+\item added new xtypes for union of simple xtypes: multiinterval, multishape
 \item changed VOSI-availability to optional
 \item changed VOSI-capability so it is only required for registered services
 \item clarified use of VOTable serialisation for numbers and boolean
