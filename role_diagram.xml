@@ -7,8 +7,8 @@
 
   <thisrec name="DALI" x="310" y="290" w="33"/>
 	
-  <prerec name="Meas" x="456" y="305" w="35"/>
-  <prerec name="Coords" x="501" y="305" w="44"/>
+  <rec name="Meas" x="456" y="305" w="35"/>
+  <rec name="Coords" x="501" y="305" w="44"/>
   <prerec name="Transform" x="465" y="330" w="60"/>
 
   <rec name="UWS" x="633.5" y="460" w="33"/>
