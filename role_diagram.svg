@@ -46,7 +46,6 @@
 
   <svg x="310" y="290"><rect height="18" x="0" y="0" width="33" class="thisrec"/><text class="doclabel" y="12.5" x="16.5">DALI</text></svg><svg x="310" y="290"><ellipse rx="31.5" ry="15" cx="16.5" cy="9" fill="none" stroke="red" stroke-width="3"/></svg>
 	
-	<svg x="580" y="255"><rect height="18" x="0" y="0" width="30" class="rec"/><text class="doclabel" y="12.5" x="15">STC</text></svg>
   <svg x="456" y="305"><rect height="18" x="0" y="0" width="35" class="prerec"/><text class="doclabel" y="12.5" x="17.5">Meas</text></svg>
   <svg x="501" y="305"><rect height="18" x="0" y="0" width="44" class="prerec"/><text class="doclabel" y="12.5" x="22">Coords</text></svg>
   <svg x="465" y="330"><rect height="18" x="0" y="0" width="60" class="prerec"/><text class="doclabel" y="12.5" x="30">Transform</text></svg>

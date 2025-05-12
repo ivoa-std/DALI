@@ -59,14 +59,6 @@ this document plays within the IVOA architecture \citep{2021ivoa.spec.1101D}.
 \label{fig:archdiag}
 \end{figure}
 
-Astronomical coordinate values accepted and returned by DAL services use a
-string representation of the Space-Time Coordinates \citep{2007ivoa.spec.1030R} data
-model. The
-concrete DAL service specification defines whether the returned resources are
-serializations of a particular standard data model. For preserving backwards
-compatibility or to enable service-specific use cases, the concrete DAL service
-specification may explicitly specify the use of ad-hoc Utypes.
-
 A registry extension schema, usually extending VODataService \citep{2021ivoa.spec.1102D},
 may be used to
 describe the capabilities of a DAL service. This schema is used within the

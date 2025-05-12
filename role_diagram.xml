@@ -7,7 +7,6 @@
 
   <thisrec name="DALI" x="310" y="290" w="33"/>
 	
-	<rec name="STC" x="580" y="255" w="30"/>
   <prerec name="Meas" x="456" y="305" w="35"/>
   <prerec name="Coords" x="501" y="305" w="44"/>
   <prerec name="Transform" x="465" y="330" w="60"/>
