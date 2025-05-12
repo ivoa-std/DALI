@@ -586,7 +586,7 @@ the VOTable \xmlel{FIELD} and \xmlel{PARAM} elements for simple
 structured values: \emph{timestamp}, \emph{interval},
 \emph{hms}, \emph{dms},
 \emph{point}, \emph{circle}, \emph{range}, \emph{polygon}, \emph{moc},
-\emph{multipolygon}, \emph{shape}, \emph{uri}, and \emph{uuid} (see below).
+\emph{shape}, \emph{multishape}, \emph{uri}, and \emph{uuid} (see below).
 
 A special case is the \emph{json} xtype: It allows publishers to, in
 effect, embed complex, structured data in VOTables.  Publishers
@@ -679,28 +679,21 @@ at the end of the string when the timezone is UTC; here, we follow the FITS
 \citep{std:FITS} convention for astronomical values by omitting the Z but still
 defaulting to UTC.
 
-\subsection{Intervals}
+\subsection{Interval}
 Numeric intervals are pairs of numeric values (integer and floating-point). For floating point
 intervals, special values for positive and negative infinity may be used to specify open-ended intervals.
 Finite bounding values are included in the interval. Open-ended floating-point
 intervals have one or both bounding values that are infinite. Intervals with two identical values
 are equivalent to a scalar value but must still be serialised as a pair of values.
 
-Floating point interval values serialised in VOTable or described in service parameters must have
+Interval values serialised in VOTable or described in service parameters must have
 the following VOTable type metadata:
 
 \begin{verbatim}
 datatype="double" arraysize="2" xtype="interval"
 \end{verbatim}
-\noindent where \verb|float| is also permitted.
-
-Integer interval values serialised in VOTable or described in service parameters must have the
-following VOTable type metadata:
-
-\begin{verbatim}
-datatype="int" arraysize="2" xtype="interval"
-\end{verbatim}
-\noindent where \verb|short| or \verb|long| are also permitted.
+\noindent where other numeric datatypes (\verb|float|, \verb|short|, \verb|int|, \verb|long|)
+are also permitted.
 
 The representation of an interval uses the numeric array serialisation from
 VOTable. For example:
@@ -712,22 +705,45 @@ VOTable. For example:
 -Inf +Inf
 1.0 1.0
 \end{verbatim}
-
-\noindent are all legal floating-point interval values and:
+\noindent where each line is a legal floating-point interval value and:
 
 \begin{verbatim}
 0 2
 -5 5
 0 0
 \end{verbatim}
-
-\noindent are all legal integer interval values.
+\noindent  where each line is a legal integer interval value.
 
 Interval values serialised in VOTable or described in service parameters
 with this xtype may include additional metadata like minimum
 or maximum value. These are specified using the standard scalar \verb|MIN| and
 \verb|MAX| child elements to describe the (minimum) lower bound and (maximum)
 upper bound of interval(s) respectively.
+
+\subsection{Multiinterval}
+The \verb|multiinterval| xtype is a way to convey complex one dimensional extent
+(e.g. the temporal coverage of an observation made by combining several exposures)
+made up of multiple intervals. A multiinterval value is interpreted as the union
+of all component intervals. Multiple intervals may be serialised in a single value and 
+described as (possibly) multiple with the following VOTable type metadata:
+
+\begin{verbatim}
+datatype="double" arraysize="*" xtype="multiinterval"
+\end{verbatim}
+\noindent where other numeric datatypes (\verb|float|, \verb|short|, \verb|int|, \verb|long|)
+are also permitted. A single interval value is also a valid multiinterval. For example:
+
+\begin{verbatim}
+1.0 3.0 4.0 5.0
+\end{verbatim}
+\noindent is a valid value for multiple intervals ([1.0,3.0] and [4.0,5.0]).
+
+Multiinterval values serialised in VOTable or described in service parameters
+with this xtype may include additional metadata like minimum
+or maximum value. These are specified using the standard scalar \verb|MIN| and
+\verb|MAX| child elements to describe the minimum lower bound and maximum
+upper bound of all component intervals respectively (e.g. 1.0 and 5.0 in the example
+above).
 
 \subsection{Sexagesimal Coordinates}
 Coordinate values expressed in sexagesimal form can be described using the
@@ -902,31 +918,6 @@ section 4.3.2 and may be a one- or two-dimension (spatial) MOC.
 
 Note: explicit time MOC and space-time MOC xtypes may be added in a future version.
 
-\subsection{Multi-Polygon}
-Multi-polygon values serialised in VOTable or service parameters must have the
-following VOTable type metadata:
-
-\begin{verbatim}
-datatype="double" arraysize="*" xtype="multipolygon"
-\end{verbatim}
-\noindent where \verb|float| is also allowed.
-
-\noindent
-The array holds a sequence of non-overlapping polygon(s) separated by a pair of \verb|NaN| values
-(a NaN point). For example:
-
-\begin{verbatim}
-10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2 NaN NaN
-11.0 11.0 11.2 11.0 11.2 11.2 11.0 11.2
-\end{verbatim}
-
-A multi-polygon without a separator is allowed, so all (simple) polygons are also valid multi-polygons. The
-component polygons in a multipolygon may touch (vertex of one on an edge of another, including sharing vertices)
-but may not have any common area.
-
-Multi-polygon-valued service parameters can have additional metadata as described
-for polygon above, except that the maximum value may be a multipolygon.
-
 \subsection{Shape}
 Shape values serialised in VOTable or described in service parameters must have the following VOTable type metadata:
 
@@ -992,6 +983,42 @@ There is no general purpose definition of a minimum shape value for parameters o
 a definition of a minimum or maximum shape to describe field values (in a column
 of a table), but specific services may define something that is applicable in a
 more limited context.
+
+\subsection{Multishape}
+The \verb|multishape| xtype is a way to convey complex regions created by combining
+simple regions (e.g. the footprint of an observation) in a way that cannot be described
+using one of the simpler geometry xtypes. A multishape value is interpreted as the union
+of all component shapes. Multishape values serialised in VOTable or described in service
+parameters must have the following VOTable type metadata:
+
+\begin{verbatim}
+datatype="char" arraysize="*" xtype="multishape"
+\end{verbatim}
+
+\noindent
+The array holds a sequence of shape(s) separated by whitespace (usually a single space
+character, the examples below formatted for clarity). The shape type label denotes the
+start of a new shape. For example:
+
+\begin{verbatim}
+polygon 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
+polygon 11.0 11.0 11.2 11.0 11.2 11.2 11.0 11.2
+\end{verbatim}
+\noindent is the union of two disjoint polygons.
+
+A multishape with a single shape is allowed, so all shapes are also valid multishapes. The
+component shapes in a multishape may be different types and may touch or overlap. For example:
+
+\begin{verbatim}
+polygon 10.0 10.0 10.2 10.0 10.2 10.2 10.0 10.2
+circle 10.0 10.0 0.2 circle 14.0 14.0 0.2
+\end{verbatim}
+\noindent is the union of a polygon and two circles, one overlapping and one disjoint.
+
+As with shape above, there is no general purpose definition of a minimum multishape value
+for parameters or a definition of a minimum or maximum multishape to describe field values
+(in a column of a table), but specific services may define something that is applicable in
+a more limited context.
 
 \subsection{URI}
 URI values \citep{std:RFC3986} serialised in VOTable or described in service parameters
@@ -1582,11 +1609,13 @@ future, they may also be used to describe the value.
 \begin{itemize}
 \item clarified that truncation indicated by OVERFLOW can occur independent of
 MAXREC
-\item added new xtypes: hms, dms, moc, multipolygon, range, shape, uri,
+\item added new xtypes: hms, dms, moc, range, shape, uri,
 uuid, json
+\item added new xtypes for union of simple xtypes: multiinterval, multishape
 \item changed VOSI-availability to optional
 \item changed VOSI-capability so it is only required for registered services
 \item clarified use of VOTable serialisation for numbers and boolean
+\item clarified use of VOTable datatype and arraysize when used with xtype
 \end{itemize}
 
 \subsection{PR-DALI-1.1-20170412}
