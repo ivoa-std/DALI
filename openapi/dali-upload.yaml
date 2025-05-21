@@ -7,4 +7,4 @@ schema:
     type: string
     # {table name},{location}
     # pattern is {1+ word characters},{1+ non-whitespace characters}
-    pattern: '^\w+,\S+$'
+    pattern: '^[a-zA-Z]\w*,\S+$' 
