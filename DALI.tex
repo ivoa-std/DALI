@@ -162,6 +162,12 @@ A simple query-only DAL service like ConeSearch can be easily described as
 having a single DALI-sync resource where the job is a query and the response is
 the result of the query.
 
+When an endpoint supports the POST method to communicate query
+parameters, implementing services must accept payloads with media types
+application/x-www-form-urlencoded \citep{std:RFC1866} and
+multipart/form-data \citep{std:RFC7578}; for file uploads, clients must
+use the latter.
+
 \subsection{Asynchronous Execution: DALI-async}
 \label{sec:dali-async}
 Asynchronous resources are resources that represent a list of asynchronous jobs
@@ -599,7 +605,7 @@ In the following, where we say \verb|datatype="char"| we also allow the VOTable
 providers to be more explicit by using a fixed size (e.g. \verb|20|) or fixed
 with a limit (e.g. \verb|20*|) when applicable.
 
-In the following, where we say "VOTable type metadata", we mean either VOTable
+In the following, where we say ``VOTable type metadata'', we mean either VOTable
 \xmlel{FIELD} or \xmlel{PARAM} elements.
 
 Services may use non-standard \xmlel{xtype} values for non-standard datatypes, but if they
@@ -724,7 +730,7 @@ upper bound of interval(s) respectively.
 The \verb|multiinterval| xtype is a way to convey complex one dimensional extent
 (e.g. the temporal coverage of an observation made by combining several exposures)
 made up of multiple intervals. A multiinterval value is interpreted as the union
-of all component intervals. Multiple intervals may be serialised in a single value and 
+of all component intervals. Multiple intervals may be serialised in a single value and
 described as (possibly) multiple with the following VOTable type metadata:
 
 \begin{verbatim}
@@ -1767,7 +1773,7 @@ with fragment indicating the DALI-examples section of the document.
 \subsection{WD-DALI-1.0-20130212}
 Simplified DALI-examples to conform to RDFa-1.1 Lite in usage of attributes.
 
-\bibliography{ivoatex/ivoabib,ivoatex/docrepo.bib}
+\bibliography{ivoatex/ivoabib,ivoatex/docrepo.bib,local.bib}
 
 
 \end{document}
