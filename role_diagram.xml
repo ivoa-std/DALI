@@ -6,10 +6,13 @@
   <rec name="MOC" x="430" y="405" w="33"/>
 
   <thisrec name="DALI" x="310" y="290" w="33"/>
-	
-	<rec name="STC" x="580" y="255" w="30"/>
-  <prerec name="Meas" x="456" y="305" w="35"/>
-  <prerec name="Coords" x="501" y="305" w="44"/>
+  <rec name="ConeSearch" x="665.5" y="155" w="69"/>
+  <rec name="SSAP" x="682" y="180" w="36"/>
+  <rec name="SIAP" x="683.5" y="230" w="33"/>
+  <rec name="TAP" x="686" y="255" w="28"/>
+
+  <rec name="Meas" x="456" y="305" w="35"/>
+  <rec name="Coords" x="501" y="305" w="44"/>
   <prerec name="Transform" x="465" y="330" w="60"/>
 
   <rec name="UWS" x="633.5" y="460" w="33"/>
