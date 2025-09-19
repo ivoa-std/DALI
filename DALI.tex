@@ -46,32 +46,29 @@ this document plays within the IVOA architecture \citep{2021ivoa.spec.1101D}.
 
 \begin{figure}
 \centering
-
-% Get the architecture diagram from the TCG chair
-% http://wiki.ivoa.net/twiki/bin/view/IVOA/IvoaTCG
-% If they give you a PDF, for now dumb it down to a png by
-% convert -antialias -density 72x72 archdiag.pdf archdiag.png
-% Oh -- Notes don't need this; you'd have to remove archdiag.png
-% from FIGURES in the Makefile, too.
-
 \includegraphics[width=0.9\textwidth]{role_diagram.pdf}
 \caption{Architecture diagram for this document}
 \label{fig:archdiag}
 \end{figure}
-
-Astronomical coordinate values accepted and returned by DAL services use a
-string representation of the Space-Time Coordinates \citep{2007ivoa.spec.1030R} data
-model. The
-concrete DAL service specification defines whether the returned resources are
-serializations of a particular standard data model. For preserving backwards
-compatibility or to enable service-specific use cases, the concrete DAL service
-specification may explicitly specify the use of ad-hoc Utypes.
 
 A registry extension schema, usually extending VODataService \citep{2021ivoa.spec.1102D},
 may be used to
 describe the capabilities of a DAL service. This schema is used within the
 VOSI-capabilities \citep{2017ivoa.spec.0524G} resource and in registry records for the
 service.
+
+The intention of DALI is to promote consistency of behaviour
+between services in the DAL family where appropriate.
+Standards such as
+ConeSearch \citep{2008ivoa.specQ0222P},
+SIA \citep{2015ivoa.spec.1223D},
+SSA \citep{2012ivoa.spec.0210T} and
+TAP \citep{2019ivoa.spec.0927D}
+fall into this category,
+but the details of compliance are the responsibility of those
+specific standards, and may not in all cases conform exactly
+to the recommendations here, for instance in the case of ConeSearch 1.03
+because the text predates DALI.
 
 \subsection{Example Usage of the DALI Specification}
 The DALI specification defines common elements that make up Data Access Layer
