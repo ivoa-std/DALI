@@ -46,32 +46,29 @@ this document plays within the IVOA architecture \citep{2021ivoa.spec.1101D}.
 
 \begin{figure}
 \centering
-
-% Get the architecture diagram from the TCG chair
-% http://wiki.ivoa.net/twiki/bin/view/IVOA/IvoaTCG
-% If they give you a PDF, for now dumb it down to a png by
-% convert -antialias -density 72x72 archdiag.pdf archdiag.png
-% Oh -- Notes don't need this; you'd have to remove archdiag.png
-% from FIGURES in the Makefile, too.
-
 \includegraphics[width=0.9\textwidth]{role_diagram.pdf}
 \caption{Architecture diagram for this document}
 \label{fig:archdiag}
 \end{figure}
-
-Astronomical coordinate values accepted and returned by DAL services use a
-string representation of the Space-Time Coordinates \citep{2007ivoa.spec.1030R} data
-model. The
-concrete DAL service specification defines whether the returned resources are
-serializations of a particular standard data model. For preserving backwards
-compatibility or to enable service-specific use cases, the concrete DAL service
-specification may explicitly specify the use of ad-hoc Utypes.
 
 A registry extension schema, usually extending VODataService \citep{2021ivoa.spec.1102D},
 may be used to
 describe the capabilities of a DAL service. This schema is used within the
 VOSI-capabilities \citep{2017ivoa.spec.0524G} resource and in registry records for the
 service.
+
+The intention of DALI is to promote consistency of behaviour
+between services in the DAL family where appropriate.
+Standards such as
+ConeSearch \citep{2008ivoa.specQ0222P},
+SIA \citep{2015ivoa.spec.1223D},
+SSA \citep{2012ivoa.spec.0210T} and
+TAP \citep{2019ivoa.spec.0927D}
+fall into this category,
+but the details of compliance are the responsibility of those
+specific standards, and may not in all cases conform exactly
+to the recommendations here, for instance in the case of ConeSearch 1.03
+because the text predates DALI.
 
 \subsection{Example Usage of the DALI Specification}
 The DALI specification defines common elements that make up Data Access Layer
@@ -161,6 +158,12 @@ completely external resource that tests the service from the user perspective).
 A simple query-only DAL service like ConeSearch can be easily described as
 having a single DALI-sync resource where the job is a query and the response is
 the result of the query.
+
+When an endpoint supports the POST method to communicate query
+parameters, implementing services must accept payloads with media types
+application/x-www-form-urlencoded \citep{std:RFC1866} and
+multipart/form-data \citep{std:RFC7578}; for file uploads, clients must
+use the latter.
 
 \subsection{Asynchronous Execution: DALI-async}
 \label{sec:dali-async}
@@ -599,7 +602,7 @@ In the following, where we say \verb|datatype="char"| we also allow the VOTable
 providers to be more explicit by using a fixed size (e.g. \verb|20|) or fixed
 with a limit (e.g. \verb|20*|) when applicable.
 
-In the following, where we say "VOTable type metadata", we mean either VOTable
+In the following, where we say ``VOTable type metadata'', we mean either VOTable
 \xmlel{FIELD} or \xmlel{PARAM} elements.
 
 Services may use non-standard \xmlel{xtype} values for non-standard datatypes, but if they
@@ -724,7 +727,7 @@ upper bound of interval(s) respectively.
 The \verb|multiinterval| xtype is a way to convey complex one dimensional extent
 (e.g. the temporal coverage of an observation made by combining several exposures)
 made up of multiple intervals. A multiinterval value is interpreted as the union
-of all component intervals. Multiple intervals may be serialised in a single value and 
+of all component intervals. Multiple intervals may be serialised in a single value and
 described as (possibly) multiple with the following VOTable type metadata:
 
 \begin{verbatim}
@@ -1777,7 +1780,7 @@ with fragment indicating the DALI-examples section of the document.
 \subsection{WD-DALI-1.0-20130212}
 Simplified DALI-examples to conform to RDFa-1.1 Lite in usage of attributes.
 
-\bibliography{ivoatex/ivoabib,ivoatex/docrepo.bib}
+\bibliography{ivoatex/ivoabib,ivoatex/docrepo.bib,local.bib}
 
 
 \end{document}
