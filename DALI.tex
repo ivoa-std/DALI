@@ -1094,7 +1094,9 @@ to be extended to include additional subtypes in the future.
 \label{sec:parameters}
 A DAL job is defined by a set of parameter-value pairs. Some of these parameters
 have a standard meaning and are defined here, but most are defined by the
-service specification or another related standard.
+service specification or another related standard. Where indicated below, the
+specification for individual parameters is provided as an OpenAPI component that
+can be included in a concrete service specification.
 
 \subsection{Case Sensitivity}
 Parameter names are not case sensitive; a DAL service must treat
@@ -1158,6 +1160,8 @@ revisions of a standard; there are no useful scenarios where VERSION would work.
 
 \subsubsection{RESPONSEFORMAT}
 \label{sec:RESPONSEFORMAT}
+OpenAPI component: dali-responseformat.yaml
+
 The RESPONSEFORMAT parameter is used so the client can specify the format of the
 response (e.g. the output of the job). For DALI-sync requests, this is the
 content-type of the response. For DALI-async requests, this is the content-type
@@ -1228,6 +1232,8 @@ The RESPONSEFORMAT parameter is always single-valued.
 
 \subsubsection{MAXREC}
 \label{sec:MAXREC}
+OpenAPI component: dali-maxrec.yaml
+
 For services performing discovery (querying for an arbitrary number of
 records), the query endpoints must accept MAXREC parameters specifying the maximum
 number of records to be returned. If MAXREC is not specified in a request, the
@@ -1249,6 +1255,8 @@ The MAXREC parameter is always single-valued.
 
 \subsubsection{UPLOAD}
 \label{sec:UPLOAD}
+OpenAPI component: dali-upload.yaml
+
 The UPLOAD parameter is used to reference read-only external resources
 (typically files) via their URI, to be uploaded for use as input data to
 the query. The value of the UPLOAD parameter is a name-URI pair. For
@@ -1632,6 +1640,7 @@ uuid, json
 \item changed VOSI-capability so it is only required for registered services
 \item clarified use of VOTable serialisation for numbers and boolean
 \item clarified use of VOTable datatype and arraysize when used with xtype
+\item add OpenAPI components for maxrec, responseformat, and upload params
 \item changing terminology: What so far was mostly ``web resource'' is now
 ``endpoint''.
 \end{itemize}
