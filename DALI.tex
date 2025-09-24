@@ -26,7 +26,7 @@
 \begin{abstract}
 This document describes the Data Access Layer Interface (DALI). DALI defines
 the base web service interface common to all Data Access Layer (DAL) services.
-This standard defines the behaviour of common resources, the meaning and use of
+This standard defines the behaviour of common endpoints, the meaning and use of
 common parameters, success and error responses, and DAL service registration.
 The goal of this specification is to define the common elements that are shared
 across DAL services in order to foster consistency across concrete DAL service
@@ -35,7 +35,14 @@ implementations and libraries to be written and widely adopted.
 \end{abstract}
 
 \section{Introduction}
-The Data Access Layer Interface (DALI) defines resources, parameters, and
+The Data Access Layer Interface (DALI) defines endpoints\footnote{This
+documents uses the term ``endpoint'' for a network-accessible resource
+– where we adopt definitions of RFC 3986 \citep{std:RFC3986} -- that a
+client can talk to; previous versions of this document used the term
+``resource'' directly, which may be confusing in a VO context.  What is
+called a ``VO resource'', in particular in the Registry context, usually
+comprises several endpoints.  Other standards might still call endpoints ``resources''.},
+parameters, and
 responses common to all DAL services so that concrete DAL service specifications
 need not repeat these common elements.
 
@@ -53,8 +60,9 @@ this document plays within the IVOA architecture \citep{2021ivoa.spec.1101D}.
 
 A registry extension schema, usually extending VODataService \citep{2021ivoa.spec.1102D},
 may be used to
-describe the capabilities of a DAL service. This schema is used within the
-VOSI-capabilities \citep{2017ivoa.spec.0524G} resource and in registry records for the
+describe the capabilities of a DAL service. This schema is used for
+responses from the
+VOSI-capabilities \citep{2017ivoa.spec.0524G} endpoint and in registry records for the
 service.
 
 The intention of DALI is to promote consistency of behaviour
@@ -75,23 +83,24 @@ The DALI specification defines common elements that make up Data Access Layer
 (DAL) services. DAL service specifications will refer to the sections in this
 document by name rather than include all the explanatory text. For example,
 suppose a document defines a service that stacks FITS images asynchronously, the
-specification could say that the service has the following resources:
+specification could say that the service has the following endpoints:
 
 
 \begin{itemize}
-\item a DALI-async resource that accepts one or more UPLOAD parameters
-(section~\ref{sec:UPLOAD}) where the resources are FITS images; the resource
-could also define a fixed set of error messages for anticipated failure modes
+\item a DALI-async endpoint that accepts one or more UPLOAD parameters
+(section~\ref{sec:UPLOAD}) where the payloads are FITS images; the
+endpoint definition
+could also include a fixed set of error messages for anticipated failure modes
 
-\item a VOSI-availability resource (section~\ref{sec:vosi-availability})
+\item a VOSI-availability endpoint (section~\ref{sec:vosi-availability})
 
-\item a VOSI-capabilities resource (section~\ref{sec:vosi-capabilities}) conforming
+\item a VOSI-capabilities endpoint (section~\ref{sec:vosi-capabilities}) conforming
 to a specified registry extension schema
 \end{itemize}
 
 \noindent
 and would have to define the registry extension schema to be used to register
-services and to implement the VOSI-capabilities resource. Most of the service
+services and to implement VOSI-capabilities. Most of the service
 specification would be in defining the semantics (possibly controllable via
 additional input parameters) of the computations to be performed and in defining
 the extension schema to describe service functionality and limits (e.g., maximum
@@ -99,36 +108,36 @@ input or result image sizes, result retention time and policies). The registry
 extension schema may be part of the service specification or a separate
 document.
 
-\section{Resources}
-\label{sec:resources}
+\section{Endpoints}
+\label{sec:endpoints}
 DAL services are normally implemented as HTTP REST \citep{fielding00}
 web services, although
-other transport protocols could be used in the future. The primary resource in
-a DAL service is a job. A DAL job is defined by parameters
+other transport protocols could be used in the future. The primary object
+a DAL service operates on is a job. A DAL job is defined by parameters
 (section~\ref{sec:parameters}) and
 can be executed either synchronously or asynchronously. A concrete service
 specification defines the job parameters and the manner of execution is defined
-by separate resources below.
+by separate endpoints below.
 
-In addition to job list resources, DAL services also implement several Virtual
-Observatory Support Interface \citep{2017ivoa.spec.0524G} resources to describe
+In addition to job list endpoints, DAL services also implement several Virtual
+Observatory Support Interface \citep{2017ivoa.spec.0524G} endpoints to describe
 service availability, capabilities, and content.
 
 A concrete DAL service must define at least one DALI-async or DALI-sync
-resource. It may define both with the same job semantics (e.g. TAP-1.0
+endpoint. It may define both with the same job semantics (e.g. TAP-1.0
 \citep{2010ivoa.spec.0327D}) or it may define one with one kind of job and the other with a
 separate kind of job (a service that does some things synchronously and others
 asynchronously).
 
-The following table summarises the resources that are required in all concrete
+The following table summarises the endpoints that are required in all concrete
 DAL service specifications (and thus in all DAL services) and which kinds of
-resources are defined and specified as required or optional in a concrete
+endpoints are defined and specified as required or optional in a concrete
 specification.
 
 
 \begin{tabular}{l l l l l}
 \sptablerule
-\textbf{resource type} & \textbf{resource name} & \textbf{required} \\
+\textbf{endpoint type} & \textbf{endpoint name} & \textbf{required} \\
 \sptablerule
 DALI-sync & service specific & service specific & \\
 DALI-async & service specific & service specific & \\
@@ -137,10 +146,10 @@ VOSI-availability & service specific & no & \\
 VOSI-capabilities & /capabilities & registered & \\
 VOSI-tables & service specific & service specific & \\
 \sptablerule
-\label{tab:resources}
+\label{tab:endpoints}
 \end{tabular}
 
-The resource name is the path (relative to the base URL of the service). All implemented
+The endpoint name is the path (relative to the base URL of the service). All implemented
 DALI and VOSI endpoints must be siblings, except for VOSI-availability (see below);
 concrete service specifications may constrain the names of these endpoints further.
 The relative path limitation enables a client with just the URL for a single endpoint to
@@ -152,11 +161,11 @@ the VOSI-capabilities endpoint is optional for services that are not registered
 or only included as auxiliary capabilities (e.g. of a data collection resource).
 
 The URL for the VOSI-availability is not constrained; it may be a sibling (e.g. /availability)
-or it may be hosted on a different server (e.g. VOSI-availability may be implemented as a
-completely external resource that tests the service from the user perspective).
+or it may be hosted on a different server (e.g., VOSI-availability may be implemented as a
+completely external component that tests the service from the user perspective).
 
 A simple query-only DAL service like ConeSearch can be easily described as
-having a single DALI-sync resource where the job is a query and the response is
+having a single DALI-sync endpoint where the job is a query and the response is
 the result of the query.
 
 When an endpoint supports the POST method to communicate query
@@ -167,7 +176,7 @@ use the latter.
 
 \subsection{Asynchronous Execution: DALI-async}
 \label{sec:dali-async}
-Asynchronous resources are resources that represent a list of asynchronous jobs
+Asynchronous endpoints serve representations of a list of asynchronous jobs
 as defined by the Universal Worker Service (UWS) pattern \citep{2016ivoa.spec.1024H}.
 Requests can
 create, modify, and delete jobs in the job list. UWS also specifies special
@@ -225,29 +234,29 @@ list of parameters, for example:
 http://example.com/base/async-jobs/123/parameters
 \end{verbatim}
 
-DALI-async resources may provide other ways to interact with jobs as specified
+DALI-async enpoints may provide other ways to interact with jobs as specified
 in current or future UWS specifications, with the following exception: the
 UWS-1.0 standard may be interpreted to allow POSTing of job parameters to the
-job URL, but DALI-async resources must not accept job parameters at this URL.
+job URL, but DALI-async endpoints must not accept job parameters at this URL.
 
 Job parameters may only be POSTed while the job is in the PENDING phase; once
 execution has been requested and the job is in any other phase, job parameters
 may not be modified.
 
 A concrete DAL service specification will specify zero or more asynchronous job
-submission resources and whether they are mandatory or optional. It may mandate
-a specific resource name to support simple client use, or it can allow the
-resource name to be described in the service metadata (Section~\ref{sec:vosi-capabilities}).
+submission endpoints and whether they are mandatory or optional. It may mandate
+a specific endpoint name to support simple client use, or it can allow the
+endpoint name to be described in the service metadata (Section~\ref{sec:vosi-capabilities}).
 
 \subsection{Synchronous Execution: DALI-sync}
 \label{sec:dali-sync}
-Synchronous resources are resources that accept a request (a DAL job
+Synchronous endpoints are ones that accept a request (a DAL job
 description) and return the response (the result) directly. Synchronous requests
 can be made using either the HTTP GET or POST method. If a specific type of job
-is exposed through both DALI-async and DALI-sync resources (e.g. TAP queries),
+is exposed through both DALI-async and DALI-sync endpoints (e.g., TAP queries),
 then the parameters used to specify the job are the same for  this pair of
 (synchronous and asynchronous) jobs. Service specifications may also specify
-different types of jobs on different resources, which would have different job
+different types of jobs on different endpoints, which would have different job
 parameters.
 
 A synchronous job is created by a GET or POST request to a synchronous job list,
@@ -268,18 +277,18 @@ Clients must be prepared to get redirects and follow them (using normal HTTP
 semantics) in order to complete requests.
 
 A concrete DAL service specification will specify zero or more synchronous job
-submission resources and whether they are mandatory or optional. It may mandate
-a specific resource name to support simple client use, or it can allow the
-resource name to be described in the service capability metadata
+submission endpoints and whether they are mandatory or optional. It may mandate
+a specific endpoint name to support simple client use, or it can allow the
+endpoint name to be described in the service capability metadata
 (Section~\ref{sec:vosi-capabilities}).
 
 \subsection{DALI-examples}
 \label{sec:dali-examples}
-The DALI-examples resource returns a document with usage examples or similar
-material to the user. In DAL services, this resource is always accessed as a
-resource named examples that is a child of the base URL for the service. The
+The DALI-examples endpoint returns a document with usage examples or similar
+material to the user. In DAL services, this endpoint is always accessed as a
+using the name ``examples''. It is a child of the base URL for the service. The
 following specification is intended to make sure the content is usable for both
-machines and humans. As such, the DALI-examples resource contains additional
+machines and humans. As such, the DALI-examples endpoint contains additional
 markup conforming to the RDFa 1.1 Lite \citep{std:RDFaLite11} specification,
 which defines the
 following attributes: \xmlel{vocab}, \xmlel{typeof}, \xmlel{property},
@@ -291,8 +300,8 @@ $$
 \hbox{\nolinkurl{ivo://ivoa.net/std/DALI#examples}}
 $$
 
-DAL services may implement the /examples resource and include it in the
-capabilities described by the VOSI-capabilities resource
+DAL services may implement the /examples endpoint and include it in the
+capabilities described by the VOSI-capabilities.
 (Section~\ref{sec:vosi-capabilities}); if they
 do not, retrieving its URL must yield a 404 HTTP error code.
 
@@ -490,12 +499,12 @@ with a vocab and examples as described above.
 
 \subsection{Availability: VOSI-availability}
 \label{sec:vosi-availability}
-VOSI-availability \citep{2017ivoa.spec.0524G} defines a simple web resource that
+VOSI-availability \citep{2017ivoa.spec.0524G} defines a simple endpoint that
 reports on the current ability of the service to perform.
 
-If the VOSI-availability resource is implemented a description
+If the VOSI-availability endpoint implemented a description
 of this capability must be provided in the VOSI-capabilities document.
-The VOSI-availability resource is
+The VOSI-availability endpoint is
 intended to respond with a dynamically generated document describing the current state of the service
 operation, e.g.:
 
@@ -510,16 +519,18 @@ operation, e.g.:
 
 \subsection{Capabilities: VOSI-capabilities}
 \label{sec:vosi-capabilities}
-VOSI-capabilities \citep{2017ivoa.spec.0524G} defines a simple web resource that
+VOSI-capabilities \citep{2017ivoa.spec.0524G} defines a simple endpoint that
 returns an XML document
-describing the service. In  DAL services, this resource is always accessed as a
-resource named capabilities that is a child of the base URL for the service. The
-VOSI-capabilities should describe all the resources exposed by the service,
-including which standards each resource implements.
+describing the service. In  DAL services, this endpoint always accessed
+under the name
+``capabilities''.  It is a child of the base URL for the service. The
+VOSI-capabilities should describe all the capabilities (which is roughly
+what this specification calls and ``endpoint'') exposed by the service,
+including which standards each endpoint implements.
 
-All registered DAL services must implement the /capabilities resource. The following
-capabilities document shows the capabilities and tables VOSI resources
-and a TAP base resource:
+All registered DAL services must implement the /capabilities endpoint. The following
+capabilities document shows the capabilities and tables VOSI endpoints
+and a TAP capability:
 
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
 <?xml version="1.0" encoding="UTF-8"?>
@@ -566,16 +577,16 @@ the standard a capability adheres to -- does not imply a particular (or any)
 
 \subsection{Tables: VOSI-tables}
 \label{sec:vosi-tables}
-VOSI-tables \citep{2017ivoa.spec.0524G} defines a simple web resource that returns an
+VOSI-tables \citep{2017ivoa.spec.0524G} defines a simple endpoint that returns an
 XML document
 describing the content of the service. The document format is defined by the
 VOSI \citep{2017ivoa.spec.0524G} standard and allows the service to
 describe their content
 as a tableset: schemas, tables, and columns.
 
-A concrete DAL service specification will specify if the VOSI-tables resource is
-permitted or required and may restrict the resource name or location.
-Since DAL services with a VOSI-tables resource will specify
+A concrete DAL service specification will specify if the VOSI-tables endpoint is
+permitted or required and may restrict the endpoint name or location.
+Since DAL services with a VOSI-tables endpoint will specify
 in the capabilities which version they are using, DAL services can make use of
 new versions without change to the DAL service specification.
 
@@ -1150,8 +1161,8 @@ revisions of a standard; there are no useful scenarios where VERSION would work.
 The RESPONSEFORMAT parameter is used so the client can specify the format of the
 response (e.g. the output of the job). For DALI-sync requests, this is the
 content-type of the response. For DALI-async requests, this is the content-type
-of the result resource(s) the client can retrieve from the UWS result list
-resource; if a DALI-async job creates multiple results, the RESPONSEFORMAT
+of the result(s) the client can retrieve from the UWS result list
+endpoint; if a DALI-async job creates multiple results, the RESPONSEFORMAT
 should control the primary result type, but details can be specific to
 individual service specifications. While the list of supported values are
 specific to a concrete service specification, the general usage is to support
@@ -1185,7 +1196,7 @@ implementation.
 
 A concrete DAL service specification will specify any mandatory or optional
 formats as well as new formats not listed above; it may also place limitations
-on the structure for formats that are flexible.  For example, a resource that
+on the structure for formats that are flexible.  For example, an endpoint that
 responds with tabular output may impose a limitation that FITS files only
 contain FITS tables, possibly only of specific types (ascii or binary).
 
@@ -1217,8 +1228,8 @@ The RESPONSEFORMAT parameter is always single-valued.
 
 \subsubsection{MAXREC}
 \label{sec:MAXREC}
-For resources performing discovery (querying for an arbitrary number of
-records), the resource must accept a MAXREC parameter specifying the maximum
+For services performing discovery (querying for an arbitrary number of
+records), the query endpoints must accept MAXREC parameters specifying the maximum
 number of records to be returned. If MAXREC is not specified in a request, the
 service may apply a default value or may set no limit. The service may also
 enforce a limit on the value of MAXREC that is smaller than the value in the
@@ -1239,8 +1250,8 @@ The MAXREC parameter is always single-valued.
 \subsubsection{UPLOAD}
 \label{sec:UPLOAD}
 The UPLOAD parameter is used to reference read-only external resources
-(typically files) via their URI, to be uploaded for use as input resources to
-the query. The value of the UPLOAD parameter is a resource name-URI pair. For
+(typically files) via their URI, to be uploaded for use as input data to
+the query. The value of the UPLOAD parameter is a name-URI pair. For
 example:
 
 \begin{verbatim}
@@ -1248,7 +1259,7 @@ UPLOAD=table1,http://example.com/t1
 \end{verbatim}
 
 \noindent
-would define an input named table1 at the given URI. Resource names must be
+would define an input named table1 at the given URI. Upload names must be
 simple strings made up of alphabetic, numeric, and the underscore characters
 only and must start with an alphabetic character.
 
@@ -1257,7 +1268,7 @@ A VOSpace URI (vos:<something>)  is a
 more generic example of a URI that requires more service-side functionality;
 support for the vos scheme is optional.
 
-To upload a resource inline, the caller specifies the UPLOAD parameter (as
+To upload data inline, the caller specifies the UPLOAD parameter (as
 above) using a special URI scheme \emph{param}. This scheme indicates that the value
 after the colon will be the name of the inline content. The content type used is
 multipart/form-data, using a \emph{file} type input element. The \xmlel{name} attribute
@@ -1284,7 +1295,7 @@ Content-type: application/x-votable+xml
 
 If inline upload is used by a client, the client must POST both the UPLOAD
 parameter and the associated inline content in the same request. Services that
-implement upload of resources must support the param scheme for inline uploads.
+implement uploads must support the param scheme for inline uploads.
 
 In principle, any number of resources can be uploaded using the UPLOAD parameter
 and any combination of URI schemes supported by the service as long as they are
@@ -1321,10 +1332,10 @@ The RUNID parameter is always single-valued.
 \label{sec:responses}
 All DAL service requests eventually (after zero or more HTTP redirects) result
 in one of three kinds of responses:
-successful HTTP status code (200) and a service- and resource-specific
+successful HTTP status code (200) and a service type-specific
 representation of the results, or an HTTP status code and a standard error
-document (see below), or an HTTP status code and a service- and
-resource-specific error document.
+document (see below), or an HTTP status code and a service type-specific
+error document.
 
 \subsection{Successful Requests}
 \label{sec:response-ok}
@@ -1342,8 +1353,8 @@ Content-Length \\
 Last-Modified \\
 \end{tabular}
 
-For jobs executed using a DALI-async resource, the result(s) must be made
-available as child resources of the result list and directly accessible there.
+For jobs submitted to a DALI-async endpoint, the result(s) must be made
+available as children of the result list and directly accessible there.
 For jobs that inherently create a fixed result, service specifications may
 specify the name of the result explicitly. For example, TAP-1.0 has a single
 result and it must be named result, e.g.:
@@ -1376,10 +1387,10 @@ non-existent resources, authentication or authorization failures, services being
 off-line or broken are not specified here since responses to these errors may be
 generated by other off-the-shelf software and cannot be controlled by service
 implementations. There are several cases where a DAL service could return such
-an error. First, a DALI-async resource must return a 404 (not found) error if
+an error. First, a DALI-async endpoint must return a 404 (not found) error if
 the client accesses a job within the UWS job list that does not exist, or
-accesses a child resource of the job that does not exist (e.g., the error
-resource of a job that has not run and failed, or a specific result resource in
+accesses a child endpoint of the job that does not exist (e.g., the error
+child of a job that has not run and failed, or a specific result in
 the result list  that does not exist). Second, access to a resource could result
 in an HTTP 401 (not authorized) response if authentication is required or an
 HTTP 403 (forbidden) error if the client is not allowed to access the requested
@@ -1398,12 +1409,12 @@ content of the INFO element described in Section \ref{sect:errors}. In either ca
 services will allow service implementers to add additional explanatory text
 after the required text (on the same line or on subsequent lines). In all cases,
 these are errors that occur when the job is executed and do not override any
-error behaviour for a UWS resource which specifies the behaviour and errors
+error behaviour for a UWS endpoint which specifies the behaviour and errors
 associated with interacting with the job itself.
 
-If the invalid job is being executed using a DALI-async resource, the error
-document must be accessible from the <DALI-async>/<jobid>/error resource
-(specified by UWS) and when accessed via that resource it must be returned with
+If the invalid job is being executed using a DALI-async endpoint, the error
+document must be accessible from the path <DALI-async>/<jobid>/error
+(as specified by UWS).  When accessed, the error message must be returned with
 an HTTP status code 200, e.g.:
 
 \begin{verbatim}
@@ -1461,11 +1472,12 @@ attribute must contain one of the following values:
 \sptablerule
 \emph{QUERY\_STATUS}&\textbf{Interpretation}\\
 \sptablerule
-OK & the job executed successfully and the result is included in the resource \\
+OK & the job executed successfully and the result is included in the
+resource element\\
 ERROR & an error was detected at the level of the protocol, the job failed to
 execute, or an error occurred while writing the table data \\
 OVERFLOW & the job executed successfully, the result is included in the
-resource, and the result was truncated \\
+resource element, and the result was truncated \\
 \sptablerule
 \label{tab:query-status}
 \end{tabular}
@@ -1489,8 +1501,9 @@ value out of range in POS=45,91
 
 Additional \xmlel{RESOURCE} elements may be present, but the usage of any such elements
 is not defined here. Concrete DAL service specifications may define additional
-resources (and the type attribute to describe them) and service implementers are
-also free to add their own.
+VOTable resources that must or should be included in the responses as
+well as what needs to be given in their type attributes.
+Service implementers are also free to add their own.
 
 \subsubsection{Overflow}
 \label{sec:response-overflow}
@@ -1619,6 +1632,8 @@ uuid, json
 \item changed VOSI-capability so it is only required for registered services
 \item clarified use of VOTable serialisation for numbers and boolean
 \item clarified use of VOTable datatype and arraysize when used with xtype
+\item changing terminology: What so far was mostly ``web resource'' is now
+``endpoint''.
 \end{itemize}
 
 \subsection{PR-DALI-1.1-20170412}
@@ -1655,8 +1670,8 @@ examples.
 \item Expanded section on intervals to allow use of all integer and floating point datatypes
 supported by VOTable; only floating point intervals support open-ended intervals.
 \item Expanded section on geometry to allow use of \verb|datatype="float"| in addition to double.
-\item Removed restrictions on the resource name and location for VOSI-availability resource.
-\item Removed restrictions on resource name for VOSI-tables resources.
+\item Removed restrictions on the endpoint name and location for VOSI-availability endpoint.
+\item Removed restrictions on endpoint name for VOSI-tables endpoints.
 \item Fixed the timestamp format specification to correctly specify optional parts.
 \item Added reference to RFC2616 and minimised discussion of HTTP headers.
 \end{itemize}
@@ -1708,13 +1723,13 @@ Changed all cross-references to be readable text.
 Replaced example curl output from a POST with explanatory text.
 
 POST of job parameters directly to job: restricted to creation and /parameters
-resource
+child
 
-Changed number of DALI-async and DALI-sync resources to zero or more.
+Changed number of DALI-async and DALI-sync endpoints to zero or more.
 
 Clarified that job parameters are the same if the type of job is the same, but
 services can have different types of jobs (and hence different parameters) on
-different job-list resources.
+different job-list endpoints.
 
 Fixed text forbidding any other vocab attributes in DALI-examples document.
 
