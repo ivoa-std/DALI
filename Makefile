@@ -9,7 +9,7 @@ DOCNAME = DALI
 DOCVERSION = 1.2
 
 # Publication date, ISO format; update manually for "releases"
-DOCDATE = 2023-07-12
+DOCDATE = 2025-09-19
 
 # What is it you're writing: NOTE, WD, PR, or REC
 DOCTYPE = WD
@@ -25,7 +25,7 @@ FIGURES = role_diagram.svg
 VECTORFIGURES =
 
 # Additional files to distribute (e.g., CSS, schema files, examples...)
-AUX_FILES =
+AUX_FILES = openapi
 
 -include ivoatex/Makefile
 
