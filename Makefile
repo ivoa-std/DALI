@@ -9,10 +9,10 @@ DOCNAME = DALI
 DOCVERSION = 1.2
 
 # Publication date, ISO format; update manually for "releases"
-DOCDATE = 2025-10-07
+DOCDATE = 2025-10-24
 
 # What is it you're writing: NOTE, WD, PR, or REC
-DOCTYPE = WD
+DOCTYPE = PR
 
 # Source files for the TeX document (but the main file must always
 # be called $(DOCNAME).tex
