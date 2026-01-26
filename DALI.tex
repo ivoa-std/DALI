@@ -586,7 +586,7 @@ VOSI \citep{2017ivoa.spec.0524G} standard and allows the service to
 describe their content
 as a tableset: schemas, tables, and columns.
 
-A concrete DAL service specification will specify if the VOSI-tables endpoint is
+A concrete DAL service specification will specify whether the VOSI-tables endpoint is
 permitted or required and may restrict the endpoint name or location.
 Since DAL services with a VOSI-tables endpoint will specify
 in the capabilities which version they are using, DAL services can make use of
@@ -980,7 +980,7 @@ parameter for a large (IRIS) data file (accessible via the CADC SODA service):
   <PARAM name="ID" datatype="char" arraysize="23"
          ucd="meta.id;meta.dataset" value="cadc:IRIS/I212B2H0.fits" />
   ...
-  <PARAM name="POS" datatytpe="char" arraysize="*" xtype="shape"
+  <PARAM name="POS" datatype="char" arraysize="*" xtype="shape"
          ucd="obs.field" value="">
     <VALUES>
       <MAX value="polygon 134.38 -6.37 134.42 6.01
@@ -1170,7 +1170,7 @@ content-type of the response. For DALI-async requests, this is the content-type
 of the result(s) the client can retrieve from the UWS result list
 endpoint; if a DALI-async job creates multiple results, the RESPONSEFORMAT
 should control the primary result type, but details can be specific to
-individual service specifications. While the list of supported values are
+individual service specifications. While the list of supported values is
 specific to a concrete service specification, the general usage is to support
 values that are MIME media types \citep{std:MIME} for known
 formats as well as
