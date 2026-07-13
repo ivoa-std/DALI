@@ -1101,12 +1101,10 @@ specification for individual parameters is provided as an OpenAPI component that
 can be included in a concrete service specification.
 
 \subsection{Case Sensitivity}
-Parameter names are not case sensitive; a DAL service must treat
-\hbox{upper-,} \hbox{lower-,}
-and mixed-case parameter names as equal. Parameter values are case sensitive
-unless a concrete DAL service specification explicitly states that the values of
-a specific parameter are to be treated as case-insensitive. For example, the
-following are equivalent:
+Parameter names are historically not case sensitive; this has caused incosistencies
+between implementations (clients and services) and is not consistent with current
+practice using OpenAPI to define machine-readable standards. For example, the following 
+were previously considered equivalent:
 
 \begin{verbatim}
 FOO=bar
@@ -1114,7 +1112,13 @@ Foo=bar
 foo=bar
 \end{verbatim}
 
-Unless explicitly stated by the service specification, these are not equivalent:
+As of this version of DALI, an OpenAPI description of a parameter will specify exactly one
+of those as ``correct'' and the other ``spellings'' above will be not incorrect (see section~\ref{sec:unknown-parameters}).
+
+Parameter values are case sensitive unless a concrete DAL service specification 
+explicitly states that the values of a specific parameter are to be treated as 
+case-insensitive. Unless explicitly stated by the service specification, these are 
+not equivalent:
 
 \begin{verbatim}
 FOO=bar
@@ -1122,8 +1126,24 @@ FOO=Bar
 FOO=BAR
 \end{verbatim}
 
-In this document, parameter names are typically shown in upper-case for
-typographical clarity, not as a requirement.
+In this document, parameter names are shown in upper-case for typographical clarity. 
+Current parameter defintions include an OpenAPI component that specifies upper-case;
+deprecated parameters do not include an OpenAPI component description. DALI strongly
+recommends that new parameters be defined with upper-case parameter names for 
+consistency with existing text and style.
+
+Clients should be updated to use the correct case as specified by standards as soon
+as possible, ideally when the OpenAPI description is part of a REC.
+
+Existing services should continue to support case-insensitive parameter names
+(``legacy'' parameters) at least until they are upgraded to a new version of a 
+standard with an OpenAPI specification and case-sensitive parameter names; they may
+continue to support old clients by ignoring case for a reasonable period of time (TBD).
+
+New services and new parameters with a specified case should only support the specified
+case. We expect that old unmaintained clients are most likely used with existing services
+and would not be used with new services implementing only case-sensitive parameter 
+handling.
 
 \subsection{Multiple Values}
 Parameters may be assigned multiple values with multiple parameter=value pairs
@@ -1141,24 +1161,37 @@ UPLOAD=bar,http://example.com/bar
 Services must respond with an error if the request includes multiple values for
 parameters defined to be single-valued.
 
+\subsection{Unknown Paremeters}
+\label{sec:unknown-parameters}
+Historically, services accepted and ignored unknown parameters, but this practice
+will cause confusion if users use the wrong case and parameters are ignored by a
+modern service with case-sensistive parameter handling. Services must respond with
+an error if a request includes unknown parameters.
+
 \subsection{Standard Parameters}
 
-\subsubsection{REQUEST}
-\label{sec:REQUEST}
-The REQUEST parameter is intended for service capabilities that have
-multiple modes or operations, including non-standard (site-specific) optional
-features. Most standard service capabilities will not define values for this
-parameter.
+\subsubsection{MAXREC}
+\label{sec:MAXREC}
+OpenAPI component:\\ \auxiliaryurl{openapi/dali/dali-maxrec.yaml}
 
-If defined for a specific service capability, the REQUEST parameter is always
-single-valued.
+For services performing discovery (querying for an arbitrary number of
+records), the query endpoints must accept MAXREC parameters specifying the maximum
+number of records to be returned. If MAXREC is not specified in a request, the
+service may apply a default value or may set no limit. The service may also
+enforce a limit on the value of MAXREC that is smaller than the value in the
+request. If the size of the result exceeds the resulting limit, the service must
+only return the requested number of rows. If the result set is truncated in this
+fashion, it must include an overflow indicator where possible as specified in Section \ref{sec:response-overflow}.
 
-\subsubsection{VERSION}
-\label{sec:VERSION}
-The VERSION parameter has been removed because the different
-meaning of request
-parameters it is intended to disambiguate are not allowed within minor
-revisions of a standard; there are no useful scenarios where VERSION would work.
+The service must support the special value of MAXREC=0. This value indicates
+that, in the event of an otherwise valid request, a valid response be returned
+containing metadata, no results, and an overflow indicator. The
+service is not required to execute the request and the overflow indicator does
+not necessarily mean that there is at least one record satisfying the query. The
+service may perform validation and may try to execute the request, in which case
+a MAXREC=0 request can fail.
+
+The MAXREC parameter is always single-valued.
 
 \subsubsection{RESPONSEFORMAT}
 \label{sec:RESPONSEFORMAT}
@@ -1232,29 +1265,6 @@ sense in TAP-1.0, but this is not generally the case.
 
 The RESPONSEFORMAT parameter is always single-valued.
 
-\subsubsection{MAXREC}
-\label{sec:MAXREC}
-OpenAPI component:\\ \auxiliaryurl{openapi/dali/dali-maxrec.yaml}
-
-For services performing discovery (querying for an arbitrary number of
-records), the query endpoints must accept MAXREC parameters specifying the maximum
-number of records to be returned. If MAXREC is not specified in a request, the
-service may apply a default value or may set no limit. The service may also
-enforce a limit on the value of MAXREC that is smaller than the value in the
-request. If the size of the result exceeds the resulting limit, the service must
-only return the requested number of rows. If the result set is truncated in this
-fashion, it must include an overflow indicator where possible as specified in Section \ref{sec:response-overflow}.
-
-The service must support the special value of MAXREC=0. This value indicates
-that, in the event of an otherwise valid request, a valid response be returned
-containing metadata, no results, and an overflow indicator. The
-service is not required to execute the request and the overflow indicator does
-not necessarily mean that there is at least one record satisfying the query. The
-service may perform validation and may try to execute the request, in which case
-a MAXREC=0 request can fail.
-
-The MAXREC parameter is always single-valued.
-
 \subsubsection{UPLOAD}
 \label{sec:UPLOAD}
 OpenAPI component:\\ \auxiliaryurl{openapi/dali/dali-upload.yaml}
@@ -1323,20 +1333,27 @@ Section \ref{sec:response-error}. Concrete service specifications will
 typically provide a mechanism for referring to uploaded resources (e.g. in
 other request parameters) where necessary.
 
+\subsection{Deprecated Parameters}
+
+\subsubsection{REQUEST}
+\label{sec:REQUEST}
+The REQUEST parameter is intended for service capabilities that have
+multiple modes or operations, including non-standard (site-specific) optional
+features. There is no value in reserving this parameter name without specifying
+details.
+
 \subsubsection{RUNID}
 \label{sec:RUNID}
-The service should implement the RUNID parameter, used to tag service requests
-with the identifier of a larger job of which the request may be part. The RUNID
-value is a string with a maximum length of 64 characters.
-
-For example, if a cross match portal issues multiple requests to remote services
-to carry out a cross-match operation, all would receive the same RUNID, and the
-service logs could later be analysed to reconstruct the service operations
-initiated in response to the job. The service should ensure that RUNID is
-preserved in any service logs and  should pass on the RUNID value in calls to
-other services made while processing the request.
-
-The RUNID parameter is always single-valued.
+The RUNID parameter was intended to enable service providers to connect various
+events (e.g. in logs) together and potentially trace a sequence of requests
+across multiple services and service providers. This was never fully implemented
+and used in practice.
+% 
+\subsubsection{VERSION}
+\label{sec:VERSION}
+The VERSION parameter has been removed because the different meaning of request
+parameters it is intended to disambiguate are not allowed within minor
+revisions of a standard; there are no useful scenarios where VERSION would work.
 
 \section{Responses}
 \label{sec:responses}
@@ -1627,16 +1644,18 @@ value \emph{meta.bib} (if the value is a free-text reference) or
 the value is a bibcode). If other \xmlel{meta.bib} UCDs are added to the vocabulary in
 future, they may also be used to describe the value.
 
+
 \appendix
 
 \section{Changes}
 
 \subsection{PR-DALI-1.2}
 \begin{itemize}
+\item parameters described by OpenAPI restricted to case-sensitive; provide
+advice on how clients and services can transition 
 \item clarified that truncation indicated by OVERFLOW can occur independent of
 MAXREC
-\item added new xtypes: hms, dms, moc, range, shape, uri,
-uuid, json
+\item added new xtypes: hms, dms, moc, range, shape, uri, uuid, json
 \item added new xtypes for union of simple xtypes: multiinterval, multishape
 \item changed VOSI-availability to optional
 \item changed VOSI-capability so it is only required for registered services
@@ -1644,7 +1663,7 @@ uuid, json
 \item clarified use of VOTable datatype and arraysize when used with xtype
 \item add OpenAPI components for maxrec, responseformat, and upload params
 \item changing terminology: What so far was mostly ``web resource'' is now
-``endpoint''.
+``endpoint''
 \end{itemize}
 
 \subsection{PR-DALI-1.1-20170412}
