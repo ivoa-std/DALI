@@ -1097,14 +1097,16 @@ to be extended to include additional subtypes in the future.
 A DAL job is defined by a set of parameter-value pairs. Some of these parameters
 have a standard meaning and are defined here, but most are defined by the
 service specification or another related standard. Where indicated below, the
-specification for individual parameters is provided as an OpenAPI component that
-can be included in a concrete service specification.
+specification for individual parameters is provided as an OpenAPI
+\citep{openapi2021spec31} component that can be included in a concrete service
+specification.
 
 \subsection{Case Sensitivity}
-Parameter names are historically not case sensitive; this has caused incosistencies
-between implementations (clients and services) and is not consistent with current
-practice using OpenAPI to define machine-readable standards. For example, the following 
-were previously considered equivalent:
+Prior to DALI-1.2, parameter names are shown in upper-case for typographical clarity
+only and parameter names were case-insensitive. This ``feature'' has caused
+inconsistencies between implementations (clients and services) and is not consistent
+with current practice of using OpenAPI to define machine-readable standards. For example,
+the following were previously considered equivalent:
 
 \begin{verbatim}
 FOO=bar
@@ -1112,12 +1114,16 @@ Foo=bar
 foo=bar
 \end{verbatim}
 
-As of this version of DALI, an OpenAPI description of a parameter will specify exactly one
-of those as ``correct'' and the other ``spellings'' above will be not incorrect (see section~\ref{sec:unknown-parameters}).
+As of DALI-1.2, the defintions of current standard parameters (below) include an
+OpenAPI component that specifies correct case; the OpenAPI component is definitive.
+DALI strongly recommends that new parameters be defined with upper-case parameter
+names for consistency with existing text and style. In the examples above, exactly
+one of those as ``correct'' and the other ``spellings'' are not (see
+section~\ref{sec:unknown-parameters}).
 
-Parameter values are case sensitive unless a concrete DAL service specification 
-explicitly states that the values of a specific parameter are to be treated as 
-case-insensitive. Unless explicitly stated by the service specification, these are 
+Parameter values are case sensitive unless a concrete DAL service specification
+explicitly states that the values of a specific parameter are to be treated as
+case-insensitive. Unless explicitly stated by the service specification, these are
 not equivalent:
 
 \begin{verbatim}
@@ -1126,24 +1132,26 @@ FOO=Bar
 FOO=BAR
 \end{verbatim}
 
-In this document, parameter names are shown in upper-case for typographical clarity. 
-Current parameter defintions include an OpenAPI component that specifies upper-case;
-deprecated parameters do not include an OpenAPI component description. DALI strongly
-recommends that new parameters be defined with upper-case parameter names for 
-consistency with existing text and style.
+\subsubsection{Transition to Case-sensitive Parameter Names}
 
-Clients should be updated to use the correct case as specified by standards as soon
-as possible, ideally when the OpenAPI description is part of a REC.
+In order to transition from the current case-insensitive usage to more strict
+case-sensitive parameter naming, clients should be updated to use the correct
+case as specified by standards as soon as possible, ideally when the OpenAPI
+description is part of an IVOA Recommendation.
 
 Existing services should continue to support case-insensitive parameter names
-(``legacy'' parameters) at least until they are upgraded to a new version of a 
+(``legacy'' parameters) at least until they are upgraded to a new version of a
 standard with an OpenAPI specification and case-sensitive parameter names; they may
-continue to support old clients by ignoring case for a reasonable period of time (TBD).
+continue to support old clients by ignoring case for a reasonable period of time 
+(TBD).
 
 New services and new parameters with a specified case should only support the specified
 case. We expect that old unmaintained clients are most likely used with existing services
-and would not be used with new services implementing only case-sensitive parameter 
+and would not be used with new services implementing only case-sensitive parameter
 handling.
+
+Service validation should tolerate both case-insensitive and case-sensitive handling
+of parameter names for a reasonable period of time (TBD).
 
 \subsection{Multiple Values}
 Parameters may be assigned multiple values with multiple parameter=value pairs
