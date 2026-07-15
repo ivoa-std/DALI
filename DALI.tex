@@ -1178,28 +1178,17 @@ an error if a request includes unknown parameters.
 
 \subsection{Standard Parameters}
 
-\subsubsection{MAXREC}
-\label{sec:MAXREC}
-OpenAPI component:\\ \auxiliaryurl{openapi/dali/dali-maxrec.yaml}
+\subsubsection{REQUEST}
+The REQUEST parameter is intended for service capabilities that have
+multiple modes or operations, including non-standard (site-specific) optional
+features. There is no value in reserving this parameter name without specifying
+details so REQUEST is now deprecated (removed?).
 
-For services performing discovery (querying for an arbitrary number of
-records), the query endpoints must accept MAXREC parameters specifying the maximum
-number of records to be returned. If MAXREC is not specified in a request, the
-service may apply a default value or may set no limit. The service may also
-enforce a limit on the value of MAXREC that is smaller than the value in the
-request. If the size of the result exceeds the resulting limit, the service must
-only return the requested number of rows. If the result set is truncated in this
-fashion, it must include an overflow indicator where possible as specified in Section \ref{sec:response-overflow}.
-
-The service must support the special value of MAXREC=0. This value indicates
-that, in the event of an otherwise valid request, a valid response be returned
-containing metadata, no results, and an overflow indicator. The
-service is not required to execute the request and the overflow indicator does
-not necessarily mean that there is at least one record satisfying the query. The
-service may perform validation and may try to execute the request, in which case
-a MAXREC=0 request can fail.
-
-The MAXREC parameter is always single-valued.
+\subsubsection{VERSION}
+The VERSION parameter has been removed because the different
+meaning of request
+parameters it is intended to disambiguate are not allowed within minor
+revisions of a standard; there are no useful scenarios where VERSION would work.
 
 \subsubsection{RESPONSEFORMAT}
 \label{sec:RESPONSEFORMAT}
@@ -1273,6 +1262,29 @@ sense in TAP-1.0, but this is not generally the case.
 
 The RESPONSEFORMAT parameter is always single-valued.
 
+\subsubsection{MAXREC}
+\label{sec:MAXREC}
+OpenAPI component:\\ \auxiliaryurl{openapi/dali/dali-maxrec.yaml}
+
+For services performing discovery (querying for an arbitrary number of
+records), the query endpoints must accept MAXREC parameters specifying the maximum
+number of records to be returned. If MAXREC is not specified in a request, the
+service may apply a default value or may set no limit. The service may also
+enforce a limit on the value of MAXREC that is smaller than the value in the
+request. If the size of the result exceeds the resulting limit, the service must
+only return the requested number of rows. If the result set is truncated in this
+fashion, it must include an overflow indicator where possible as specified in Section \ref{sec:response-overflow}.
+
+The service must support the special value of MAXREC=0. This value indicates
+that, in the event of an otherwise valid request, a valid response be returned
+containing metadata, no results, and an overflow indicator. The
+service is not required to execute the request and the overflow indicator does
+not necessarily mean that there is at least one record satisfying the query. The
+service may perform validation and may try to execute the request, in which case
+a MAXREC=0 request can fail.
+
+The MAXREC parameter is always single-valued.
+
 \subsubsection{UPLOAD}
 \label{sec:UPLOAD}
 OpenAPI component:\\ \auxiliaryurl{openapi/dali/dali-upload.yaml}
@@ -1341,27 +1353,11 @@ Section \ref{sec:response-error}. Concrete service specifications will
 typically provide a mechanism for referring to uploaded resources (e.g. in
 other request parameters) where necessary.
 
-\subsection{Deprecated Parameters}
-
-\subsubsection{REQUEST}
-\label{sec:REQUEST}
-The REQUEST parameter is intended for service capabilities that have
-multiple modes or operations, including non-standard (site-specific) optional
-features. There is no value in reserving this parameter name without specifying
-details.
-
 \subsubsection{RUNID}
-\label{sec:RUNID}
 The RUNID parameter was intended to enable service providers to connect various
-events (e.g. in logs) together and potentially trace a sequence of requests
+events (e.g. in logs) and potentially trace a sequence of requests
 across multiple services and service providers. This was never fully implemented
-and used in practice.
-% 
-\subsubsection{VERSION}
-\label{sec:VERSION}
-The VERSION parameter has been removed because the different meaning of request
-parameters it is intended to disambiguate are not allowed within minor
-revisions of a standard; there are no useful scenarios where VERSION would work.
+and used in practice so RUNID is now deprecated (removed?).
 
 \section{Responses}
 \label{sec:responses}
