@@ -1169,8 +1169,13 @@ UPLOAD=bar,http://example.com/bar
 Services must respond with an error if the request includes multiple values for
 parameters defined to be single-valued.
 
-\subsection{Unknown Paremeters}
+\subsection{Deprecated and Unknown Paremeters}
 \label{sec:unknown-parameters}
+When standard parameters fall out of use they will be deprecated. Services may continue
+to support such parameters if they find it useful; if not, they should silently ignore them
+and not respond with an error. Deprecated parameters will be removed in a future version
+of this document; once removed they are treated as unknown parameters.
+
 Prior to DALI-1.2, services accepted and ignored unknown parameters, but this practice
 will cause confusion if users use the wrong case and parameters are ignored by a
 modern service with case-sensistive parameter handling. Services must respond with
@@ -1179,10 +1184,10 @@ an error if a request includes unknown parameters.
 \subsection{Standard Parameters}
 
 \subsubsection{REQUEST}
-The REQUEST parameter is intended for service capabilities that have
-multiple modes or operations, including non-standard (site-specific) optional
-features. There is no value in reserving this parameter name without specifying
-details so REQUEST is now deprecated (removed?).
+The REQUEST parameter is deprecated. This was intended for service capabilities
+that have multiple modes or operations, including non-standard (site-specific)
+optional features. There is no value in reserving this parameter name without
+specifying details (e.g. what values are allowed).
 
 \subsubsection{VERSION}
 The VERSION parameter has been removed because the different
@@ -1354,10 +1359,10 @@ typically provide a mechanism for referring to uploaded resources (e.g. in
 other request parameters) where necessary.
 
 \subsubsection{RUNID}
-The RUNID parameter was intended to enable service providers to connect various
-events (e.g. in logs) and potentially trace a sequence of requests
+The RUNID parameter is deprecated. It was intended to enable service providers
+to connect various events (e.g. in logs) and potentially trace a sequence of requests
 across multiple services and service providers. This was never fully implemented
-and used in practice so RUNID is now deprecated (removed?).
+and used in practice so RUNID is now deprecated.
 
 \section{Responses}
 \label{sec:responses}
