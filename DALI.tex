@@ -210,7 +210,7 @@ GET http://example.com/base/async-jobs/123
 <?xml version="1.0" encoding="UTF-8"?>
 <uws:job xmlns:uws="http://www.ivoa.net/xml/UWS/v1.0">
   <uws:jobId>123</uws:jobId>
-  <uws:runId>test</uws:runId>
+  <uws:runId />
   <uws:ownerId xsi:nil="true" />
   <uws:phase>PENDING</uws:phase>
   <uws:quote>2013-01-01T12:34:56</uws:quote>
@@ -1662,6 +1662,7 @@ future, they may also be used to describe the value.
 \begin{itemize}
 \item parameters described by OpenAPI restricted to case-sensitive; provide
 advice on how clients and services can transition 
+\item deprecate REQUEST and RUNID parameters
 \item clarified that truncation indicated by OVERFLOW can occur independent of
 MAXREC
 \item added new xtypes: hms, dms, moc, range, shape, uri, uuid, json
