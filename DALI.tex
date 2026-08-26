@@ -1144,10 +1144,10 @@ standard with an OpenAPI specification and case-sensitive parameter names, after
 which they should only support the specified case.
 
 We expect that DALI-compliant standards will make this change to include an OpenAPI
-specification and this case-sensitive parameter names in the next minor version. We
+specification and thus case-sensitive parameter names in the next minor version. We
 also expect that old and unmaintained clients are most likely used with existing services
 and would not be used with new services implementing only case-sensitive parameter handling.
-While this change seems abrupt and strict, the fixing clients is simple and a more gradual
+While this change seems abrupt and strict, fixing clients is simple and a more gradual
 transition does not seem feasible.
 
 Service validation must be able to differentiate between minor versions in order to
@@ -1169,7 +1169,7 @@ UPLOAD=bar,http://example.com/bar
 Services must respond with an error if the request includes multiple values for
 parameters defined to be single-valued.
 
-\subsection{Deprecated and Unknown Paremeters}
+\subsection{Deprecated and Unknown Parameters}
 \label{sec:unknown-parameters}
 When standard parameters fall out of use they will be deprecated. Services may continue
 to support such parameters if they find it useful; if not, they should silently ignore them
