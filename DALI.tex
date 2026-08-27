@@ -210,7 +210,6 @@ GET http://example.com/base/async-jobs/123
 <?xml version="1.0" encoding="UTF-8"?>
 <uws:job xmlns:uws="http://www.ivoa.net/xml/UWS/v1.0">
   <uws:jobId>123</uws:jobId>
-  <uws:runId>test</uws:runId>
   <uws:ownerId xsi:nil="true" />
   <uws:phase>PENDING</uws:phase>
   <uws:quote>2013-01-01T12:34:56</uws:quote>
@@ -1097,16 +1096,16 @@ to be extended to include additional subtypes in the future.
 A DAL job is defined by a set of parameter-value pairs. Some of these parameters
 have a standard meaning and are defined here, but most are defined by the
 service specification or another related standard. Where indicated below, the
-specification for individual parameters is provided as an OpenAPI component that
-can be included in a concrete service specification.
+specification for individual parameters is provided as an OpenAPI
+\citep{openapi2021spec31} component that can be included in a concrete service
+specification.
 
 \subsection{Case Sensitivity}
-Parameter names are not case sensitive; a DAL service must treat
-\hbox{upper-,} \hbox{lower-,}
-and mixed-case parameter names as equal. Parameter values are case sensitive
-unless a concrete DAL service specification explicitly states that the values of
-a specific parameter are to be treated as case-insensitive. For example, the
-following are equivalent:
+Prior to DALI-1.2, parameter names are shown in upper-case for typographical clarity
+only and parameter names were case-insensitive. This ``feature'' has caused
+inconsistencies between implementations (clients and services) and is not consistent
+with current practice of using OpenAPI to define machine-readable standards. For example,
+the following were previously considered equivalent:
 
 \begin{verbatim}
 FOO=bar
@@ -1114,7 +1113,17 @@ Foo=bar
 foo=bar
 \end{verbatim}
 
-Unless explicitly stated by the service specification, these are not equivalent:
+As of DALI-1.2, the definitions of current standard parameters (below) include an
+OpenAPI component that specifies correct case; the OpenAPI component is definitive.
+DALI strongly recommends that new parameters be defined for consistency with existing 
+text and style where possible, which in most cases will mean upper-case parameter
+names. In the examples above, exactly one of those is ``correct'' and the other 
+``spellings'' are not (see section~\ref{sec:unknown-parameters}).
+
+Parameter values are case sensitive unless a concrete DAL service specification
+explicitly states that the values of a specific parameter are to be treated as
+case-insensitive. Unless explicitly stated by the service specification, these are
+not equivalent:
 
 \begin{verbatim}
 FOO=bar
@@ -1122,8 +1131,26 @@ FOO=Bar
 FOO=BAR
 \end{verbatim}
 
-In this document, parameter names are typically shown in upper-case for
-typographical clarity, not as a requirement.
+\subsubsection{Transition to Case-sensitive Parameter Names}
+In order to transition from the current case-insensitive usage to more strict
+case-sensitive parameter naming, clients should be updated to use the correct
+case as specified by standards as soon as possible, ideally as soon as the OpenAPI
+description becomes available (e.g. in a proposed recommendation).
+
+Existing services continue to support case-insensitive parameter names
+(``legacy'' parameters) until they are upgraded to a new version of a
+standard with an OpenAPI specification and case-sensitive parameter names, after
+which they should only support the specified case.
+
+We expect that DALI-compliant standards will make this change to include an OpenAPI
+specification and thus case-sensitive parameter names in the next minor version. We
+also expect that old and unmaintained clients are most likely used with existing services
+and would not be used with new services implementing only case-sensitive parameter handling.
+While this change seems abrupt and strict, fixing clients is simple and a more gradual
+transition does not seem feasible.
+
+Service validation must be able to differentiate between minor versions in order to
+check parameter name handling.
 
 \subsection{Multiple Values}
 Parameters may be assigned multiple values with multiple parameter=value pairs
@@ -1141,20 +1168,27 @@ UPLOAD=bar,http://example.com/bar
 Services must respond with an error if the request includes multiple values for
 parameters defined to be single-valued.
 
+\subsection{Deprecated and Unknown Parameters}
+\label{sec:unknown-parameters}
+When standard parameters fall out of use they will be deprecated. Services may continue
+to support such parameters if they find it useful; if not, they should silently ignore them
+and not respond with an error. Deprecated parameters will be removed in a future version
+of this document; once removed they are treated as unknown parameters.
+
+Prior to DALI-1.2, services accepted and ignored unknown parameters, but this practice
+will cause confusion if users use the wrong case and parameters are ignored by a
+modern service with case-sensistive parameter handling. Services must respond with
+an error if a request includes unknown parameters.
+
 \subsection{Standard Parameters}
 
 \subsubsection{REQUEST}
-\label{sec:REQUEST}
-The REQUEST parameter is intended for service capabilities that have
-multiple modes or operations, including non-standard (site-specific) optional
-features. Most standard service capabilities will not define values for this
-parameter.
-
-If defined for a specific service capability, the REQUEST parameter is always
-single-valued.
+The REQUEST parameter is deprecated. This was intended for service capabilities
+that have multiple modes or operations, including non-standard (site-specific)
+optional features. There is no value in reserving this parameter name without
+specifying details (e.g. what values are allowed).
 
 \subsubsection{VERSION}
-\label{sec:VERSION}
 The VERSION parameter has been removed because the different
 meaning of request
 parameters it is intended to disambiguate are not allowed within minor
@@ -1324,19 +1358,10 @@ typically provide a mechanism for referring to uploaded resources (e.g. in
 other request parameters) where necessary.
 
 \subsubsection{RUNID}
-\label{sec:RUNID}
-The service should implement the RUNID parameter, used to tag service requests
-with the identifier of a larger job of which the request may be part. The RUNID
-value is a string with a maximum length of 64 characters.
-
-For example, if a cross match portal issues multiple requests to remote services
-to carry out a cross-match operation, all would receive the same RUNID, and the
-service logs could later be analysed to reconstruct the service operations
-initiated in response to the job. The service should ensure that RUNID is
-preserved in any service logs and  should pass on the RUNID value in calls to
-other services made while processing the request.
-
-The RUNID parameter is always single-valued.
+The RUNID parameter is deprecated. It was intended to enable service providers
+to connect various events (e.g. in logs) and potentially trace a sequence of requests
+across multiple services and service providers. This was never fully implemented
+and used in practice so RUNID is now deprecated.
 
 \section{Responses}
 \label{sec:responses}
@@ -1627,16 +1652,19 @@ value \emph{meta.bib} (if the value is a free-text reference) or
 the value is a bibcode). If other \xmlel{meta.bib} UCDs are added to the vocabulary in
 future, they may also be used to describe the value.
 
+
 \appendix
 
 \section{Changes}
 
 \subsection{PR-DALI-1.2}
 \begin{itemize}
+\item parameters described by OpenAPI restricted to case-sensitive; provide
+advice on how clients and services can transition 
+\item deprecate REQUEST and RUNID parameters
 \item clarified that truncation indicated by OVERFLOW can occur independent of
 MAXREC
-\item added new xtypes: hms, dms, moc, range, shape, uri,
-uuid, json
+\item added new xtypes: hms, dms, moc, range, shape, uri, uuid, json
 \item added new xtypes for union of simple xtypes: multiinterval, multishape
 \item changed VOSI-availability to optional
 \item changed VOSI-capability so it is only required for registered services
@@ -1644,7 +1672,7 @@ uuid, json
 \item clarified use of VOTable datatype and arraysize when used with xtype
 \item add OpenAPI components for maxrec, responseformat, and upload params
 \item changing terminology: What so far was mostly ``web resource'' is now
-``endpoint''.
+``endpoint''
 \end{itemize}
 
 \subsection{PR-DALI-1.1-20170412}
