@@ -206,25 +206,7 @@ retrieved by accessing the job URL with the HTTP GET method:
 GET http://example.com/base/async-jobs/123
 \end{verbatim}
 
-\begin{lstlisting}[language=XML,basicstyle=\footnotesize]
-<?xml version="1.0" encoding="UTF-8"?>
-<uws:job xmlns:uws="http://www.ivoa.net/xml/UWS/v1.0">
-  <uws:jobId>123</uws:jobId>
-  <uws:ownerId xsi:nil="true" />
-  <uws:phase>PENDING</uws:phase>
-  <uws:quote>2013-01-01T12:34:56</uws:quote>
-  <uws:startTime/>
-  <uws:endTime/>
-  <uws:executionDuration>600</uws:executionDuration>
-  <uws:destruction>2013-02-01T00:00:00</uws:destruction>
-  <uws:parameters>
-    <uws:parameter id="LANG">ADQL</uws:parameter>
-    <uws:parameter id="REQUEST">doQuery</uws:parameter>
-    <uws:parameter id="QUERY">select * from tab</uws:parameter>
-  </uws:parameters>
-  <uws:results/>
-</uws:job>
-\end{lstlisting}
+\lstinputlisting[language=XML,basicstyle=\footnotesize]{uws-example.xml}
 
 In addition to the UWS job metadata, DAL jobs are defined by a set of
 parameter-value pairs. The client may include parameters in the initial POST
