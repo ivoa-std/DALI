@@ -35,5 +35,6 @@ ivoatex/Makefile:
 	git submodule update --init
 
 
+STILTS ?= stilts
 test:
-	@echo "No tests defined yet."
+	$(STILTS) xsdvalidate uselocals=true uws-example.xml
