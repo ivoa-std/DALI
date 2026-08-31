@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uws:job xmlns:uws="http://www.ivoa.net/xml/UWS/v1.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <uws:jobId>123</uws:jobId>
+  <uws:ownerId xsi:nil="true"/>
+  <uws:phase>PENDING</uws:phase>
+  <uws:quote>2013-01-01T12:34:56</uws:quote>
+  <uws:startTime xsi:nil="true"/>
+  <uws:endTime xsi:nil="true"/>
+  <uws:executionDuration>600</uws:executionDuration>
+  <uws:destruction>2013-02-01T00:00:00</uws:destruction>
+  <uws:parameters>
+    <uws:parameter id="LANG">ADQL</uws:parameter>
+    <uws:parameter id="REQUEST">doQuery</uws:parameter>
+    <uws:parameter id="QUERY">select * from tab</uws:parameter>
+  </uws:parameters>
+  <uws:results/>
+</uws:job>
