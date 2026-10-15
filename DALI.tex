@@ -211,7 +211,7 @@ GET http://example.com/base/async-jobs/123
 In addition to the UWS job metadata, DAL jobs are defined by a set of
 parameter-value pairs. The client may include parameters in the initial POST
 that creates a job or it may add additional parameters by a POST to the current
-list of parameters, for example:
+list of parameters (while the job is still in the PENDING phase), for example:
 
 \begin{verbatim}
 http://example.com/base/async-jobs/123/parameters
@@ -242,7 +242,7 @@ then the parameters used to specify the job are the same for  this pair of
 different types of jobs on different endpoints, which would have different job
 parameters.
 
-A synchronous job is created by a GET or POST request to a synchronous job list,
+A synchronous job is created by a GET or POST request to an endpoint,
 executed automatically, and the result returned in the response. The web service
 is permitted to split the operation of a synchronous request into multiple HTTP
 requests as long as it is transparent to standard clients. This means that the
@@ -504,7 +504,7 @@ operation, e.g.:
 \label{sec:vosi-capabilities}
 VOSI-capabilities \citep{2017ivoa.spec.0524G} defines a simple endpoint that
 returns an XML document
-describing the service. In  DAL services, this endpoint always accessed
+describing the service. In  DAL services, this endpoint is always accessed
 under the name
 ``capabilities''.  It is a child of the base URL for the service. The
 VOSI-capabilities should describe all the capabilities (which is roughly
@@ -580,10 +580,8 @@ are used as input or output from DAL services: as parameter values when
 invoking services, as data values in response documents (e.g. VOTable),
 etc. We define some general purpose values for the \xmlel{xtype} attribute of
 the VOTable \xmlel{FIELD} and \xmlel{PARAM} elements for simple
-structured values: \emph{timestamp}, \emph{interval},
-\emph{hms}, \emph{dms},
-\emph{point}, \emph{circle}, \emph{range}, \emph{polygon}, \emph{moc},
-\emph{shape}, \emph{multishape}, \emph{uri}, and \emph{uuid} (see below).
+structured values, for example: \emph{timestamp}, \emph{interval}, \emph{point},
+and \emph{circle}.
 
 A special case is the \emph{json} xtype: It allows publishers to, in
 effect, embed complex, structured data in VOTables.  Publishers
@@ -956,7 +954,7 @@ to a specific target location (for example, a SODA cutout of specific archival d
 
 For example, the following would describe the maximum shape for an input \verb|POS|
 parameter for a large (IRIS) data file (accessible via the CADC SODA service):
-\begin{lstlisting}[language=XML]
+\begin{verbatim}
 <GROUP name="inputParams">
   <PARAM name="ID" datatype="char" arraysize="23"
          ucd="meta.id;meta.dataset" value="cadc:IRIS/I212B2H0.fits" />
@@ -970,7 +968,7 @@ parameter for a large (IRIS) data file (accessible via the CADC SODA service):
   </PARAM>
   ...
 </GROUP>
-\end{lstlisting}
+\end{verbatim}
 In the specific context of a SODA service, the maximum shape is generally going
 to be the bounds of the data. The type label used in the maximum shape only tells
 the client how to interpret the value; it does not limit the caller to only using
@@ -1253,7 +1251,7 @@ The RESPONSEFORMAT parameter is always single-valued.
 OpenAPI component:\\ \auxiliaryurl{openapi/dali/dali-maxrec.yaml}
 
 For services performing discovery (querying for an arbitrary number of
-records), the query endpoints must accept MAXREC parameters specifying the maximum
+records), the query endpoints must accept a fMAXREC parameter specifying the maximum
 number of records to be returned. If MAXREC is not specified in a request, the
 service may apply a default value or may set no limit. The service may also
 enforce a limit on the value of MAXREC that is smaller than the value in the
